@@ -14,4 +14,7 @@ class ARPG_0908_API AarpgCharacter : public AarpgCharacterBase
 {
 	GENERATED_BODY()
 	
+public:
+	AarpgCharacter();
+
 };

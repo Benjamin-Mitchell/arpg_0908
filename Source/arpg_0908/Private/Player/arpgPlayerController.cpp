@@ -41,10 +41,12 @@ void AarpgPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("setupInputComponent!"));
+
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 
 	//Execute the Move Function whenever a Moove button is pressed in the Input Action.
-	EnhancedInputComponent->BindAction(moveAction, ETriggerEvent::Ongoing, this, &AarpgPlayerController::Move);
+	EnhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Move);
 }
 
 void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
