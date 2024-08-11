@@ -13,6 +13,7 @@ class UInputMappingContext;
 class UInputAction;
 
 struct FInputActionValue;
+class IHighlightInterface;
 /**
  * 
  */
@@ -23,6 +24,8 @@ class ARPG_0908_API AarpgPlayerController : public APlayerController
 	
 public:
 	AarpgPlayerController();
+
+	virtual void PlayerTick(float DeltaTime) override;
 
 protected:
 
@@ -37,4 +40,14 @@ private:
 	TObjectPtr<UInputAction> moveAction;
 
 	void Move(const struct FInputActionValue& InputActionValue);
+
+	void CursorTrace();
+
+	//TODO:
+	//TObjectPtr<AActor> LastActorHighlighted;
+	//TObjectPtr<AActor> ThisActorHighlighted;
+
+	IHighlightInterface* LastActorHighlighted;
+	IHighlightInterface* ThisActorHighlighted;
+
 };

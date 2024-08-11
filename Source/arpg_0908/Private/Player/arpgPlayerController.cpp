@@ -2,6 +2,7 @@
 
 
 #include "Player/arpgPlayerController.h"
+#include "Interaction/HighlightInterface.h"
 
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -10,6 +11,53 @@
 AarpgPlayerController::AarpgPlayerController()
 {
 	bReplicates = true;
+}
+
+void AarpgPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();
+}
+
+void AarpgPlayerController::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
+	if (!CursorHit.bBlockingHit) return;
+
+	
+	LastActorHighlighted = ThisActorHighlighted;
+	ThisActorHighlighted = Cast<IHighlightInterface>(CursorHit.GetActor());
+
+	
+	if (LastActorHighlighted == nullptr)
+	{
+		//New object to highlight
+		if (ThisActorHighlighted != nullptr)
+		{
+			ThisActorHighlighted->HighlightActor();
+		}
+		//else both are null, do nothing
+	}
+	else
+	{
+		//Last is valid, current is not
+		if (ThisActorHighlighted == nullptr)
+		{
+			LastActorHighlighted->UnHighlightActor();
+		}
+		else
+		{
+			//If theyre not the same
+			if (LastActorHighlighted != ThisActorHighlighted)
+			{
+				//Un-highlight old, highlight new
+				LastActorHighlighted->UnHighlightActor();
+				ThisActorHighlighted->HighlightActor();
+			}
+		}
+	}
 }
 
 void AarpgPlayerController::BeginPlay()

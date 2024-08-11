@@ -4,14 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Character/arpgCharacterBase.h"
+#include "Interaction/HighlightInterface.h"
 #include "arpgEnemy.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase
+class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase, public IHighlightInterface
 {
 	GENERATED_BODY()
-	
+
+public:
+	AarpgEnemy();
+	virtual void HighlightActor() override;
+	virtual void UnHighlightActor() override;
+
+
 };
