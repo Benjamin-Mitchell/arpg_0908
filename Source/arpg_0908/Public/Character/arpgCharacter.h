@@ -17,4 +17,9 @@ class ARPG_0908_API AarpgCharacter : public AarpgCharacterBase
 public:
 	AarpgCharacter();
 
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+
+private:
+	void InitAbilityActorInfo();
 };

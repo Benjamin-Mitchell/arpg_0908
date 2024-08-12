@@ -17,7 +17,11 @@ class ARPG_0908_API AarpgPlayerState : public APlayerState, public IAbilitySyste
 	GENERATED_BODY()
 public:
 	AarpgPlayerState();
+
+	//	Begin Ability System Interface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	//	End Ability System Interface
+
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 protected:
 	UPROPERTY()
@@ -25,4 +29,5 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
 };

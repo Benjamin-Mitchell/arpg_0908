@@ -17,6 +17,7 @@ AarpgEnemy::AarpgEnemy()
 
 	AbilitySystemComponent = CreateDefaultSubobject<UarpgAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UarpgAttributeSet>("AttributeSet");
 }
@@ -31,4 +32,11 @@ void AarpgEnemy::UnHighlightActor()
 {
 	GetMesh()->SetCustomDepthStencilValue(0);
 	Weapon->SetCustomDepthStencilValue(0);
+}
+
+void AarpgEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }

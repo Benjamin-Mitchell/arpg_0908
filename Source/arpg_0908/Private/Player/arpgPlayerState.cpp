@@ -9,6 +9,7 @@ AarpgPlayerState::AarpgPlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UarpgAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AttributeSet = CreateDefaultSubobject<UarpgAttributeSet>("AttributeSet");
 

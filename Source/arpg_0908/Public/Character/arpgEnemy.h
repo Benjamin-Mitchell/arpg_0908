@@ -17,8 +17,13 @@ class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase, public IHighlightInt
 
 public:
 	AarpgEnemy();
+
+	//Highlight Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+
+protected:
+	virtual void BeginPlay() override;
 
 
 };
