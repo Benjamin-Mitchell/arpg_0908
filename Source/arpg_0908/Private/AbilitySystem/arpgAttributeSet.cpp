@@ -8,8 +8,8 @@ UarpgAttributeSet::UarpgAttributeSet()
 {
 	InitHealth(100.0f);
 	InitMaxHealth(100.0f);
-	InitMana(10.0f);
-	InitMaxMana(10.0f);
+	InitMana(50.0f);
+	InitMaxMana(50.0f);
 }
 
 void UarpgAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
