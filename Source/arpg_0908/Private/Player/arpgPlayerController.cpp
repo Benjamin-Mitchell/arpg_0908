@@ -70,9 +70,10 @@ void AarpgPlayerController::BeginPlay()
 	//Subsystems are singletons. They're the system for the local controlled player.
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 
-	check(Subsystem);
-
-	Subsystem->AddMappingContext(arpgIMContext, 0);
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(arpgIMContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::CardinalCross;

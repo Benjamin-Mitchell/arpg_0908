@@ -5,6 +5,8 @@
 #include "Player/arpgPlayerState.h"
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/arpgPlayerController.h"
+#include "UI/HUD/arpgHUD.h"
 
 
 AarpgCharacter::AarpgCharacter()
@@ -44,4 +46,14 @@ void AarpgCharacter::InitAbilityActorInfo()
 
 	AbilitySystemComponent = arpgPlayerState->GetAbilitySystemComponent();
 	AttributeSet = arpgPlayerState->GetAttributeSet();
+
+	//This is only valid on the owning client 
+	if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))
+	{
+		if(AarpgHUD* arpgHUD = Cast<AarpgHUD>(arpgPlayerController->GetHUD()))
+		{
+			arpgHUD->InitOverlay(arpgPlayerController, arpgPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
+	
 }
