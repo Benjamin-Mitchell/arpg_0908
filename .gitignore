@@ -1,9 +1,9 @@
-Binaries
 DerivedDataCache
 Intermediate
 Saved
 Build
 
+*.pdb
 .vscode
 .vs
 *.VC.db
