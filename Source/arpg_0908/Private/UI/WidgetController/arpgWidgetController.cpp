@@ -15,3 +15,7 @@ void UarpgWidgetController::BroadcastInitialValues()
 {
 	
 }
+
+void UarpgWidgetController::BindCallbacksToDependencies()
+{
+}
