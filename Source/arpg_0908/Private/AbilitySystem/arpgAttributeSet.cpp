@@ -23,6 +23,23 @@ void UarpgAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
 }
 
+void UarpgAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	if(Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
+		
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Health NewValue: %f"), NewValue));
+	}
+	
+	if(Attribute == GetManaAttribute())
+    {
+		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxMana());
+    }
+}
+
 void UarpgAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
 	//Notify the gameplay system that this attribute has been updated.
