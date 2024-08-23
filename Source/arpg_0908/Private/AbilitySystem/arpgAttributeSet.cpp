@@ -36,8 +36,6 @@ void UarpgAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if(Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
-		
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Health NewValue: %f"), NewValue));
 	}
 	
 	if(Attribute == GetManaAttribute())

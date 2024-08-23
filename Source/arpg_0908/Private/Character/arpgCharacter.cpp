@@ -4,6 +4,7 @@
 #include "Character/arpgCharacter.h"
 #include "Player/arpgPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/arpgPlayerController.h"
 #include "UI/HUD/arpgHUD.h"
@@ -44,6 +45,8 @@ void AarpgCharacter::InitAbilityActorInfo()
 
 	arpgPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(arpgPlayerState, this);
 
+	Cast<UarpgAbilitySystemComponent>(arpgPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
+	
 	AbilitySystemComponent = arpgPlayerState->GetAbilitySystemComponent();
 	AttributeSet = arpgPlayerState->GetAttributeSet();
 

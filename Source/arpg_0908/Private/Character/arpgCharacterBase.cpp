@@ -23,3 +23,7 @@ void AarpgCharacterBase::BeginPlay()
 	
 }
 
+void AarpgCharacterBase::InitAbilityActorInfo()
+{
+}
+
