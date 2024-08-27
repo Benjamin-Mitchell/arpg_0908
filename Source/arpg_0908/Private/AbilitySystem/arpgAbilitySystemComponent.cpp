@@ -14,9 +14,5 @@ void UarpgAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* ASC, co
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
 
-	for(const FGameplayTag& Tag : TagContainer)
-	{
-		//TODO: Broadcast the tag to the widget controller
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Tag Name: %s"), *Tag.ToString()));
-	}
+	EffectAssetTags.Broadcast(TagContainer);
 }
