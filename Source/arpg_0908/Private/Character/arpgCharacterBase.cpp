@@ -2,6 +2,7 @@
 
 
 #include "Character/arpgCharacterBase.h"
+#include "AbilitySystemComponent.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
 {
@@ -25,5 +26,21 @@ void AarpgCharacterBase::BeginPlay()
 
 void AarpgCharacterBase::InitAbilityActorInfo()
 {
+}
+
+void AarpgCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(GameplayEffectClass);
+	const FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, EffectContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());	
+}
+
+void AarpgCharacterBase::InitializeDefaultAttributes() const
+{
+	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.0f);
+	ApplyEffectToSelf(DefaultDerivedAttributes, 1.0f);
+	
 }
 

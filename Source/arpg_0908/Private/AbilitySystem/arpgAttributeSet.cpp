@@ -12,23 +12,35 @@
 UarpgAttributeSet::UarpgAttributeSet()
 {
 	InitHealth(50.0f);
-	InitMaxHealth(100.0f);
-	InitMana(25.0f);
-	InitMaxMana(100.0f);
 }
 
 void UarpgAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	//Registry health to be replicated
-	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, AttackDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, AbilityPower, COND_None, REPNOTIFY_Always);
+	
 	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, DamageReduction, COND_None, REPNOTIFY_Always);
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, MoveSpeed, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, CritChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, CritDamageMultiplier, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, NumberOfDashes, COND_None, REPNOTIFY_Always);
+	
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, Health, COND_None, REPNOTIFY_Always);
+
+	//Old From tutorial
 	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, Mana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, Strength, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UarpgAttributeSet, Vigor, COND_None, REPNOTIFY_Always);
 }
 
-//TODO: Clamping in this doesn't work properly -- doesn't affect Base value?
+//TODO: Clamping in this doesn't work properly -- it only clamps the result of this modifier, not the actual Attribute value. Still useful-ish.
 void UarpgAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
@@ -104,10 +116,45 @@ void UarpgAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) co
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, Health, OldHealth);
 }
 
+void UarpgAttributeSet::OnRep_AttackDamage(const FGameplayAttributeData& OldAttackDamage) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, AttackDamage, OldAttackDamage);
+}
+
+void UarpgAttributeSet::OnRep_AbilityPower(const FGameplayAttributeData& OldAbilityPower) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, AbilityPower, OldAbilityPower);
+}
+
 void UarpgAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const
 {
 	//Notify the gameplay system that this attribute has been updated.
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, MaxHealth, OldMaxHealth);
+}
+
+void UarpgAttributeSet::OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, DamageReduction, OldDamageReduction);
+}
+
+void UarpgAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, MoveSpeed, OldMoveSpeed);
+}
+
+void UarpgAttributeSet::OnRep_CritChance(const FGameplayAttributeData& OldCritChance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, CritChance, OldCritChance);
+}
+
+void UarpgAttributeSet::OnRep_CritDamageMultiplier(const FGameplayAttributeData& OldCritDamageMultiplier) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, CritDamageMultiplier, OldCritDamageMultiplier);
+}
+
+void UarpgAttributeSet::OnRep_NumberOfDashes(const FGameplayAttributeData& OldNumberOfDashes) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, NumberOfDashes, OldNumberOfDashes);
 }
 
 void UarpgAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
@@ -120,5 +167,20 @@ void UarpgAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) 
 {
 	//Notify the gameplay system that this attribute has been updated.
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, MaxMana, OldMaxMana);
+}
+
+void UarpgAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, Strength, OldStrength);
+}
+
+void UarpgAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, Intelligence, OldIntelligence);
+}
+
+void UarpgAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, Vigor, OldVigor);
 }
 

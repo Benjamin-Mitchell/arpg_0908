@@ -59,4 +59,6 @@ void AarpgCharacter::InitAbilityActorInfo()
 		}
 	}
 	
+
+	InitializeDefaultAttributes();
 }

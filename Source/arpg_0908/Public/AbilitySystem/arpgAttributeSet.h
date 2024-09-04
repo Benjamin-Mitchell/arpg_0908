@@ -65,34 +65,131 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+
+
+	//Basic Power Stats
+	//Attack Damage
+	//Ability Power
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AttackDamage, Category = "Power Attributes")
+	FGameplayAttributeData AttackDamage;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, AttackDamage);
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_AbilityPower, Category = "Power Attributes")
+	FGameplayAttributeData AbilityPower;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, AbilityPower);
+	
+
+	//Basic Defense Stats
+	//MaxHealth
+	//Damage Reduction (Percent)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Defense Attributes")
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxHealth);
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_DamageReduction, Category = "Defense Attributes")
+	FGameplayAttributeData DamageReduction;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, DamageReduction);
+
+	//miscellaneous
+	//Move Speed Multiplier (Percent)
+	//Crit Chance Multiplier (Percent)
+	//Crit Damage Multiplier (Percent)
+	//Number of Dashes (Flat)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MoveSpeed, Category = "Miscellaneous Attributes")
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MoveSpeed);
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CritChance, Category = "Miscellaneous Attributes")
+	FGameplayAttributeData CritChance;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, CritChance);
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CritDamageMultiplier, Category = "Miscellaneous Attributes")
+	FGameplayAttributeData CritDamageMultiplier;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, CritDamageMultiplier);
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_NumberOfDashes, Category = "Miscellaneous Attributes")
+	FGameplayAttributeData NumberOfDashes;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, NumberOfDashes);
+
+	
+	//Vital Attributes
+	//Current Health
+	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Health);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Vital Attributes")
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxHealth);
-
+	//Mana is left-over from Tutorial.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Mana);
 
+	//MaxMana is left-over from Tutorial.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxMana);
+
+	//Primary Attributes
+
+	//Strength. TBD (from Tutorial)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
+	FGameplayAttributeData Strength;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Strength);
+
+	//Intelligence. TBD (from Tutorial)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Intelligence, Category = "Primary Attributes")
+	FGameplayAttributeData Intelligence;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Intelligence);
+
+	//Vigor. TBD (from Tutorial)
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Vigor, Category = "Primary Attributes")
+	FGameplayAttributeData Vigor;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Vigor);
 	
 	//By default using the value type itself as a paramter (the only option for parameter), the value will contain the old value.
 	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;	
+	void OnRep_AttackDamage(const FGameplayAttributeData& OldAttackDamage) const;
+
+	UFUNCTION()
+	void OnRep_AbilityPower(const FGameplayAttributeData& OldAbilityPower) const;
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
+	
+	UFUNCTION()
+	void OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const;
 
+	UFUNCTION()
+	void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) const;
+	
+	UFUNCTION()
+	void OnRep_CritChance(const FGameplayAttributeData& OldCritChance) const;
+	
+	UFUNCTION()
+	void OnRep_CritDamageMultiplier(const FGameplayAttributeData& OldCritDamageMultiplier) const;
+
+	UFUNCTION()
+	void OnRep_NumberOfDashes(const FGameplayAttributeData& OldNumberOfDashes) const;
+	
+	UFUNCTION()
+	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;	
+
+	
+	//From Tutorial
 	UFUNCTION()
 	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;
 
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+
+	UFUNCTION()
+	void OnRep_Strength (const FGameplayAttributeData& OldStrength) const;
+	
+	UFUNCTION()
+	void OnRep_Intelligence (const FGameplayAttributeData& OldIntelligence) const;
+	
+	UFUNCTION()
+	void OnRep_Vigor (const FGameplayAttributeData& OldVigor) const;
 
 private:
 
