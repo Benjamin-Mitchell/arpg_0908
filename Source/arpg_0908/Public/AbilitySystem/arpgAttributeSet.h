@@ -146,7 +146,7 @@ public:
 	FGameplayAttributeData Vigor;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Vigor);
 	
-	//By default using the value type itself as a paramter (the only option for parameter), the value will contain the old value.
+	//By default, using the value type itself as a parameter (the only option for parameter), the value will contain the old value.
 	UFUNCTION()
 	void OnRep_AttackDamage(const FGameplayAttributeData& OldAttackDamage) const;
 

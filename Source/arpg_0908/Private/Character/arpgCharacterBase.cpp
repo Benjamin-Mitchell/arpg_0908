@@ -32,7 +32,8 @@ void AarpgCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Gameplay
 {
 	check(IsValid(GetAbilitySystemComponent()));
 	check(GameplayEffectClass);
-	const FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, EffectContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());	
 }
@@ -40,7 +41,12 @@ void AarpgCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Gameplay
 void AarpgCharacterBase::InitializeDefaultAttributes() const
 {
 	ApplyEffectToSelf(DefaultPrimaryAttributes, 1.0f);
+
+	//Derives attributes must be set after primary, as they depend on primary
 	ApplyEffectToSelf(DefaultDerivedAttributes, 1.0f);
+
+	//Vital attributes must be set last as they depend on other attributes
+	ApplyEffectToSelf(DefaultVitalAttributes, 1.0f);
 	
 }
 

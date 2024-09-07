@@ -38,6 +38,12 @@ void AarpgCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+int32 AarpgCharacter::GetPlayerLevel()
+{
+	const AarpgPlayerState* arpgPlayerState = GetPlayerState<AarpgPlayerState>();
+	return arpgPlayerState->GetPlayerLevel();
+}
+
 void AarpgCharacter::InitAbilityActorInfo()
 {
 	AarpgPlayerState* arpgPlayerState = GetPlayerState<AarpgPlayerState>();

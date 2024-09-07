@@ -34,6 +34,11 @@ void AarpgEnemy::UnHighlightActor()
 	Weapon->SetCustomDepthStencilValue(0);
 }
 
+int32 AarpgEnemy::GetPlayerLevel()
+{
+	return Level;
+}
+
 void AarpgEnemy::BeginPlay()
 {
 	Super::BeginPlay();

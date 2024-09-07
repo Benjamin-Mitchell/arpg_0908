@@ -11,7 +11,7 @@
 
 UarpgAttributeSet::UarpgAttributeSet()
 {
-	InitHealth(50.0f);
+	
 }
 
 void UarpgAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
