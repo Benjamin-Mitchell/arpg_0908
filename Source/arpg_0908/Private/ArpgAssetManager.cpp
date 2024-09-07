@@ -1,0 +1,20 @@
+// Copyright Tinzie Games
+
+
+#include "ArpgAssetManager.h"
+#include "ArpgGameplayTags.h"
+
+UArpgAssetManager& UArpgAssetManager::Get()
+{
+	check(GEngine);
+	UArpgAssetManager* ArpgAssetManager = Cast<UArpgAssetManager>(GEngine->AssetManager);
+	return *ArpgAssetManager;
+	
+}
+
+void UArpgAssetManager::StartInitialLoading()
+{
+	Super::StartInitialLoading();
+
+	FArpgGameplayTags::InitializeNativeGameplayTags();
+}

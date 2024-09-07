@@ -3,6 +3,7 @@
 
 #include "Character/arpgCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/arpgAbilitySystemComponent.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
 {
@@ -48,5 +49,14 @@ void AarpgCharacterBase::InitializeDefaultAttributes() const
 	//Vital attributes must be set last as they depend on other attributes
 	ApplyEffectToSelf(DefaultVitalAttributes, 1.0f);
 	
+}
+
+void AarpgCharacterBase::AddCharacterAbilities()
+{
+	if(!HasAuthority()) return;
+
+	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
+
+	ArpgASC->AddCharacterAbilities(StartupAbilities);
 }
 

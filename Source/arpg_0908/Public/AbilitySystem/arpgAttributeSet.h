@@ -80,12 +80,7 @@ public:
 	
 
 	//Basic Defense Stats
-	//MaxHealth
-	//Damage Reduction (Percent)
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Defense Attributes")
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxHealth);
-	
+	//Damage Reduction (Percent)	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_DamageReduction, Category = "Defense Attributes")
 	FGameplayAttributeData DamageReduction;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, DamageReduction);
@@ -95,6 +90,8 @@ public:
 	//Crit Chance Multiplier (Percent)
 	//Crit Damage Multiplier (Percent)
 	//Number of Dashes (Flat)
+	//MaxHealth
+	//MaxMana (TBD)
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MoveSpeed, Category = "Miscellaneous Attributes")
 	FGameplayAttributeData MoveSpeed;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MoveSpeed);
@@ -111,6 +108,17 @@ public:
 	FGameplayAttributeData NumberOfDashes;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, NumberOfDashes);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Miscellaneous Attributes")
+	FGameplayAttributeData MaxHealth;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxHealth);
+
+	//MaxMana is left-over from Tutorial.
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Miscellaneous Attributes")
+	FGameplayAttributeData MaxMana;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxMana);
+	
+
+
 	
 	//Vital Attributes
 	//Current Health
@@ -123,12 +131,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Mana, Category = "Vital Attributes")
 	FGameplayAttributeData Mana;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, Mana);
-
-	//MaxMana is left-over from Tutorial.
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Vital Attributes")
-	FGameplayAttributeData MaxMana;
-	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, MaxMana);
-
+	
 	//Primary Attributes
 
 	//Strength. TBD (from Tutorial)
