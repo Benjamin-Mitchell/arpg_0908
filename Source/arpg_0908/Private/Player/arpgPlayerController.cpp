@@ -2,10 +2,14 @@
 
 
 #include "Player/arpgPlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Interaction/HighlightInterface.h"
 
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "GameplayTagContainer.h"
+#include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "Input/arpgInputComponent.h"
 
 
 AarpgPlayerController::AarpgPlayerController()
@@ -22,7 +26,6 @@ void AarpgPlayerController::PlayerTick(float DeltaTime)
 
 void AarpgPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 
@@ -60,6 +63,33 @@ void AarpgPlayerController::CursorTrace()
 	}
 }
 
+void AarpgPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	
+}
+
+void AarpgPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	if(GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagReleased(InputTag);
+}
+
+void AarpgPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	if(GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagHeld(InputTag);
+}
+
+UarpgAbilitySystemComponent* AarpgPlayerController::GetASC()
+{
+	if(ArpgAbilitySystemComponent == nullptr)
+	{
+		ArpgAbilitySystemComponent = Cast<UarpgAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
+	}
+
+	return ArpgAbilitySystemComponent;
+}
+
 void AarpgPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -92,10 +122,12 @@ void AarpgPlayerController::SetupInputComponent()
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("setupInputComponent!"));
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	UarpgInputComponent* ArpgInputComponent = CastChecked<UarpgInputComponent>(InputComponent);
 
 	//Execute the Move Function whenever a Moove button is pressed in the Input Action.
-	EnhancedInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Move);
+	ArpgInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Move);
+
+	ArpgInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
 void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)

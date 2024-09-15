@@ -8,12 +8,15 @@
 
 
 //forward declaration to avoid including header files.
+
+
+struct FGameplayTag;
+class UArpgInputConfig;
 class UInputMappingContext;
-
 class UInputAction;
-
 struct FInputActionValue;
 class IHighlightInterface;
+class UarpgAbilitySystemComponent;
 /**
  * 
  */
@@ -42,12 +45,21 @@ private:
 	void Move(const struct FInputActionValue& InputActionValue);
 
 	void CursorTrace();
-
-	//TODO:
-	//TObjectPtr<AActor> LastActorHighlighted;
-	//TObjectPtr<AActor> ThisActorHighlighted;
-
+	
 	IHighlightInterface* LastActorHighlighted;
 	IHighlightInterface* ThisActorHighlighted;
 
+	FHitResult CursorHit;
+	
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UArpgInputConfig> InputConfig;
+
+	UPROPERTY()
+	TObjectPtr<UarpgAbilitySystemComponent> ArpgAbilitySystemComponent;
+
+	UarpgAbilitySystemComponent* GetASC();
 };
