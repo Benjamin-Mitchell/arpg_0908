@@ -21,5 +21,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AArpgProjectile> ProjectileClass;
-	
+
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void FireProjectile();
 };
