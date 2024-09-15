@@ -25,6 +25,12 @@ void AarpgCharacterBase::BeginPlay()
 	
 }
 
+FVector AarpgCharacterBase::GetCombatSocketLocation()
+{
+	check(Weapon);
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
 void AarpgCharacterBase::InitAbilityActorInfo()
 {
 }

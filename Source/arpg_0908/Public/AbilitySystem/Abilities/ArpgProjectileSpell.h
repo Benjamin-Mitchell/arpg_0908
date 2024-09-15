@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/arpgGameplayAbility.h"
 #include "ArpgProjectileSpell.generated.h"
 
+class AArpgProjectile;
 /**
  * 
  */
@@ -17,4 +18,8 @@ class ARPG_0908_API UArpgProjectileSpell : public UarpgGameplayAbility
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AArpgProjectile> ProjectileClass;
+	
 };
