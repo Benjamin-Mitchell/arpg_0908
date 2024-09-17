@@ -5,7 +5,12 @@
 #include "CoreMinimal.h"
 #include "Character/arpgCharacterBase.h"
 #include "Interaction/HighlightInterface.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "arpgEnemy.generated.h"
+
+class UWidgetComponent;
+
+
 
 /**
  * 
@@ -26,6 +31,12 @@ public:
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangedSignature OnMaxHealthChanged;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -33,4 +44,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int32 Level = 1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent> HealthBar;
 };

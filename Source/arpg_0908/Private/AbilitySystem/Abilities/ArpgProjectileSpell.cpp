@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Abilities/ArpgProjectileSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Actor/ArpgProjectile.h"
 #include "Interaction/CombatInterface.h"
 
@@ -29,7 +31,6 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
 		SpawnTransform.SetRotation(Rotation.Quaternion());
-		//TODO: set projectile rotation
 		
 		
 		AArpgProjectile* Projectile = GetWorld()->SpawnActorDeferred<AArpgProjectile>(
@@ -39,7 +40,9 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-		//TODO: Give the Projectile a Gameplay Effect Spec for causing damage.
+		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+		Projectile->DamageEffectSpecHandle = SpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}
