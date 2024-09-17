@@ -23,5 +23,5 @@ protected:
 	TSubclassOf<AArpgProjectile> ProjectileClass;
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
-	void FireProjectile();
+	void FireProjectile(const FVector& ProjectileTargetLocation);
 };

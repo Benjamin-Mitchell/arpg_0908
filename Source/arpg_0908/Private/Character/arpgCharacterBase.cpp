@@ -4,6 +4,7 @@
 #include "Character/arpgCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "Components/CapsuleComponent.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
 {
@@ -12,6 +13,9 @@ AarpgCharacterBase::AarpgCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const

@@ -2,6 +2,8 @@
 
 
 #include "ArpgAssetManager.h"
+
+#include "AbilitySystemGlobals.h"
 #include "ArpgGameplayTags.h"
 
 UArpgAssetManager& UArpgAssetManager::Get()
@@ -17,4 +19,7 @@ void UArpgAssetManager::StartInitialLoading()
 	Super::StartInitialLoading();
 
 	FArpgGameplayTags::InitializeNativeGameplayTags();
+
+	//This is required to use Target Data!
+	UAbilitySystemGlobals::Get().InitGlobalData();
 }
