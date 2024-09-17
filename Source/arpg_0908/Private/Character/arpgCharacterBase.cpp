@@ -4,6 +4,7 @@
 #include "Character/arpgCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "arpg_0908/arpg_0908.h"
 #include "Components/CapsuleComponent.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
@@ -16,6 +17,8 @@ AarpgCharacterBase::AarpgCharacterBase()
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 }
 
 UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const
