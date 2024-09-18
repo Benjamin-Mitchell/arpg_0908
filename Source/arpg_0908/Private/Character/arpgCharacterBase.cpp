@@ -28,6 +28,11 @@ UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UAnimMontage* AarpgCharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 void AarpgCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

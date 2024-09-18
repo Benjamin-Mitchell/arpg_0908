@@ -7,6 +7,9 @@
 #include "AbilitySystem/arpgAttributeSet.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/arpgUserWidget.h"
+#include "ArpgGameplayTags.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AarpgEnemy::AarpgEnemy()
 {
@@ -26,7 +29,6 @@ AarpgEnemy::AarpgEnemy()
 	HealthBar->SetupAttachment(GetRootComponent());
 }
 
-//TODO: we don't need to SetRenderCustomDepth true and false every time..
 void AarpgEnemy::HighlightActor()
 {
 	GetMesh()->SetCustomDepthStencilValue(250);
@@ -43,11 +45,15 @@ int32 AarpgEnemy::GetPlayerLevel()
 	return Level;
 }
 
+
+
 void AarpgEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
+	UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
 
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
@@ -68,9 +74,21 @@ void AarpgEnemy::BeginPlay()
 				OnMaxHealthChanged.Broadcast(Data.NewValue);
 			});
 
+		
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this,
+			&AarpgEnemy::HitReactTagChanged
+		);
+
 		OnHealthChanged.Broadcast(ArpgAS->GetHealth());
 		OnMaxHealthChanged.Broadcast(ArpgAS->GetMaxHealth());
 	}
+}
+
+void AarpgEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bHitReacting = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 }
 
 void AarpgEnemy::InitAbilityActorInfo()
@@ -80,4 +98,9 @@ void AarpgEnemy::InitAbilityActorInfo()
 	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	InitializeDefaultAttributes();
+}
+
+void AarpgEnemy::InitializeDefaultAttributes() const
+{
+	UArpgAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }

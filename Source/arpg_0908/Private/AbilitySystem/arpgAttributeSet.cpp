@@ -4,6 +4,7 @@
 #include "AbilitySystem/arpgAttributeSet.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArpgGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "Net/NetworkProfiler.h"
@@ -119,6 +120,14 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
 			const bool bFatal = NewHealth <= 0.f;
+
+			if(!bFatal)
+			{
+				//Activate any abilities with the "effects_hitReact" tag on the target
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);
+				EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 		
 	}
