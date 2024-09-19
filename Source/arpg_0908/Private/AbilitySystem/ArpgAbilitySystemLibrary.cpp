@@ -4,6 +4,7 @@
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 
 #include "AbilitySystemComponent.h"
+#include "ArpgAbilityTypes.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -48,5 +49,42 @@ void UArpgAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
+	}
+}
+
+bool UArpgAbilitySystemLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if(const FArpgGameplayEffectContext* ArpgEffectContext = static_cast<const FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ArpgEffectContext->IsBlockedHit();
+	}
+
+	return false;
+}
+
+bool UArpgAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if(const FArpgGameplayEffectContext* ArpgEffectContext = static_cast<const FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ArpgEffectContext->IsCriticalHit();
+	}
+
+	return false;
+}
+
+void UArpgAbilitySystemLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit)
+{
+	if(FArpgGameplayEffectContext* ArpgEffectContext = static_cast<FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ArpgEffectContext->SetIsBlockedHit(InIsBlockedHit);
+	}
+}
+
+void UArpgAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle,
+	bool InIsCriticalHit)
+{
+	if(FArpgGameplayEffectContext* ArpgEffectContext = static_cast<FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ArpgEffectContext->SetIsCriticalHit(InIsCriticalHit);
 	}
 }

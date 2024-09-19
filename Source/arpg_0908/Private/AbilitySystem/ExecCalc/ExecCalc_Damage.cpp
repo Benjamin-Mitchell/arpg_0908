@@ -4,7 +4,9 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "ArpgAbilityTypes.h"
 #include "ArpgGameplayTags.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "AbilitySystem/arpgAttributeSet.h"
 
 struct ArpgDamageStatics
@@ -70,7 +72,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	//CritDamageMultiplier = FMath::Max<float>(0.f, CritDamageMultiplier); //Crit Damage Multiplier Could be negative and can be greater than 100.0f.
 
 	float CritRand = FMath::RandRange(0.0f, 100.f);
-	if(CritRand < CritChance) 
+	 
+	bool bCrit = CritRand < CritChance;
+
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	UArpgAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCrit);
+	
+	if(bCrit)
 	{
 		float DefaultCritMultiplier = 1.5f;
 		//Its a critical hit
@@ -91,7 +99,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	float rand = FMath::RandRange(0.0f, 100.f);
 
-	if(rand < BlockChance)
+	bool bBlocked = (rand < BlockChance);
+	UArpgAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
+	if(bBlocked)
 	{
 		Damage = Damage / 2.0f;
 	}

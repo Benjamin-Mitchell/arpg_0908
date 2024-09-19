@@ -7,6 +7,7 @@
 #include "ArpgGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/NetworkProfiler.h"
@@ -142,20 +143,23 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 				EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
 
-			ShowFloatingText(EffectProps, LocalIncomingDamage);
+			
+			const bool bBlocked = UArpgAbilitySystemLibrary::IsBlockedHit(EffectProps.EffectContextHandle);
+			const bool bCriticalHit = UArpgAbilitySystemLibrary::IsCriticalHit(EffectProps.EffectContextHandle);
+			ShowFloatingText(EffectProps, LocalIncomingDamage, bBlocked, bCriticalHit);
 		}
 		
 	}
 	
 }
 
-void UarpgAttributeSet::ShowFloatingText(const FEffectProperties& EffectProps, float Damage) const
+void UarpgAttributeSet::ShowFloatingText(const FEffectProperties& EffectProps, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
 	if(EffectProps.SourceCharacter != EffectProps.TargetCharacter)
 	{
 		if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.SourceCharacter->Controller))
 		{
-			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter);
+			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
 				
 	}
