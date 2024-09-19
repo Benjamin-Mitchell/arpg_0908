@@ -8,8 +8,10 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/NetworkProfiler.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/arpgPlayerController.h"
 
 UarpgAttributeSet::UarpgAttributeSet()
 {
@@ -92,6 +94,8 @@ void UarpgAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 }
 
 
+
+
 void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -137,10 +141,24 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 				TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);
 				EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
+
+			ShowFloatingText(EffectProps, LocalIncomingDamage);
 		}
 		
 	}
 	
+}
+
+void UarpgAttributeSet::ShowFloatingText(const FEffectProperties& EffectProps, float Damage) const
+{
+	if(EffectProps.SourceCharacter != EffectProps.TargetCharacter)
+	{
+		if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.SourceCharacter->Controller))
+		{
+			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter);
+		}
+				
+	}
 }
 
 void UarpgAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const

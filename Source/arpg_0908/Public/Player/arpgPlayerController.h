@@ -10,6 +10,7 @@
 //forward declaration to avoid including header files.
 
 
+class UDamageTextComponent;
 struct FGameplayTag;
 class UArpgInputConfig;
 class UInputMappingContext;
@@ -29,6 +30,9 @@ public:
 	AarpgPlayerController();
 
 	virtual void PlayerTick(float DeltaTime) override;
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
 
 protected:
 
@@ -62,4 +66,7 @@ private:
 	TObjectPtr<UarpgAbilitySystemComponent> ArpgAbilitySystemComponent;
 
 	UarpgAbilitySystemComponent* GetASC();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };

@@ -8,8 +8,11 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagContainer.h"
+#include "MovieSceneTracksComponentTypes.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "Input/arpgInputComponent.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 
 AarpgPlayerController::AarpgPlayerController()
@@ -22,6 +25,21 @@ void AarpgPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+}
+
+void AarpgPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+	if(IsValid(TargetCharacter) && DamageTextComponentClass)
+	{
+		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+		DamageText->RegisterComponent();
+
+		//Attach to set location, immediately detach.
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		DamageText->SetDamageText(DamageAmount);
+	}
 }
 
 void AarpgPlayerController::CursorTrace()
