@@ -45,6 +45,12 @@ int32 AarpgEnemy::GetPlayerLevel()
 	return Level;
 }
 
+void AarpgEnemy::Die()
+{
+	SetLifeSpan(LifeSpan);
+	
+	Super::Die();
+}
 
 
 void AarpgEnemy::BeginPlay()

@@ -7,6 +7,7 @@
 #include "ArpgGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
+#include "Interaction/CombatInterface.h"
 #include "Net/NetworkProfiler.h"
 #include "Net/UnrealNetwork.h"
 
@@ -121,7 +122,15 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 			const bool bFatal = NewHealth <= 0.f;
 
-			if(!bFatal)
+			if(bFatal)
+			{
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProps.TargetAvatarActor);
+				if(CombatInterface)
+				{
+					CombatInterface->Die();
+				}
+			}
+			else
 			{
 				//Activate any abilities with the "effects_hitReact" tag on the target
 				FGameplayTagContainer TagContainer;

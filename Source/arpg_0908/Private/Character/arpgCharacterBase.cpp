@@ -33,6 +33,28 @@ UAnimMontage* AarpgCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+void AarpgCharacterBase::Die()
+{
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	MulticastHandleDeath();
+}
+
+void AarpgCharacterBase::MulticastHandleDeath_Implementation()
+{
+	Weapon->SetSimulatePhysics(true);
+	Weapon->SetEnableGravity(true);
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	Dissolve();
+}
+
 void AarpgCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -78,5 +100,24 @@ void AarpgCharacterBase::AddCharacterAbilities()
 	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
 
 	ArpgASC->AddCharacterAbilities(StartupAbilities);
+}
+
+void AarpgCharacterBase::Dissolve()
+{
+	if(IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		GetMesh()->SetMaterial(0, DynamicMatInst);
+
+		StartDissolveTimeline(DynamicMatInst);
+	}
+	
+	if(IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		Weapon->SetMaterial(0, DynamicMatInst);
+
+		StartWeaponDissolveTimeline(DynamicMatInst);
+	}
 }
 
