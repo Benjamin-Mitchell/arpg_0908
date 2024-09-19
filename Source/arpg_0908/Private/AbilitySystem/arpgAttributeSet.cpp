@@ -188,6 +188,11 @@ void UarpgAttributeSet::OnRep_DamageReduction(const FGameplayAttributeData& OldD
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, DamageReduction, OldDamageReduction);
 }
 
+void UarpgAttributeSet::OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, BlockChance, OldBlockChance);
+}
+
 void UarpgAttributeSet::OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, MoveSpeed, OldMoveSpeed);

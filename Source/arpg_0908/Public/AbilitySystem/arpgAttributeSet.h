@@ -85,6 +85,10 @@ public:
 	FGameplayAttributeData DamageReduction;
 	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, DamageReduction);
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category = "Defense Attributes")
+	FGameplayAttributeData BlockChance;
+	ATTRIBUTE_ACCESSORS(UarpgAttributeSet, BlockChance);
+
 	//miscellaneous
 	//Move Speed Multiplier (Percent)
 	//Crit Chance Multiplier (Percent)
@@ -167,6 +171,9 @@ public:
 	
 	UFUNCTION()
 	void OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const;
+	
+	UFUNCTION()
+	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;
 
 	UFUNCTION()
 	void OnRep_MoveSpeed(const FGameplayAttributeData& OldMoveSpeed) const;
