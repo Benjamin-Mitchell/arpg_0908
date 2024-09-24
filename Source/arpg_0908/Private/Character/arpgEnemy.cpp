@@ -59,7 +59,11 @@ void AarpgEnemy::BeginPlay()
 
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
-	UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+
+	if(HasAuthority())
+	{
+		UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
 
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
@@ -103,7 +107,10 @@ void AarpgEnemy::InitAbilityActorInfo()
 
 	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
-	InitializeDefaultAttributes();
+	if(HasAuthority())
+	{
+		InitializeDefaultAttributes();
+	}
 }
 
 void AarpgEnemy::InitializeDefaultAttributes() const

@@ -47,6 +47,7 @@ public:
 	FGameplayTag Damage_Basic;
 	FGameplayTag Damage_Fire;
 
+	//The game supports damage types, althogh resistances are not currently implemented. Can be implemented if required later.
 	TArray<FGameplayTag> DamageTypes;
 
 	FGameplayTag Effects_HitReact;
