@@ -61,7 +61,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.TargetTags = TargetTags;
 
 	//Get Damage Set By Caller Magnitude
-	float Damage = Spec.GetSetByCallerMagnitude(FArpgGameplayTags::Get().Damage);
+	float Damage = 0.f;
+	for(FGameplayTag DamageTypeTag : FArpgGameplayTags::Get().DamageTypes)
+	{
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+		Damage += DamageTypeValue;
+	}
 
 	float CritChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritChanceDef, EvaluationParameters, CritChance);
