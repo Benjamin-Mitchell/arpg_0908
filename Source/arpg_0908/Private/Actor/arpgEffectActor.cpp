@@ -20,6 +20,12 @@ void AarpgEffectActor::BeginPlay()
 
 void AarpgEffectActor::ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectAndPolicies GamePlayEffectClassAndPolicy)
 {
+	for(FName Tag : TargetTagsToIgnore)
+	{
+		if(TargetActor->ActorHasTag(Tag))
+			return;
+	}
+	
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if(TargetASC == nullptr) return;
 
@@ -36,11 +42,22 @@ void AarpgEffectActor::ApplyEffectToTarget(AActor* TargetActor, FGameplayEffectA
 	{
 		ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
 	}
-	
+
+
+	if(bDestroyOnEffectApplication && !bIsInfinite)
+	{
+		Destroy();
+	}
 }
 
 void AarpgEffectActor::OnOverlap(AActor* TargetActor)
 {
+	for(FName Tag : TargetTagsToIgnore)
+	{
+		if(TargetActor->ActorHasTag(Tag))
+			return;
+	}
+	
 	for(FGameplayEffectAndPolicies& InstantEffectAndPolicy : InstantEffectAndPolicies)
 	{
 		if(InstantEffectAndPolicy.EffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
@@ -68,6 +85,11 @@ void AarpgEffectActor::OnOverlap(AActor* TargetActor)
 
 void AarpgEffectActor::OnEndOverlap(AActor* TargetActor)
 {
+	for(FName Tag : TargetTagsToIgnore)
+	{
+		if(TargetActor->ActorHasTag(Tag))
+			return;
+	}
 
 	for(FGameplayEffectAndPolicies& InstantEffectAndPolicy : InstantEffectAndPolicies)
 	{
