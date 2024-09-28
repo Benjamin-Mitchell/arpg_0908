@@ -19,8 +19,8 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		if(const UarpgGameplayAbility* arpgAbility = Cast<UarpgGameplayAbility>(AbilitySpec.Ability))
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(arpgAbility->StartupInputTag);
-			GiveAbility(AbilitySpec);
 		}
+		GiveAbility(AbilitySpec);
 		
 		//GiveAbilityAndActivateOnce(AbilitySpec);
 	}

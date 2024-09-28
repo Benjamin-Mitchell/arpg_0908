@@ -43,5 +43,6 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
 
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"));
+	GameplayTags.Effects_HookPull = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HookPull"));
 	
 }

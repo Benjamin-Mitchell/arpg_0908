@@ -51,6 +51,7 @@ public:
 	TArray<FGameplayTag> DamageTypes;
 
 	FGameplayTag Effects_HitReact;
+	FGameplayTag Effects_HookPull;
 	
 protected:
  

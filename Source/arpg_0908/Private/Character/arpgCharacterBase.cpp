@@ -102,6 +102,12 @@ void AarpgCharacterBase::AddCharacterAbilities()
 	ArpgASC->AddCharacterAbilities(StartupAbilities);
 }
 
+void AarpgCharacterBase::SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget)
+{
+	TraversalTarget = InTarget;
+	bIsTraversing = bInIsTraversing;
+}
+
 void AarpgCharacterBase::Dissolve()
 {
 	if(IsValid(DissolveMaterialInstance))

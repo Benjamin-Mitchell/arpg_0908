@@ -30,6 +30,13 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
+
+	UFUNCTION(BlueprintCallable)
+	FTransform GetTraversalTargetTransform() const {return TraversalTarget;};
+
+	
+	void SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget = FTransform());
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,7 +72,14 @@ protected:
 
 	void AddCharacterAbilities();
 
+	//Hook Target
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateHookPullTarget(const FVector& target);
+	
+	FTransform TraversalTarget;
+	bool bIsTraversing = false; //While Traversing, cannot use normal movement/input.
 
+	
 	//Dissolve Effects
 
 	void Dissolve();

@@ -48,8 +48,8 @@ void AArpgProjectile::Destroyed()
 	if(!bHit && !HasAuthority()) //if client hasn't played the Destroy effects yet because server sent the destroy event first 
 	{
 		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());	
+		if (ImpactSound) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
+		if (ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());	
 	}
 	Super::Destroyed();
 }
@@ -63,8 +63,8 @@ void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if(!bHit)
 	{
 		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());	
+		if (ImpactSound) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
+		if (ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());	
 	}
 
 	if(HasAuthority())
