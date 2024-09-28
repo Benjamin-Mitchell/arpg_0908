@@ -9,6 +9,9 @@
 #include "UI/Widget/arpgUserWidget.h"
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "AI/ArpgAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AarpgEnemy::AarpgEnemy()
@@ -27,6 +30,19 @@ AarpgEnemy::AarpgEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+}
+
+void AarpgEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if(!HasAuthority()) return;
+
+	
+	ArpgAIController = Cast<AArpgAIController>(NewController);
+
+	ArpgAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	ArpgAIController->RunBehaviorTree(BehaviorTree);
 }
 
 void AarpgEnemy::HighlightActor()

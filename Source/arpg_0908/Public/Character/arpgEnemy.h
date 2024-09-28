@@ -11,7 +11,8 @@
 
 class UWidgetComponent;
 class UGameplayAbility;
-
+class UBehaviorTree;
+class AArpgAIController;
 
 /**
  * 
@@ -23,6 +24,8 @@ class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase, public IHighlightInt
 
 public:
 	AarpgEnemy();
+
+	virtual void PossessedBy(AController* NewController) override;
 
 	//Highlight Interface
 	virtual void HighlightActor() override;
@@ -66,5 +69,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
 
-	
+	UPROPERTY(EditAnywhere, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AArpgAIController> ArpgAIController;
 };
