@@ -45,10 +45,13 @@ void AarpgEnemy::PossessedBy(AController* NewController)
 	if(!HasAuthority()) return;
 
 	
-	ArpgAIController = Cast<AArpgAIController>(NewController);
 
+	ArpgAIController = Cast<AArpgAIController>(NewController);
 	ArpgAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	ArpgAIController->RunBehaviorTree(BehaviorTree);
+	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+
+	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
 void AarpgEnemy::HighlightActor()
@@ -120,7 +123,10 @@ void AarpgEnemy::BeginPlay()
 void AarpgEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bHitReacting = NewCount > 0;
+\w
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
+	
+	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
 }
 
 void AarpgEnemy::InitAbilityActorInfo()
