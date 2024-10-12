@@ -77,6 +77,16 @@ void AarpgEnemy::Die()
 	Super::Die();
 }
 
+void AarpgEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AarpgEnemy::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 
 void AarpgEnemy::BeginPlay()
 {
@@ -87,7 +97,7 @@ void AarpgEnemy::BeginPlay()
 
 	if(HasAuthority())
 	{
-		UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
 	}
 
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -123,7 +133,6 @@ void AarpgEnemy::BeginPlay()
 void AarpgEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bHitReacting = NewCount > 0;
-\w
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
 	
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);

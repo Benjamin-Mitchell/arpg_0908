@@ -7,6 +7,7 @@
 #include "Interaction/HighlightInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "Interaction/EnemyInterface.h"
 #include "arpgEnemy.generated.h"
 
 class UWidgetComponent;
@@ -18,7 +19,7 @@ class AArpgAIController;
  * 
  */
 UCLASS()
-class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase, public IHighlightInterface
+class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase, public IHighlightInterface, public IEnemyInterface
 {
 	GENERATED_BODY()
 
@@ -35,6 +36,9 @@ public:
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
 	virtual void Die() override;
+
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
@@ -53,6 +57,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	float LifeSpan = 5.f;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> CombatTarget;	
 
 protected:
 	virtual void BeginPlay() override;

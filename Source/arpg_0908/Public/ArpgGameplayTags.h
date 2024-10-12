@@ -49,6 +49,8 @@ public:
 
 	//The game supports damage types, althogh resistances are not currently implemented. Can be implemented if required later.
 	TArray<FGameplayTag> DamageTypes;
+	
+	FGameplayTag Abilities_Attack;
 
 	FGameplayTag Effects_HitReact;
 	FGameplayTag Effects_HookPull;
