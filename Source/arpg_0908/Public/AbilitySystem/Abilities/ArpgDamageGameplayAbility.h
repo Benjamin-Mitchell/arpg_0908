@@ -16,6 +16,8 @@ class ARPG_0908_API UArpgDamageGameplayAbility : public UarpgGameplayAbility
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+	void CauseDamage(AActor* TargetActor);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

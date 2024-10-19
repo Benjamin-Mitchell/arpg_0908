@@ -160,6 +160,12 @@ void UarpgAttributeSet::ShowFloatingText(const FEffectProperties& EffectProps, f
 		if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.SourceCharacter->Controller))
 		{
 			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
+			return;
+		}
+		
+		if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.TargetCharacter->Controller))
+		{
+			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
 				
 	}

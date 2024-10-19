@@ -28,6 +28,11 @@ UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+AActor* AarpgCharacterBase::GetAvatar_Implementation()
+{
+	return this;
+}
+
 UAnimMontage* AarpgCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
@@ -53,6 +58,7 @@ void AarpgCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
+	bDead = true;
 }
 
 void AarpgCharacterBase::BeginPlay()
@@ -65,6 +71,11 @@ FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+bool AarpgCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
 }
 
 void AarpgCharacterBase::InitAbilityActorInfo()
