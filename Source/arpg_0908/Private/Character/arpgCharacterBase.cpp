@@ -3,6 +3,7 @@
 
 #include "Character/arpgCharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "ArpgGameplayTags.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "arpg_0908/arpg_0908.h"
 #include "Components/CapsuleComponent.h"
@@ -44,6 +45,11 @@ void AarpgCharacterBase::Die()
 	MulticastHandleDeath();
 }
 
+TArray<FTaggedMontage> AarpgCharacterBase::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
+}
+
 void AarpgCharacterBase::MulticastHandleDeath_Implementation()
 {
 	Weapon->SetSimulatePhysics(true);
@@ -67,10 +73,23 @@ void AarpgCharacterBase::BeginPlay()
 	
 }
 
-FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation()
+FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
-	check(Weapon);
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon) && IsValid(Weapon))
+	{
+		return Weapon->GetSocketLocation(WeaponTipSocketName);
+	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
+	{
+		return GetMesh()->GetSocketLocation(LeftHandSocketName);
+	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
+	{
+		return GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+
+	return FVector();
 }
 
 bool AarpgCharacterBase::IsDead_Implementation() const
