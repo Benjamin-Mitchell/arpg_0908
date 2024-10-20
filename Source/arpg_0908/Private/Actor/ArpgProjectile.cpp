@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "arpg_0908/arpg_0908.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
@@ -60,6 +61,10 @@ void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if(!DamageEffectSpecHandle.Data.IsValid() || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
 		return;
 
+	//Don't damage friends
+	if(!UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
+		return;
+	
 	if(!bHit)
 	{
 		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
