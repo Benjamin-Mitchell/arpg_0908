@@ -73,6 +73,9 @@ int32 AarpgEnemy::GetPlayerLevel()
 void AarpgEnemy::Die()
 {
 	SetLifeSpan(LifeSpan);
+
+	if(ArpgAIController)
+		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	
 	Super::Die();
 }
