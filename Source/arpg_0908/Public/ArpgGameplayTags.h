@@ -53,6 +53,11 @@ public:
 	
 	FGameplayTag Abilities_Attack;
 
+	
+	FGameplayTag Abilities_Firebolt;
+	FGameplayTag Abilities_Hook;
+	FGameplayTag Abilities_HatProjectileTemp;
+
 	FGameplayTag Montage_Attack_Weapon;
 	FGameplayTag Montage_Attack_RightHand;
 	FGameplayTag Montage_Attack_LeftHand;

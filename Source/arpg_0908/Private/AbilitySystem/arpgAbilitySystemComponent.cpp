@@ -10,9 +10,9 @@ void UarpgAbilitySystemComponent::AbilityActorInfoSet()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UarpgAbilitySystemComponent::ClientEffectApplied);
 }
 
-void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> StartupAbilities)
+void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities)
 {
-	for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
+	for (const TSubclassOf<UGameplayAbility> AbilityClass : Abilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		
@@ -20,8 +20,29 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(arpgAbility->StartupInputTag);
 		}
+
+		FGameplayAbilitySpecHandle Handle = AbilitySpec.Handle;
 		GiveAbility(AbilitySpec);
+
+		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
 		
+		OwnedAbilities.Add(FirstTag, Handle);
+		
+		//GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+}
+
+void UarpgAbilitySystemComponent::RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities)
+{
+	for (const TSubclassOf<UGameplayAbility> AbilityClass : Abilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+
+		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
+		FGameplayAbilitySpecHandle Handle = OwnedAbilities.FindChecked(FirstTag);
+		ClearAbility(Handle);
+
+		OwnedAbilities.Remove(FirstTag);
 		//GiveAbilityAndActivateOnce(AbilitySpec);
 	}
 }

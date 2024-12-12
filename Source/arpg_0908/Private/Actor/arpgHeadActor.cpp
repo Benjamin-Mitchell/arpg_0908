@@ -19,7 +19,9 @@ AarpgHeadActor::AarpgHeadActor()
 	ActorHeadMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	ActorHeadMesh->SetRenderCustomDepth(true);
 	ActorHeadMesh->SetCustomDepthStencilValue(0);
-	
+
+	//Potentially required for enabling interact visual cues.... but what cues?
+	bIsInteractable = true;
 }
 
 void AarpgHeadActor::HighlightActor()
@@ -43,6 +45,6 @@ void AarpgHeadActor::Interact(AarpgPlayerController* InteractingPlayer)
 	//ArpgCharacter has the SetMesh function, and also the methods for adding abilities.
 	AarpgCharacter* PlayerCharacter = Cast<AarpgCharacter>(InteractingPlayer->GetCharacter());
 
-	PlayerCharacter->SetHeadMesh(HeadMeshRef);
+	PlayerCharacter->SetHead(HeadMeshRef, GrantedAbilities);
 }
 

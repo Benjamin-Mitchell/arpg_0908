@@ -123,13 +123,22 @@ void AarpgCharacterBase::InitializeDefaultAttributes() const
 	
 }
 
-void AarpgCharacterBase::AddCharacterAbilities()
+void AarpgCharacterBase::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities)
 {
 	if(!HasAuthority()) return;
 
 	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
 
-	ArpgASC->AddCharacterAbilities(StartupAbilities);
+	ArpgASC->AddCharacterAbilities(Abilities);
+}
+
+void AarpgCharacterBase::RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities)
+{
+	if(!HasAuthority()) return;
+
+	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
+
+	ArpgASC->RemoveCharacterAbilities(Abilities);
 }
 
 void AarpgCharacterBase::SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget)

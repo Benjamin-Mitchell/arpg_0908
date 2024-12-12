@@ -20,7 +20,8 @@ public:
 
 	FEffectAssetTags EffectAssetTags;
 
-	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> StartupAbilities);
+	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities);
+	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities);
 
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
@@ -28,5 +29,8 @@ protected:
 
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
-	
+
+private:
+
+	TMap<FGameplayTag,  FGameplayAbilitySpecHandle> OwnedAbilities;
 };

@@ -45,6 +45,9 @@ public:
 	
 	void SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget = FTransform());
 	
+	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
+	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -84,8 +87,6 @@ protected:
 	
 	virtual void InitializeDefaultAttributes() const;
 
-	void AddCharacterAbilities();
-
 	//Hook Target
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateHookPullTarget(const FVector& target);
@@ -93,7 +94,6 @@ protected:
 	FTransform TraversalTarget;
 	bool bIsTraversing = false; //While Traversing, cannot use normal movement/input.
 
-	
 	//Dissolve Effects
 
 	void Dissolve();
@@ -109,12 +109,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
-
-private:
-
 	
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;

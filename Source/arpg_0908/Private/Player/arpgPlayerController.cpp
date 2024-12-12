@@ -171,7 +171,6 @@ void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AarpgPlayerController::Interact(const struct FInputActionValue& InputActionValue)
 {
-
 	if(ThisActorHighlighted != nullptr)
 	{
 		ThisActorHighlighted->Interact(this);

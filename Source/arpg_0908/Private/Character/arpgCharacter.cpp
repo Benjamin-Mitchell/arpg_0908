@@ -33,7 +33,7 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 	//Init ability actor info for the server
 	InitAbilityActorInfo();
 
-	AddCharacterAbilities();
+	AddCharacterAbilities(StartupAbilities);
 }
 
 void AarpgCharacter::OnRep_PlayerState()
@@ -50,14 +50,15 @@ int32 AarpgCharacter::GetPlayerLevel()
 	return arpgPlayerState->GetPlayerLevel();
 }
 
-void AarpgCharacter::SetHeadMesh(USkeletalMesh* NewHeadMesh)
+void AarpgCharacter::SetHead(USkeletalMesh* NewHeadMesh, const TArray<TSubclassOf<UGameplayAbility>> &GrantedAbilities)
 {
-	if(BaseHeadMesh != nullptr)
+	if(CurrentHeadAbilities.Num() > 0)
 	{
-		//Remove old head here
-
+		RemoveCharacterAbilities(CurrentHeadAbilities);
 	}
-
+	AddCharacterAbilities(GrantedAbilities);
+	CurrentHeadAbilities = GrantedAbilities;
+	
 	BaseHeadMesh->SetSkeletalMesh(NewHeadMesh);
 	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
 }

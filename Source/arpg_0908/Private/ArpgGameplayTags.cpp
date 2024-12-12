@@ -45,6 +45,11 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"));
 
+	
+	GameplayTags.Abilities_Firebolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Firebolt"));
+	GameplayTags.Abilities_Hook = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Hook"));
+	GameplayTags.Abilities_HatProjectileTemp = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HatProjectileTemp"));
+
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"));
 	GameplayTags.Effects_HookPull = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HookPull"));
 

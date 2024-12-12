@@ -24,7 +24,7 @@ public:
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
 
-	void SetHeadMesh(USkeletalMesh* NewHeadMesh);
+	void SetHead(USkeletalMesh* NewHeadMesh, const TArray<TSubclassOf<UGameplayAbility>> &GrantedAbilities);
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
@@ -33,4 +33,6 @@ protected:
 	
 private:
 	virtual void InitAbilityActorInfo() override;
+
+	TArray<TSubclassOf<UGameplayAbility>> CurrentHeadAbilities;
 };

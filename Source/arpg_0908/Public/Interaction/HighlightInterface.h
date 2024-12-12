@@ -26,4 +26,6 @@ public:
 	virtual void HighlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
 	virtual void Interact(AarpgPlayerController* InteractingPlayer) = 0;
+
+	bool bIsInteractable = false;
 };

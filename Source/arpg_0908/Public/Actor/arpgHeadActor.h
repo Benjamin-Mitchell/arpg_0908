@@ -7,6 +7,7 @@
 #include "Interaction/HighlightInterface.h"
 #include "arpgHeadActor.generated.h"
 
+class UGameplayAbility;
 class AarpgCharacter;
 
 UCLASS()
@@ -34,4 +35,7 @@ protected:
 	//The actual static mesh of the actor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anything")
 	TObjectPtr<UStaticMeshComponent> ActorHeadMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 };
