@@ -65,6 +65,10 @@ void AarpgEnemy::UnHighlightActor()
 	Weapon->SetCustomDepthStencilValue(0);
 }
 
+void AarpgEnemy::Interact(AarpgPlayerController* InteractingPlayer)
+{
+}
+
 int32 AarpgEnemy::GetPlayerLevel()
 {
 	return Level;

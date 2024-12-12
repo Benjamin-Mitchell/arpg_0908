@@ -83,7 +83,6 @@ void AarpgPlayerController::CursorTrace()
 
 void AarpgPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	
 }
 
 void AarpgPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -145,6 +144,9 @@ void AarpgPlayerController::SetupInputComponent()
 	//Execute the Move Function whenever a Moove button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Move);
 
+	//Execute the Interact Function if the interact button is pressed in the Input Action.
+	ArpgInputComponent->BindAction(interactAction, ETriggerEvent::Started, this, &AarpgPlayerController::Interact);
+
 	ArpgInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
@@ -164,5 +166,14 @@ void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y, false);
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X, false);
+	}
+}
+
+void AarpgPlayerController::Interact(const struct FInputActionValue& InputActionValue)
+{
+
+	if(ThisActorHighlighted != nullptr)
+	{
+		ThisActorHighlighted->Interact(this);
 	}
 }

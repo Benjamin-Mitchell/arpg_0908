@@ -46,7 +46,11 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> moveAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> interactAction;
+
 	void Move(const struct FInputActionValue& InputActionValue);
+	void Interact(const struct FInputActionValue& InputActionValue);
 
 	void CursorTrace();
 	

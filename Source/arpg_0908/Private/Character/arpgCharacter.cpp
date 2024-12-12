@@ -20,6 +20,10 @@ AarpgCharacter::AarpgCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+	
+	BaseHeadMesh = CreateDefaultSubobject<USkeletalMeshComponent>("HeadMesh");
+	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
+	BaseHeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AarpgCharacter::PossessedBy(AController* NewController)
@@ -44,6 +48,18 @@ int32 AarpgCharacter::GetPlayerLevel()
 {
 	const AarpgPlayerState* arpgPlayerState = GetPlayerState<AarpgPlayerState>();
 	return arpgPlayerState->GetPlayerLevel();
+}
+
+void AarpgCharacter::SetHeadMesh(USkeletalMesh* NewHeadMesh)
+{
+	if(BaseHeadMesh != nullptr)
+	{
+		//Remove old head here
+
+	}
+
+	BaseHeadMesh->SetSkeletalMesh(NewHeadMesh);
+	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
 }
 
 void AarpgCharacter::InitAbilityActorInfo()

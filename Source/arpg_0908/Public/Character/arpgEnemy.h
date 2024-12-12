@@ -31,6 +31,7 @@ public:
 	//Highlight Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	virtual void Interact(AarpgPlayerController* InteractingPlayer) override;
 
 
 	//Combat Interface

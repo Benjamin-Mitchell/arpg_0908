@@ -23,6 +23,13 @@ public:
 
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
+
+	void SetHeadMesh(USkeletalMesh* NewHeadMesh);
+	
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<USkeletalMeshComponent> BaseHeadMesh;
+
 	
 private:
 	virtual void InitAbilityActorInfo() override;

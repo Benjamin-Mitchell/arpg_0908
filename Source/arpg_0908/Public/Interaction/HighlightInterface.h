@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "HighlightInterface.generated.h"
 
+class AarpgPlayerController;
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UHighlightInterface : public UInterface
@@ -16,7 +17,7 @@ class UHighlightInterface : public UInterface
 /**
  * 
  */
-class ARPG_0908_API IHighlightInterface
+class ARPG_0908_API IHighlightInterface //TODO: rename this to InteractInterface?
 {
 	GENERATED_BODY()
 
@@ -24,4 +25,5 @@ class ARPG_0908_API IHighlightInterface
 public:
 	virtual void HighlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
+	virtual void Interact(AarpgPlayerController* InteractingPlayer) = 0;
 };
