@@ -42,7 +42,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FTransform GetTraversalTargetTransform() const {return TraversalTarget;};
 
-	
+	UFUNCTION(BlueprintCallable)
 	void SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget = FTransform());
 	
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
@@ -89,7 +89,7 @@ protected:
 
 	//Hook Target
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void UpdateHookPullTarget(const FVector& target);
+	void UpdateTraverseTarget(const FVector& target);
 	
 	FTransform TraversalTarget;
 	bool bIsTraversing = false; //While Traversing, cannot use normal movement/input.

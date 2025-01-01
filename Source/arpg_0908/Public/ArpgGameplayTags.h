@@ -43,6 +43,7 @@ public:
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
 	FGameplayTag InputTag_Interact;
+	FGameplayTag InputTag_Dodge;
 
 	FGameplayTag Damage;
 	FGameplayTag Damage_Basic;
@@ -57,6 +58,7 @@ public:
 	FGameplayTag Abilities_Firebolt;
 	FGameplayTag Abilities_Hook;
 	FGameplayTag Abilities_HatProjectileTemp;
+	FGameplayTag Abilities_DodgeRoll;
 
 	FGameplayTag Montage_Attack_Weapon;
 	FGameplayTag Montage_Attack_RightHand;
@@ -64,6 +66,7 @@ public:
 
 	FGameplayTag Effects_HitReact;
 	FGameplayTag Effects_HookPull;
+	FGameplayTag Effects_DodgeRoll;
 	
 protected:
  

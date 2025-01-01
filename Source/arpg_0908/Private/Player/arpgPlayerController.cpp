@@ -147,6 +147,8 @@ void AarpgPlayerController::SetupInputComponent()
 	//Execute the Interact Function if the interact button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(interactAction, ETriggerEvent::Started, this, &AarpgPlayerController::Interact);
 
+
+	//Bind all other functionsm to their respective abilities, no need for custom functionality here.
 	ArpgInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
