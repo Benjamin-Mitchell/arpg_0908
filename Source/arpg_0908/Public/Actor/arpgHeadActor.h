@@ -28,6 +28,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMesh> HeadMeshRef;
 
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 protected:
 
 	bool bCollectable = false;
@@ -36,6 +38,4 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anything")
 	TObjectPtr<UStaticMeshComponent> ActorHeadMesh;
 
-	UPROPERTY(EditAnywhere, Category = "Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 };

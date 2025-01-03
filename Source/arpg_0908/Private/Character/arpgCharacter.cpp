@@ -5,6 +5,7 @@
 #include "Player/arpgPlayerState.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "Actor/HeadData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/arpgPlayerController.h"
 #include "UI/HUD/arpgHUD.h"
@@ -50,16 +51,31 @@ int32 AarpgCharacter::GetPlayerLevel()
 	return arpgPlayerState->GetPlayerLevel();
 }
 
-void AarpgCharacter::SetHead(USkeletalMesh* NewHeadMesh, const TArray<TSubclassOf<UGameplayAbility>> &GrantedAbilities)
+void AarpgCharacter::SetHead(AarpgHeadActor* HeadActor)
 {
+	ServerSetHead(HeadDatabase->GetHeadIndex(HeadActor));
+}
+
+void AarpgCharacter::ServerSetHead_Implementation(int HeadIndex)
+{
+	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
+	AarpgHeadActor* HeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();
 	if(CurrentHeadAbilities.Num() > 0)
 	{
 		RemoveCharacterAbilities(CurrentHeadAbilities);
 	}
-	AddCharacterAbilities(GrantedAbilities);
-	CurrentHeadAbilities = GrantedAbilities;
+	AddCharacterAbilities(HeadActorRef->GrantedAbilities);
+	CurrentHeadAbilities = HeadActorRef->GrantedAbilities;
+
+	MulticastSetHeadMesh(HeadIndex);
+}
+
+void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
+{
+	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
+	AarpgHeadActor* HeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();
 	
-	BaseHeadMesh->SetSkeletalMesh(NewHeadMesh);
+	BaseHeadMesh->SetSkeletalMesh(HeadActorRef->HeadMeshRef);
 	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
 }
 

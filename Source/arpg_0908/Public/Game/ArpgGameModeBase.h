@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "ArpgGameModeBase.generated.h"
 
+class UHeadData;
 class UCharacterClassInfo;
 /**
  * 
@@ -18,4 +19,9 @@ class ARPG_0908_API AArpgGameModeBase : public AGameModeBase
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
+
+	//Currently storing this on the character to keep it simple for repeated access.
+	//If more things need access, move it here in the future.
+	// UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
+	// TObjectPtr<UHeadData> HeadDatabase;	
 };

@@ -6,6 +6,8 @@
 #include "Character/arpgCharacterBase.h"
 #include "arpgCharacter.generated.h"
 
+class AarpgHeadActor;
+class UHeadData;
 /**
  * 
  */
@@ -24,15 +26,22 @@ public:
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
 
-	void SetHead(USkeletalMesh* NewHeadMesh, const TArray<TSubclassOf<UGameplayAbility>> &GrantedAbilities);
+	void SetHead(AarpgHeadActor* HeadActor);
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> BaseHeadMesh;
 
+	UFUNCTION(Server, Reliable)
+	virtual void ServerSetHead(int HeadIndex);
 	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastSetHeadMesh(int headIndex);
 private:
 	virtual void InitAbilityActorInfo() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
+	TObjectPtr<UHeadData> HeadDatabase;	
 
 	TArray<TSubclassOf<UGameplayAbility>> CurrentHeadAbilities;
 };

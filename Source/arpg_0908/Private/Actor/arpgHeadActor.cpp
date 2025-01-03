@@ -45,6 +45,6 @@ void AarpgHeadActor::Interact(AarpgPlayerController* InteractingPlayer)
 	//ArpgCharacter has the SetMesh function, and also the methods for adding abilities.
 	AarpgCharacter* PlayerCharacter = Cast<AarpgCharacter>(InteractingPlayer->GetCharacter());
 
-	PlayerCharacter->SetHead(HeadMeshRef, GrantedAbilities);
+	PlayerCharacter->SetHead(this);
 }
 
