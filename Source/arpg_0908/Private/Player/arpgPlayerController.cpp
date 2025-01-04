@@ -148,7 +148,7 @@ void AarpgPlayerController::SetupInputComponent()
 	ArpgInputComponent->BindAction(interactAction, ETriggerEvent::Started, this, &AarpgPlayerController::Interact);
 
 
-	//Bind all other functionsm to their respective abilities, no need for custom functionality here.
+	//Bind all other functions to their respective abilities, no need for custom functionality here.
 	ArpgInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
@@ -175,6 +175,15 @@ void AarpgPlayerController::Interact(const struct FInputActionValue& InputAction
 {
 	if(ThisActorHighlighted != nullptr)
 	{
-		ThisActorHighlighted->Interact(this);
+		AActor* Passable = Cast<AActor>(ThisActorHighlighted);
+		ServerInteract(Passable);
 	}
 }
+
+void AarpgPlayerController::ServerInteract_Implementation(AActor* Interacted)
+{
+	IHighlightInterface* InteractInterface = Cast<IHighlightInterface>(Interacted);
+	InteractInterface->Interact(this);
+	
+}
+

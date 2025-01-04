@@ -51,23 +51,42 @@ int32 AarpgCharacter::GetPlayerLevel()
 	return arpgPlayerState->GetPlayerLevel();
 }
 
-void AarpgCharacter::SetHead(AarpgHeadActor* HeadActor)
+//This should only be called on the server!
+void AarpgCharacter::SetHead(AarpgHeadActor* NewHeadActor)
 {
-	ServerSetHead(HeadDatabase->GetHeadIndex(HeadActor));
-}
+	int HeadIndex = HeadDatabase->GetHeadIndex(NewHeadActor);
+	FVector HeadWorldLocation = NewHeadActor->GetActorLocation();
 
-void AarpgCharacter::ServerSetHead_Implementation(int HeadIndex)
-{
 	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
-	AarpgHeadActor* HeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();
-	if(CurrentHeadAbilities.Num() > 0)
+	AarpgHeadActor* NewHeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();	
+
+	if (CurrentHeadActorClass != nullptr)
 	{
-		RemoveCharacterAbilities(CurrentHeadAbilities);
+		//Remove old head abilities, if any
+		AarpgHeadActor* OldHeadActorRef = CurrentHeadActorClass->GetDefaultObject<AarpgHeadActor>();
+		RemoveCharacterAbilities(OldHeadActorRef->GrantedAbilities);
+		
+		//Now we replace the old one with the new one, before it is deleted.
+		FRotator Rotation = (GetActorLocation() - HeadWorldLocation).Rotation();
+		Rotation.Pitch = 0.f;
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+		AarpgHeadActor* NewHead = GetWorld()->SpawnActor<AarpgHeadActor>(
+				CurrentHeadActorClass,
+				HeadWorldLocation,
+				Rotation,
+				SpawnParams);
 	}
-	AddCharacterAbilities(HeadActorRef->GrantedAbilities);
-	CurrentHeadAbilities = HeadActorRef->GrantedAbilities;
+
+	AddCharacterAbilities(NewHeadActorRef->GrantedAbilities);
 
 	MulticastSetHeadMesh(HeadIndex);
+	
+	CurrentHeadActorClass = HeadData.HeadReference;
 }
 
 void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)

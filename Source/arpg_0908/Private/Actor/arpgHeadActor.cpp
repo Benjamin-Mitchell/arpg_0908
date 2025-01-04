@@ -11,10 +11,11 @@ AarpgHeadActor::AarpgHeadActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
+	bNetLoadOnClient = true;
+
 
 	ActorHeadMesh = CreateDefaultSubobject<UStaticMeshComponent>("ActorHeadMesh");
-	
-	//ActorHeadMesh = FindComponentByClass<UMeshComponent>();
 
 	ActorHeadMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	ActorHeadMesh->SetRenderCustomDepth(true);
@@ -40,11 +41,14 @@ void AarpgHeadActor::UnHighlightActor()
 
 void AarpgHeadActor::Interact(AarpgPlayerController* InteractingPlayer)
 {
-	//Now we finally need access to an ArpgCharacter (PlayerController doesn't have a reference to this, so we can't solve that.)
-
+	//This should only be called on the server!
+	check(HasAuthority());
+	
 	//ArpgCharacter has the SetMesh function, and also the methods for adding abilities.
 	AarpgCharacter* PlayerCharacter = Cast<AarpgCharacter>(InteractingPlayer->GetCharacter());
 
 	PlayerCharacter->SetHead(this);
+
+	Destroy();
 }
 

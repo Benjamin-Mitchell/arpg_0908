@@ -4,19 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Interaction/HighlightInterface.h"
 #include "arpgPlayerController.generated.h"
 
 
 //forward declaration to avoid including header files.
 
 
+class AarpgHeadActor;
 class UDamageTextComponent;
 struct FGameplayTag;
 class UArpgInputConfig;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IHighlightInterface;
+//class IHighlightInterface;
 class UarpgAbilitySystemComponent;
 /**
  * 
@@ -51,6 +53,10 @@ private:
 
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Interact(const struct FInputActionValue& InputActionValue);
+
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* Interacted);
+	
 
 	void CursorTrace();
 	

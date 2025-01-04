@@ -32,8 +32,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> BaseHeadMesh;
 
-	UFUNCTION(Server, Reliable)
-	virtual void ServerSetHead(int HeadIndex);
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastSetHeadMesh(int headIndex);
@@ -43,5 +41,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UHeadData> HeadDatabase;	
 
-	TArray<TSubclassOf<UGameplayAbility>> CurrentHeadAbilities;
+	TSubclassOf<AarpgHeadActor> CurrentHeadActorClass;
 };
