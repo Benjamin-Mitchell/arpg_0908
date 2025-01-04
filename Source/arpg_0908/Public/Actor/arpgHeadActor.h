@@ -34,8 +34,8 @@ protected:
 
 	bool bCollectable = false;
 	
-	//The actual static mesh of the actor
+	//The actual mesh of the actor
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Anything")
-	TObjectPtr<UStaticMeshComponent> ActorHeadMesh;
+	TObjectPtr<USkeletalMeshComponent> ActorHeadSkeletalMesh;
 
 };

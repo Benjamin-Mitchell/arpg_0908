@@ -14,12 +14,13 @@ AarpgHeadActor::AarpgHeadActor()
 	bReplicates = true;
 	bNetLoadOnClient = true;
 
+	ActorHeadSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("ActorHeadSkeletalMesh");
 
-	ActorHeadMesh = CreateDefaultSubobject<UStaticMeshComponent>("ActorHeadMesh");
-
-	ActorHeadMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-	ActorHeadMesh->SetRenderCustomDepth(true);
-	ActorHeadMesh->SetCustomDepthStencilValue(0);
+	ActorHeadSkeletalMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ActorHeadSkeletalMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	ActorHeadSkeletalMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	ActorHeadSkeletalMesh->SetRenderCustomDepth(true);
+	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(0);
 
 	//Potentially required for enabling interact visual cues.... but what cues?
 	bIsInteractable = true;
@@ -28,15 +29,15 @@ AarpgHeadActor::AarpgHeadActor()
 void AarpgHeadActor::HighlightActor()
 {
 	//Once collectable, we can show a UI for an input to press to activate
-	bCollectable = true;	
-
+	bCollectable = true;
 	
-	ActorHeadMesh->SetCustomDepthStencilValue(250);
+	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(250);
 }
 void AarpgHeadActor::UnHighlightActor()
 {
 	bCollectable = false;
-	ActorHeadMesh->SetCustomDepthStencilValue(0);
+	
+	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(0);
 }
 
 void AarpgHeadActor::Interact(AarpgPlayerController* InteractingPlayer)
