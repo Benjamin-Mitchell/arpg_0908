@@ -64,6 +64,13 @@ public:
 	FGameplayTag Montage_Attack_RightHand;
 	FGameplayTag Montage_Attack_LeftHand;
 
+	//Line-Trace Tags
+	FGameplayTag Montage_Attack_DamageTraceBegin;
+	FGameplayTag Montage_Attack_DamageTraceEnd;
+
+	//Specials that need more attention
+	FGameplayTag Montage_Attack_CustomOrDebug;
+
 	FGameplayTag Effects_HitReact;
 	FGameplayTag Effects_HookPull;
 	FGameplayTag Effects_DodgeRoll;

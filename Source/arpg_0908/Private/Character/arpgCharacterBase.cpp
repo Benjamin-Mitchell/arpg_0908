@@ -73,7 +73,7 @@ void AarpgCharacterBase::BeginPlay()
 	
 }
 
-FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
+FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag MontageTag)
 {
 	const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
 	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon) && IsValid(Weapon))
@@ -87,6 +87,23 @@ FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
 	{
 		return GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_DamageTraceBegin))
+	{
+		return GetMesh()->GetSocketLocation(TraceBeginSocketName);
+	}
+
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_DamageTraceEnd))
+	{
+		return GetMesh()->GetSocketLocation(TraceEndSocketName);
+	}
+
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_CustomOrDebug))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("got the correct tag"));
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Health NewValue: %s"), *CustomOrDebugSocketName.ToString()));
+		return GetMesh()->GetSocketLocation(CustomOrDebugSocketName);
 	}
 
 	return FVector();

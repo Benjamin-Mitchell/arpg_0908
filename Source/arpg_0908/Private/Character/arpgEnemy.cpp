@@ -104,7 +104,15 @@ void AarpgEnemy::BeginPlay()
 
 	if(HasAuthority())
 	{
-		UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
+		//To be honest, probably remove this whole character class system nonsense later, its just used for the course mobs.
+		if (CharacterClass != ECharacterClass::NONE)
+		{
+			UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
+		}
+		else
+		{
+			UArpgAbilitySystemLibrary::GiveEnemyAbilities(this, AbilitySystemComponent, StartupAbilities,  EnemyUtilityAbilities);
+		}
 	}
 
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -160,5 +168,15 @@ void AarpgEnemy::InitAbilityActorInfo()
 
 void AarpgEnemy::InitializeDefaultAttributes() const
 {
-	UArpgAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+	//To be honest, probably remove this whole character class system nonsense later, its just used for the course mobs.
+	if (CharacterClass != ECharacterClass::NONE)
+	{
+		UArpgAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
+	}
+	else
+	{
+		//Just initialize them with a specific list per enemy, this makes more sense anyway.
+		Super::InitializeDefaultAttributes();
+	}
+	
 }

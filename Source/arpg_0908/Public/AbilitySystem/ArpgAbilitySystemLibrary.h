@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="ArpgAbilitySystemLibrary|Defaults")
 	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass);
 
+	UFUNCTION(BlueprintCallable, Category="ArpgAbilitySystemLibrary|Defaults")
+	static void GiveEnemyAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, TArray<TSubclassOf<UGameplayAbility>> StartupAbilities, TArray<TSubclassOf<UGameplayAbility>> UtilityAbilities);
+
 	UFUNCTION(BlueprintPure, Category="ArpgAbilitySystemLibrary|GameplayEffects")
 	static bool IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle);
 

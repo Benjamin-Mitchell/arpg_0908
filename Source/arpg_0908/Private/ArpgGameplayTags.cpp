@@ -60,6 +60,9 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.Weapon"));
 	GameplayTags.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.RightHand"));
 	GameplayTags.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.LeftHand"));
+	GameplayTags.Montage_Attack_DamageTraceBegin = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.DamageTraceBegin"));
+	GameplayTags.Montage_Attack_DamageTraceEnd = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.DamageTraceEnd"));
+	GameplayTags.Montage_Attack_CustomOrDebug = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.CustomOrDebug"));
 	
 	
 }

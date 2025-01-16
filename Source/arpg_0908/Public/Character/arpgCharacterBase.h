@@ -26,7 +26,7 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
 	//Combat Interface overrides
-	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag MontageTag) override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
@@ -64,6 +64,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName RightHandSocketName;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName CustomOrDebugSocketName;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName TraceBeginSocketName;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName TraceEndSocketName;
+	
 	bool bDead = false;
 
 	UPROPERTY()
