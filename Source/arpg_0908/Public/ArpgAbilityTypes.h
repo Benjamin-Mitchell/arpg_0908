@@ -3,6 +3,10 @@
 #include "GameplayEffectTypes.h"
 #include "ArpgAbilityTypes.generated.h"
 
+class UGameplayEffect;
+
+
+
 USTRUCT(BlueprintType)
 struct FArpgGameplayEffectContext : public FGameplayEffectContext
 {

@@ -3,8 +3,11 @@
 
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "ArpgAbilityTypes.h"
+#include "ArpgGameplayTags.h"
+#include "AbilitySystem/Abilities/ArpgDamageGameplayAbility.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -157,4 +160,34 @@ bool UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(AActor* FirstActor, AActor
 	const bool BothAreEnemies = FirstActor->ActorHasTag(FName("Enemy")) && SecondActor->ActorHasTag(FName("Enemy"));
 	const bool Friends= BothArePlayers || BothAreEnemies;
 	return !Friends;
+}
+
+FGameplayEffectContextHandle UArpgAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
+{
+	const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
+	const AActor* SourceAvatarActor = Params.SourceAbilitySystemComponent->GetAvatarActor();
+	
+	FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(SourceAvatarActor);
+	const FGameplayEffectSpecHandle BaseDamageSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageGameplayEffectClass, Params.AbilityLevel, EffectContextHandle);
+
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(BaseDamageSpecHandle, GameplayTags.Damage, Params.BaseDamage);
+	Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*BaseDamageSpecHandle.Data);
+
+
+	//We are applying possibly many gameplay effects in one, is this a problem?
+	for (TTuple<FGameplayTag, FDebuffInfo> Pair : Params.DebuffTags)
+	{
+		//Should this have a difference EffectClass?
+		const FGameplayEffectSpecHandle DebuffSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageGameplayEffectClass, Params.AbilityLevel, EffectContextHandle);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DebuffSpecHandle, GameplayTags.Debuff_Damage, Pair.Value.DebuffDamage);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DebuffSpecHandle, GameplayTags.Debuff_Duration, Pair.Value.DebuffDuration);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DebuffSpecHandle, GameplayTags.Debuff_Frequency, Pair.Value.DebuffFrequency);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DebuffSpecHandle, GameplayTags.Debuff_Chance, Pair.Value.DebuffChance);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DebuffSpecHandle, Pair.Key, 1.0); //?
+		Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DebuffSpecHandle.Data);
+	}
+
+	return EffectContextHandle;
+	
 }

@@ -46,11 +46,18 @@ public:
 	FGameplayTag InputTag_Dodge;
 
 	FGameplayTag Damage;
-	FGameplayTag Damage_Basic;
-	FGameplayTag Damage_Fire;
 
-	//The game supports damage types, althogh resistances are not currently implemented. Can be implemented if required later.
-	TArray<FGameplayTag> DamageTypes;
+	//Debuff types
+	FGameplayTag Debuff_Burn;
+	FGameplayTag Debuff_Stun;
+
+	//Debuff parameters
+	FGameplayTag Debuff_Duration;
+	FGameplayTag Debuff_Frequency;
+	FGameplayTag Debuff_Chance;
+	FGameplayTag Debuff_Damage;
+
+
 	
 	FGameplayTag Abilities_Attack;
 

@@ -5,20 +5,36 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "ArpgGameplayTags.h"
 
 void UArpgDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 {
 	FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1);
-
-	for(TTuple<FGameplayTag, FScalableFloat> Pair : DamageTypes)
-	{
-		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);
-	}
-
 	
+	const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, FArpgGameplayTags::Get().Damage, ScaledDamage);
+
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
+}
+
+FDamageEffectParams UArpgDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor) const
+{
+	FDamageEffectParams Params;
+
+	Params.WorldContextObject = GetAvatarActorFromActorInfo();
+	Params.DamageGameplayEffectClass = DamageEffectClass;
+	Params.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+	if (TargetActor) Params.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	Params.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	Params.AbilityLevel = GetAbilityLevel();
+	Params.DebuffTags = DebuffTags;
+
+
+	//TODO: 305. 13:52
+
 	
+	return Params;
 }
 
 FTaggedMontage UArpgDamageGameplayAbility::GetRandomTaggedMontageFromArray(

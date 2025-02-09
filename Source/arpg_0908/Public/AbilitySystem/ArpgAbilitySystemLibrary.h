@@ -44,4 +44,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanics")
 	static bool IsNotFriendBasedOnTag(AActor* FirstActor, AActor* SecondActor);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|DamageEffect")
+	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& Params);
 };
