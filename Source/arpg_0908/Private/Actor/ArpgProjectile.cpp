@@ -44,13 +44,18 @@ void AArpgProjectile::BeginPlay()
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
 }
 
+void AArpgProjectile::OnHit()
+{
+	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+	if (ImpactSound) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
+	if (ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());
+}
+
 void AArpgProjectile::Destroyed()
 {
 	if(!bHit && !HasAuthority()) //if client hasn't played the Destroy effects yet because server sent the destroy event first 
 	{
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-		if (ImpactSound) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-		if (ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());	
+		OnHit();	
 	}
 	Super::Destroyed();
 }
@@ -58,25 +63,18 @@ void AArpgProjectile::Destroyed()
 void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(!DamageEffectSpecHandle.Data.IsValid() || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
-		return;
-
-	//Don't damage friends
-	if(!UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
-		return;
+	if (!IsValidOverlap(OtherActor)) return;
 	
-	if(!bHit)
-	{
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-		if (ImpactSound) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
-		if (ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());	
-	}
+	if(!bHit) OnHit();
+		
 
 	if(HasAuthority())
 	{
 		if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+
+			UArpgAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 		}
 		
 		Destroy();
@@ -85,5 +83,15 @@ void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	{
 		bHit = true;
 	}
+}
+
+bool AArpgProjectile::IsValidOverlap(AActor* OtherActor)
+{
+	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return false;
+	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
+	if (SourceAvatarActor == OtherActor) return false;
+	if (!UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(SourceAvatarActor, OtherActor)) return false;
+
+	return true;
 }
 

@@ -41,9 +41,29 @@ bool FArpgGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 		{
 			RepBits |= 1 << 8;
 		}
+		if(bIsSuccessfulDebuff)
+		{
+			RepBits |= 1 << 9;
+		}
+		if(DebuffDuration > 0.f)
+		{
+			RepBits |= 1 << 10;
+		}
+		if(DebuffFrequency > 0.f)
+		{
+			RepBits |= 1 << 11;
+		}
+		if(DebuffDamage > 0.f)
+		{
+			RepBits |= 1 << 12;
+		}
+		if (DebuffTag.IsValid())
+		{
+			RepBits |= 1 << 13;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 9);
+	Ar.SerializeBits(&RepBits, 14);
 
 	if (RepBits & (1 << 0))
 	{
@@ -92,6 +112,33 @@ bool FArpgGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 	if(RepBits & (1 << 8))
 	{
 		Ar << bIsCriticalHit;
+	}
+	if(RepBits & (1 << 9))
+	{
+		Ar << bIsSuccessfulDebuff;
+	}
+	if(RepBits & (1 << 10))
+	{
+		Ar << DebuffDuration;
+	}
+	if(RepBits & (1 << 11))
+	{
+		Ar << DebuffFrequency;
+	}
+	if(RepBits & (1 << 12))
+	{
+		Ar << DebuffDamage;
+	}
+	if (RepBits & (1 << 13))
+	{
+		if (Ar.IsLoading())
+		{
+			if (!DebuffTag.IsValid())
+			{
+				DebuffTag = TSharedPtr<FGameplayTag>(new FGameplayTag());
+			}
+		}
+		DebuffTag->NetSerialize(Ar, Map, bOutSuccess);
 	}
 
 	if (Ar.IsLoading())

@@ -57,6 +57,7 @@ public:
 	FGameplayTag Debuff_Chance;
 	FGameplayTag Debuff_Damage;
 
+	TArray<FGameplayTag> DebuffTags;
 
 	
 	FGameplayTag Abilities_Attack;

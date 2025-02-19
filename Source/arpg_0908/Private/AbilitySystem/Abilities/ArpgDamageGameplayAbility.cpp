@@ -30,10 +30,6 @@ FDamageEffectParams UArpgDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.AbilityLevel = GetAbilityLevel();
 	Params.DebuffTags = DebuffTags;
 
-
-	//TODO: 305. 13:52
-
-	
 	return Params;
 }
 
@@ -47,3 +43,5 @@ FTaggedMontage UArpgDamageGameplayAbility::GetRandomTaggedMontageFromArray(
 	}
 	return FTaggedMontage();
 }
+
+

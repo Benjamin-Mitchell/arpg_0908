@@ -13,9 +13,16 @@ struct FDebuffInfo
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag DebuffTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float DebuffDuration = 3.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float DebuffFrequency = 0.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float DebuffChance = 100.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float DebuffDamage = 0.f;
 };
 
@@ -43,8 +50,8 @@ struct FDamageEffectParams
 	UPROPERTY()
 	float AbilityLevel = 1.0f;
 
-	UPROPERTY()
-	TMap<FGameplayTag, FDebuffInfo> DebuffTags;	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FDebuffInfo> DebuffTags;	
 };
 /**`
  * 
@@ -65,7 +72,7 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
-	TMap<FGameplayTag, FDebuffInfo> DebuffTags;
+	TArray<FDebuffInfo> DebuffTags;
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	FScalableFloat Damage;

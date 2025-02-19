@@ -4,6 +4,7 @@
 #include "AbilitySystem/arpgAttributeSet.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArpgAbilityTypes.h"
 #include "ArpgGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
@@ -61,6 +62,8 @@ void UarpgAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
     }
 }
 
+
+
 void UarpgAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
 	//Source = causer of the effect, Target = target of the effect (owner of this AS)
@@ -94,7 +97,80 @@ void UarpgAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	}
 }
 
+void UarpgAttributeSet::Debuff(const FEffectProperties& EffectProps)
+{
+	const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
+	FGameplayEffectContextHandle EffectContext = EffectProps.SourceASC->MakeEffectContext();
+	EffectContext.AddSourceObject(EffectProps.SourceAvatarActor);
 
+	const FGameplayTag DebuffTag = UArpgAbilitySystemLibrary::GetDebuffTag(EffectProps.EffectContextHandle);
+	const float DebuffDamage = UArpgAbilitySystemLibrary::GetDebuffDamage(EffectProps.EffectContextHandle);
+	const float DebuffDuration = UArpgAbilitySystemLibrary::GetDebuffDuration(EffectProps.EffectContextHandle);
+	const float DebuffFrequency = UArpgAbilitySystemLibrary::GetDebuffFrequency(EffectProps.EffectContextHandle);
+
+	FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *DebuffTag.ToString());
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(DebuffName));
+
+	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	Effect->Period = DebuffFrequency;
+	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
+
+	Effect->InheritableOwnedTagsContainer.AddTag(DebuffTag);
+
+	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+	Effect->StackLimitCount = 1;
+
+	const int32 Index = Effect->Modifiers.Num();
+	Effect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[Index];
+
+	ModifierInfo.ModifierMagnitude = FScalableFloat(DebuffDamage);
+	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
+	ModifierInfo.Attribute = UarpgAttributeSet::GetIncomingDamageAttribute();
+
+	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.f))
+	{
+		FArpgGameplayEffectContext* AuraContext = static_cast<FArpgGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		TSharedPtr<FGameplayTag> DebuffTagShared = MakeShareable(new FGameplayTag(DebuffTag));
+		AuraContext->SetDebuffTag(DebuffTagShared);
+
+		EffectProps.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
+	}
+}
+
+void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProps)
+{
+	const float LocalIncomingDamage = GetIncomingDamage();
+	SetIncomingDamage(0.f); //we always reset meta attributes before next use
+	if(LocalIncomingDamage > 0.f)
+	{
+		const float NewHealth = GetHealth() - LocalIncomingDamage;
+		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+
+		const bool bFatal = NewHealth <= 0.f;
+
+		if(bFatal)
+		{
+			ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProps.TargetAvatarActor);
+			if(CombatInterface)
+			{
+				CombatInterface->Die();
+			}
+		}
+		else
+		{
+			//Activate any abilities with the "effects_hitReact" tag on the target
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);
+			EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+		}
+
+			
+		const bool bBlocked = UArpgAbilitySystemLibrary::IsBlockedHit(EffectProps.EffectContextHandle);
+		const bool bCriticalHit = UArpgAbilitySystemLibrary::IsCriticalHit(EffectProps.EffectContextHandle);
+		ShowFloatingText(EffectProps, LocalIncomingDamage, bBlocked, bCriticalHit);
+	}
+}
 
 
 void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -104,6 +180,10 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	FEffectProperties EffectProps;
 	SetEffectProperties(Data, EffectProps);
 
+	if (EffectProps.TargetCharacter->Implements<UCombatInterface>() && ICombatInterface::Execute_IsDead(EffectProps.TargetCharacter))
+	{
+		return;
+	}
 
 	//Extra clamping (for base value?)
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
@@ -118,35 +198,11 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 	if(Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		const float LocalIncomingDamage = GetIncomingDamage();
-		SetIncomingDamage(0.f); //we always reset meta attributes before next use
-		if(LocalIncomingDamage > 0.f)
+		HandleIncomingDamage(EffectProps);
+
+		if (UArpgAbilitySystemLibrary::IsSuccessfulDebuff(EffectProps.EffectContextHandle))
 		{
-			const float NewHealth = GetHealth() - LocalIncomingDamage;
-			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
-
-			const bool bFatal = NewHealth <= 0.f;
-
-			if(bFatal)
-			{
-				ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProps.TargetAvatarActor);
-				if(CombatInterface)
-				{
-					CombatInterface->Die();
-				}
-			}
-			else
-			{
-				//Activate any abilities with the "effects_hitReact" tag on the target
-				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);
-				EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-			}
-
-			
-			const bool bBlocked = UArpgAbilitySystemLibrary::IsBlockedHit(EffectProps.EffectContextHandle);
-			const bool bCriticalHit = UArpgAbilitySystemLibrary::IsCriticalHit(EffectProps.EffectContextHandle);
-			ShowFloatingText(EffectProps, LocalIncomingDamage, bBlocked, bCriticalHit);
+			Debuff(EffectProps);
 		}
 		
 	}
@@ -249,4 +305,6 @@ void UarpgAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) cons
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UarpgAttributeSet, Vigor, OldVigor);
 }
+
+
 

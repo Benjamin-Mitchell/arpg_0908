@@ -15,6 +15,7 @@ class ARPG_0908_API UExecCalc_Damage : public UGameplayEffectExecutionCalculatio
 	GENERATED_BODY()
 public:
 	UExecCalc_Damage();
+	void HandleDebuffs(const FGameplayEffectSpec& Spec) const;
 
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 

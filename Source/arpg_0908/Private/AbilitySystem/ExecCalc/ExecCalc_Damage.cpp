@@ -42,8 +42,41 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().CritDamageMultiplierDef);
 }
 
+void UExecCalc_Damage::HandleDebuffs(const FGameplayEffectSpec& Spec) const
+{
+	const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
+	
+	for (FGameplayTag DebuffTag : GameplayTags.DebuffTags)
+	{
+		const float TypeValue = Spec.GetSetByCallerMagnitude(DebuffTag, false, -1.f);
+		if (TypeValue > -0.5f) // .5 padding for floating point imprecision
+		{
+			const float SourceDebuffChance = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Chance, false, -1.f);
+
+			const bool bDebuff = FMath::RandRange(1, 100) < SourceDebuffChance;
+			if (bDebuff)
+			{
+				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();
+
+				UArpgAbilitySystemLibrary::SetIsSuccessfulDebuff(ContextHandle, true);
+
+				const float DebuffDuration = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Duration);
+				const float DebuffFrequency = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Frequency);
+				const float DebuffDamage = Spec.GetSetByCallerMagnitude(GameplayTags.Debuff_Damage);
+				
+				UArpgAbilitySystemLibrary::SetDebuffDuration(ContextHandle, DebuffDuration);
+				UArpgAbilitySystemLibrary::SetDebuffFrequency(ContextHandle, DebuffFrequency);
+				UArpgAbilitySystemLibrary::SetDebuffDamage(ContextHandle, DebuffDamage);
+				
+				UArpgAbilitySystemLibrary::SetDebuffTag(ContextHandle, DebuffTag);
+			}
+			
+		}
+	}
+}
+
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+                                              FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
 	const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
@@ -60,11 +93,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	//Debuff
+	HandleDebuffs(Spec);
+
+	
 	//Get Damage Set By Caller Magnitude
 	float Damage = 0.f;
 	const float DamageTypeValue = Spec.GetSetByCallerMagnitude(FArpgGameplayTags::Get().Damage);
 	Damage += DamageTypeValue;
-
+	
 	float CritChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritChanceDef, EvaluationParameters, CritChance);
 	CritChance = FMath::Max<float>(0.f, CritChance);
