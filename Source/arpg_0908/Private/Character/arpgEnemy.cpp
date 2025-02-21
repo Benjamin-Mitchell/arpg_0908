@@ -164,6 +164,8 @@ void AarpgEnemy::InitAbilityActorInfo()
 	{
 		InitializeDefaultAttributes();
 	}
+
+	OnASCRegistered.Broadcast(AbilitySystemComponent);
 }
 
 void AarpgEnemy::InitializeDefaultAttributes() const

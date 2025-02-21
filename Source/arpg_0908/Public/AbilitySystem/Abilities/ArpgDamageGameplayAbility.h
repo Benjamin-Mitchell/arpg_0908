@@ -18,6 +18,8 @@ struct FDebuffInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float DebuffDuration = 3.f;
+
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float DebuffFrequency = 0.f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

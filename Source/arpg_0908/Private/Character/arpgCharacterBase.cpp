@@ -5,12 +5,17 @@
 #include "AbilitySystemComponent.h"
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "arpg_0908/arpg_0908.h"
 #include "Components/CapsuleComponent.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	BurnNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");;
+	BurnNiagaraComponent->SetupAttachment(GetRootComponent());
+	BurnNiagaraComponent->DebuffTag = FArpgGameplayTags::Get().Debuff_Burn;
 	
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
@@ -50,6 +55,16 @@ TArray<FTaggedMontage> AarpgCharacterBase::GetAttackMontages_Implementation()
 	return AttackMontages;
 }
 
+FOnASCRegistered AarpgCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnASCRegistered;
+}
+
+FOnDeath AarpgCharacterBase::GetOnDeathDelegate()
+{
+	return OnDeath;
+}
+
 void AarpgCharacterBase::MulticastHandleDeath_Implementation()
 {
 	Weapon->SetSimulatePhysics(true);
@@ -65,6 +80,7 @@ void AarpgCharacterBase::MulticastHandleDeath_Implementation()
 
 	Dissolve();
 	bDead = true;
+	OnDeath.Broadcast(this);
 }
 
 void AarpgCharacterBase::BeginPlay()

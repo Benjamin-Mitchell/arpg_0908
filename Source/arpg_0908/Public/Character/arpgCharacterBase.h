@@ -8,6 +8,7 @@
 #include "Interaction/CombatInterface.h"
 #include "arpgCharacterBase.generated.h"
 
+class UDebuffNiagaraComponent;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
@@ -32,6 +33,11 @@ public:
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual FOnDeath GetOnDeathDelegate() override;
+
+	FOnASCRegistered OnASCRegistered;
+	FOnDeath OnDeath;
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
@@ -122,6 +128,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> BurnNiagaraComponent;
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

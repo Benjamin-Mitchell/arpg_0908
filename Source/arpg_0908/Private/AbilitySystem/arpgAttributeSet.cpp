@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/NetworkProfiler.h"
@@ -115,7 +116,10 @@ void UarpgAttributeSet::Debuff(const FEffectProperties& EffectProps)
 	Effect->Period = DebuffFrequency;
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 
-	Effect->InheritableOwnedTagsContainer.AddTag(DebuffTag);
+	FInheritedTagContainer TagContainer = FInheritedTagContainer();
+	UTargetTagsGameplayEffectComponent& Component = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+	TagContainer.AddTag(DebuffTag);
+	Component.SetAndApplyTargetTagChanges(TagContainer);
 
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	Effect->StackLimitCount = 1;

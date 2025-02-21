@@ -110,6 +110,8 @@ void AarpgCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent = arpgPlayerState->GetAbilitySystemComponent();
 	AttributeSet = arpgPlayerState->GetAttributeSet();
 
+	GetOnASCRegisteredDelegate().Broadcast(AbilitySystemComponent);
+
 	//This is only valid on the owning client 
 	if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))
 	{
