@@ -29,6 +29,7 @@ public:
 	void SetHead(AarpgHeadActor* HeadActor);
 	
 protected:
+	//All of the head logic is unique to the playable characters. Enemies should just create a mesh and use it however they please in blueprints.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> BaseHeadMesh;
 
