@@ -27,6 +27,10 @@ AarpgCharacterBase::AarpgCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
+
+	BaseHeadMesh = CreateDefaultSubobject<USkeletalMeshComponent>("HeadMesh");
+	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
+	BaseHeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const

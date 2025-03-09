@@ -21,10 +21,6 @@ AarpgCharacter::AarpgCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
-	
-	BaseHeadMesh = CreateDefaultSubobject<USkeletalMeshComponent>("HeadMesh");
-	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
-	BaseHeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AarpgCharacter::PossessedBy(AController* NewController)
