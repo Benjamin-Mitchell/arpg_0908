@@ -43,6 +43,10 @@
 		{
 			"Name": "GizmoFramework",
 			"Enabled": true
+		},
+		{
+			"Name": "GizmoEdMode",
+			"Enabled": true
 		}
 	]
 }
