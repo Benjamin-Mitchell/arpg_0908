@@ -1,0 +1,55 @@
+float2 offsetSize = TexCoordSize * FilterSize;
+
+float3 inColour = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_PostProcessInput0), PPI_PostProcessInput0, false).rgb;
+
+float2 offsets[8] =
+{
+  {-1,  1}, //top left  
+  {1,   1}, //top right
+  {-1, -1}, //bottom left  
+  {-1, -1}, //bottom right
+  {0,   1}, //right  
+  {0,  -1}, //left
+  {1,   0}, //top
+  {-1,  0}, //bottom
+};
+
+
+
+float maskBorder = true;
+
+//float currPixelCustomDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_CustomDepth), PPI_CustomDepth, false).r;
+float currPixelDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_SceneDepth), PPI_SceneDepth, false).r;
+int currPixelMask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV, PPI_CustomStencil), PPI_CustomStencil, false).r;
+
+float firstDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[0]), PPI_SceneDepth), PPI_SceneDepth, false).r;
+
+//we should outline if we detect change in mask OR change in depth
+float lowestDepth = firstDepth;
+float highestDepth = firstDepth;
+for(int i = 1; i < 8; i++)
+{
+    float depth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_SceneDepth), PPI_SceneDepth, false).r;
+
+    lowestDepth = min(lowestDepth, depth);
+    highestDepth = max(highestDepth, depth);
+}
+//if we are closer to the higherDepth (so this is outside the model), don't mask
+//PS: using only this makes for a really cool effect.
+if(abs(currPixelDepth - lowestDepth) > abs(currPixelDepth - highestDepth))
+{
+    maskBorder = false;
+}
+
+if(currPixelMask == 0)
+{
+    maskBorder = false;
+}
+//else {} This else can be used to fill in the holes in a character with a specific colour if desired
+
+//TODO: whatever colour you want the white bits to be
+float3 outlineColour = float3(1.0, 1.0, 1.0);
+
+float3 outColour = lerp(inColour, outlineColour, maskBorder);
+
+return outColour;

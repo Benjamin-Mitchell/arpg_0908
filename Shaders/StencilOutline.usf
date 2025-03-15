@@ -1,0 +1,100 @@
+float2 offsetSize = TexCoordSize * FilterSize;
+
+float3 inColour = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_PostProcessInput0), PPI_PostProcessInput0, false).rgb;
+
+float2 offsets[8] =
+{
+  {-1,  1}, //top left  
+  {1,   1}, //top right
+  {-1, -1}, //bottom left  
+  {-1, -1}, //bottom right
+  {0,   1}, //right  
+  {0,  -1}, //left
+  {1,   0}, //top
+  {-1,  0}, //bottom
+};
+
+
+//TODO: can we make this editable from the material graph? it doesn't support arrays...
+float4 outlineColours[4] = 
+{
+    {250.0, 0.6, 0.0, 0.0},
+    {251.0, 0.17, 0.52, 1.0},
+    {252.0, 0.28, 0.0, 0.098},
+    {253.0, 0.07, 0.28, 0.0},
+};
+
+
+float maskBorder = false;
+
+int highestMask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[0]), PPI_CustomStencil), PPI_CustomStencil, false).r;
+int totalMask = highestMask;
+int numValidMasks = highestMask  > 0 ? 1 : 0;
+
+//float currPixelCustomDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_CustomDepth), PPI_CustomDepth, false).r;
+float currPixelDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_SceneDepth), PPI_SceneDepth, false).r;
+int currPixelMask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV, PPI_CustomStencil), PPI_CustomStencil, false).r;
+
+float totalDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[0]), PPI_SceneDepth), PPI_SceneDepth, false).r;
+
+//we should outline if we detect change in mask OR change in depth
+float lowestDepth = totalDepth;
+float highestDepth = totalDepth; 
+for(int i = 1; i < 8; i++)
+{
+    int mask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_CustomStencil), PPI_CustomStencil, false).r;
+    totalMask += mask;
+
+    if(mask > 0)
+        numValidMasks++;
+
+    if(mask != highestMask)
+        maskBorder = true;
+
+    float depth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_SceneDepth), PPI_SceneDepth, false).r;
+    totalDepth += depth;
+
+    lowestDepth = min(lowestDepth, depth);
+    highestDepth = max(highestDepth, depth);
+}
+
+if(!maskBorder && numValidMasks > 0 && abs(lowestDepth - highestDepth) > 15.0)
+{
+    maskBorder = true;
+}
+
+//if we are closer to the higherDepth (so this is outside the model), don't mask
+//PS: using only this makes for a really cool effect.
+if(abs(currPixelDepth - lowestDepth) > abs(currPixelDepth - highestDepth))
+{
+    maskBorder = false;
+}
+
+
+//only border on inside of masked objects
+if(currPixelMask == 0)
+{
+    maskBorder = false;
+}
+
+
+float3 outlineColour = float3(0.0, 0.0, 0.0);
+float averageMask = float(totalMask) / float(numValidMasks);
+int closestColour = 0;
+float closestWeight = 1.0;
+
+for(int i = 0; i < 4; i++)
+{
+    float diff = abs(currPixelMask - outlineColours[i].x);
+
+    if(diff < closestWeight)
+    {
+        closestColour = i;
+        closestWeight = diff;
+    }
+}
+outlineColour = outlineColours[closestColour].yzw;
+
+float3 outColour = lerp(inColour, outlineColour, maskBorder);
+
+return outColour;

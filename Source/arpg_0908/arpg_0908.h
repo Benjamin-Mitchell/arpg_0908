@@ -11,3 +11,10 @@
 //Debug print
 //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("boobs"));
 //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Health NewValue: %f"), NewValue));
+
+class FArpgModule : public IModuleInterface
+{
+public:
+	virtual void StartupModule() override;
+	virtual void ShutdownModule() override;
+};

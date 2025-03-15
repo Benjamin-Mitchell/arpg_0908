@@ -12,8 +12,8 @@
 	{
 		"MajorVersion": 5,
 		"MinorVersion": 5,
-		"PatchVersion": 1,
-		"Changelist": 38445549,
+		"PatchVersion": 4,
+		"Changelist": 40574608,
 		"CompatibleChangelist": 37670630,
 		"IsLicenseeVersion": 0,
 		"IsPromotedBuild": 0,
@@ -3690,6 +3690,18 @@
 			"Type": "RequiredResource"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/GizmoEdMode/Binaries/Win64/UnrealEditor-GizmoEdMode.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/GizmoEdMode/Binaries/Win64/UnrealEditor-LightGizmos.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/GizmoEdMode/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/GizmoFramework/Binaries/Win64/UnrealEditor-GizmoSettings.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -3971,6 +3983,18 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Interchange/Runtime/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/TatoolsT174acd901e29V2/Binaries/Win64/UnrealEditor-ThreepeatAnimTools.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/TatoolsT174acd901e29V2/Binaries/Win64/UnrealEditor-ThreepeatAnimTools.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/TatoolsT174acd901e29V2/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
 		},
 		{
@@ -4383,6 +4407,22 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Runtime/ChunkDownloader/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/CommonUI/Binaries/Win64/UnrealEditor-CommonInput.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/CommonUI/Binaries/Win64/UnrealEditor-CommonUI.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/CommonUI/Binaries/Win64/UnrealEditor-CommonUIEditor.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/CommonUI/Binaries/Win64/UnrealEditor.modules",
 			"Type": "RequiredResource"
 		},
 		{
@@ -30224,6 +30264,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/GizmoEdMode/GizmoEdMode.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/GizmoFramework/GizmoFramework.uplugin",
 			"Type": "UFS"
 		},
@@ -30297,6 +30341,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Interchange/Runtime/Interchange.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/TatoolsT174acd901e29V2/ThreepeatAnimTools.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -30457,6 +30505,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Runtime/ChunkDownloader/ChunkDownloader.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/CommonUI/CommonUI.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -30650,6 +30702,7 @@
 		"CmdLinkServer",
 		"CodeLiteSourceCodeAccess",
 		"ColorGrading",
+		"CommonUI",
 		"ComputeFramework",
 		"ConcertMain",
 		"ConcertSyncClient",
@@ -30695,6 +30748,7 @@
 		"GeometryMode",
 		"GeometryProcessing",
 		"GitSourceControl",
+		"GizmoEdMode",
 		"GizmoFramework",
 		"GoogleCloudMessaging",
 		"GooglePAD",
@@ -30785,6 +30839,7 @@
 		"TcpMessaging",
 		"TemplateSequence",
 		"TextureFormatOodle",
+		"ThreepeatAnimTools",
 		"ToolPresets",
 		"TraceUtilities",
 		"UMGWidgetPreview",
