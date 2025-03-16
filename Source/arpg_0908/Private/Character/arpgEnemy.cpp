@@ -19,8 +19,8 @@ AarpgEnemy::AarpgEnemy()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetRenderCustomDepth(true);
 	Weapon->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(0);
-	Weapon->SetCustomDepthStencilValue(0);
+	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
+	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
 
 	AbilitySystemComponent = CreateDefaultSubobject<UarpgAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
@@ -32,6 +32,7 @@ AarpgEnemy::AarpgEnemy()
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
+	
 	AttributeSet = CreateDefaultSubobject<UarpgAttributeSet>("AttributeSet");
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
@@ -61,8 +62,8 @@ void AarpgEnemy::HighlightActor()
 }
 void AarpgEnemy::UnHighlightActor()
 {
-	GetMesh()->SetCustomDepthStencilValue(0);
-	Weapon->SetCustomDepthStencilValue(0);
+	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
+	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
 }
 
 void AarpgEnemy::Interact(AarpgPlayerController* InteractingPlayer)

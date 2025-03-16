@@ -31,6 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> GrantedAbilities;
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int BaseHighlightVal = 0;
 
 	bool bCollectable = false;
 	

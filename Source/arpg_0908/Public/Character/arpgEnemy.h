@@ -58,11 +58,22 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	float LifeSpan = 5.f;
 
+
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<AActor> CombatTarget;	
 
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int BaseHighlightVal = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int WeaponBaseHighlightVal = 0;
+
+	//TODO: Head is not currently accessible for enemies.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int HeadBaseHighlightVal = 0;
 
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;

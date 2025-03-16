@@ -20,7 +20,7 @@ AarpgHeadActor::AarpgHeadActor()
 	ActorHeadSkeletalMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	ActorHeadSkeletalMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	ActorHeadSkeletalMesh->SetRenderCustomDepth(true);
-	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(0);
+	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(BaseHighlightVal);
 
 	//Potentially required for enabling interact visual cues.... but what cues?
 	bIsInteractable = true;
@@ -37,7 +37,7 @@ void AarpgHeadActor::UnHighlightActor()
 {
 	bCollectable = false;
 	
-	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(0);
+	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(BaseHighlightVal);
 }
 
 void AarpgHeadActor::Interact(AarpgPlayerController* InteractingPlayer)
