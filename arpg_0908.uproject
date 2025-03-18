@@ -47,6 +47,10 @@
 		{
 			"Name": "GizmoEdMode",
 			"Enabled": true
+		},
+		{
+			"Name": "OnlineSubsystemSteam",
+			"Enabled": true
 		}
 	]
 }

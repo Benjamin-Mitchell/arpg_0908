@@ -9,7 +9,7 @@ public class arpg_0908Target : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
-
+		
 		ExtraModuleNames.AddRange( new string[] { "arpg_0908" } );
 	}
 }

@@ -2,6 +2,8 @@ DerivedDataCache
 Intermediate
 Saved
 Build
+Binaries/Windows
+Content/MC_Sample
 
 *.pdb
 .vscode
@@ -14,3 +16,20 @@ Build
 *.suo
 *.xcodepref
 *.xcworkspace
+
+
+Binaries/Win64/D3D12/
+Binaries/Win64/DML/
+Binaries/Win64/arpg_0908.exe
+Binaries/Win64/arpg_0908.lib
+Binaries/Win64/boost_atomic-mt-x64.dll
+Binaries/Win64/boost_chrono-mt-x64.dll
+Binaries/Win64/boost_filesystem-mt-x64.dll
+Binaries/Win64/boost_iostreams-mt-x64.dll
+Binaries/Win64/boost_program_options-mt-x64.dll
+Binaries/Win64/boost_python311-mt-x64.dll
+Binaries/Win64/boost_regex-mt-x64.dll
+Binaries/Win64/boost_system-mt-x64.dll
+Binaries/Win64/boost_thread-mt-x64.dll
+Binaries/Win64/tbb.dll
+Binaries/Win64/tbbmalloc.dll
