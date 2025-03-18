@@ -75,14 +75,14 @@ int32 AarpgEnemy::GetPlayerLevel()
 	return Level;
 }
 
-void AarpgEnemy::Die()
+void AarpgEnemy::Die(const FVector& DeathImpulse)
 {
 	SetLifeSpan(LifeSpan);
 
 	if(ArpgAIController)
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	
-	Super::Die();
+	Super::Die(DeathImpulse);
 }
 
 void AarpgEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)

@@ -61,6 +61,10 @@ bool FArpgGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 		{
 			RepBits |= 1 << 13;
 		}
+		if (!DeathImpulse.IsZero())
+		{
+			RepBits |= 1 << 14;
+		}
 	}
 
 	Ar.SerializeBits(&RepBits, 14);
@@ -139,6 +143,10 @@ bool FArpgGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 			}
 		}
 		DebuffTag->NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if(RepBits & (1 << 14))
+	{
+		DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
 	}
 
 	if (Ar.IsLoading())

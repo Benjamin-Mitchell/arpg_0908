@@ -53,7 +53,13 @@ struct FDamageEffectParams
 	float AbilityLevel = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<FDebuffInfo> DebuffTags;	
+	TArray<FDebuffInfo> DebuffTags;
+
+	UPROPERTY()
+	float DeathImpulseMagnitude = 0.f;
+	
+	UPROPERTY()
+	FVector DeathImpulse = FVector::ZeroVector;
 };
 /**`
  * 
@@ -78,7 +84,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	FScalableFloat Damage;
-	
+
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float DeathImpulseMagnitude = 60.0f;
 	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages) const;

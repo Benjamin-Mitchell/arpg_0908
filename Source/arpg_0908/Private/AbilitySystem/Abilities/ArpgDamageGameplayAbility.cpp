@@ -29,7 +29,8 @@ FDamageEffectParams UArpgDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
 	Params.AbilityLevel = GetAbilityLevel();
 	Params.DebuffTags = DebuffTags;
-
+	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
+	
 	return Params;
 }
 

@@ -48,10 +48,11 @@ UAnimMontage* AarpgCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
-void AarpgCharacterBase::Die()
+
+void AarpgCharacterBase::Die(const FVector& DeathImpulse)
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	MulticastHandleDeath();
+	MulticastHandleDeath(DeathImpulse);
 }
 
 TArray<FTaggedMontage> AarpgCharacterBase::GetAttackMontages_Implementation()
@@ -69,16 +70,18 @@ FOnDeath AarpgCharacterBase::GetOnDeathDelegate()
 	return OnDeath;
 }
 
-void AarpgCharacterBase::MulticastHandleDeath_Implementation()
+void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	Weapon->AddImpulse(DeathImpulse * 0.1f, NAME_None, true);
 
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	GetMesh()->AddImpulse(DeathImpulse, NAME_None, true);
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 

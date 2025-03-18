@@ -158,7 +158,8 @@ void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 			ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProps.TargetAvatarActor);
 			if(CombatInterface)
 			{
-				CombatInterface->Die();
+				FVector Impulse = UArpgAbilitySystemLibrary::GetDeathImpulse(EffectProps.EffectContextHandle);
+				CombatInterface->Die(Impulse);
 			}
 		}
 		else

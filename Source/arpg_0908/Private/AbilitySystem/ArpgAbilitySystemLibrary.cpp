@@ -169,6 +169,16 @@ FGameplayTag UArpgAbilitySystemLibrary::GetDebuffTag(const FGameplayEffectContex
 	return FGameplayTag();
 }
 
+FVector UArpgAbilitySystemLibrary::GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if(const FArpgGameplayEffectContext* ArpgEffectContext = static_cast<const FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ArpgEffectContext->GetDeathImpulse();
+	}
+
+	return FVector::ZeroVector;
+}
+
 void UArpgAbilitySystemLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit)
 {
 	if(FArpgGameplayEffectContext* ArpgEffectContext = static_cast<FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
@@ -230,6 +240,15 @@ void UArpgAbilitySystemLibrary::SetDebuffTag(UPARAM(ref) FGameplayEffectContextH
 	}
 }
 
+void UArpgAbilitySystemLibrary::SetDeathImpulse(FGameplayEffectContextHandle& EffectContextHandle,
+	const FVector& InDeathImpulse)
+{
+	if(FArpgGameplayEffectContext* ArpgEffectContext = static_cast<FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		ArpgEffectContext->SetDeathImpulse(InDeathImpulse);
+	}
+}
+
 void UArpgAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
                                                            TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius,
                                                            const FVector& SphereOrigin)
@@ -266,6 +285,7 @@ FGameplayEffectContextHandle UArpgAbilitySystemLibrary::ApplyDamageEffect(const 
 	
 	FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
 	EffectContextHandle.AddSourceObject(SourceAvatarActor);
+	SetDeathImpulse(EffectContextHandle, Params.DeathImpulse);
 	const FGameplayEffectSpecHandle BaseDamageSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageGameplayEffectClass, Params.AbilityLevel, EffectContextHandle);
 
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(BaseDamageSpecHandle, GameplayTags.Damage, Params.BaseDamage);
