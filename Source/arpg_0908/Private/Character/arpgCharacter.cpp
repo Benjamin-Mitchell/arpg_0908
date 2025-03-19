@@ -17,6 +17,7 @@ AarpgCharacter::AarpgCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 400.0f, 0.0f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+	
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -29,6 +30,7 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 
 	//Init ability actor info for the server
 	InitAbilityActorInfo();
+	HandlePlayerHighlight();
 
 	AddCharacterAbilities(StartupAbilities);
 }
@@ -39,6 +41,7 @@ void AarpgCharacter::OnRep_PlayerState()
 
 	//Init ability actor info for the client
 	InitAbilityActorInfo();
+	HandlePlayerHighlight();
 }
 
 int32 AarpgCharacter::GetPlayerLevel()
@@ -108,15 +111,38 @@ void AarpgCharacter::InitAbilityActorInfo()
 
 	GetOnASCRegisteredDelegate().Broadcast(AbilitySystemComponent);
 
-	//This is only valid on the owning client 
+	//This is only valid on the owning client AND HOST
 	if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))
 	{
-		if(AarpgHUD* arpgHUD = Cast<AarpgHUD>(arpgPlayerController->GetHUD()))
+		if (arpgPlayerController->IsLocalController())
 		{
-			arpgHUD->InitOverlay(arpgPlayerController, arpgPlayerState, AbilitySystemComponent, AttributeSet);
+			if( AarpgHUD* arpgHUD = Cast<AarpgHUD>(arpgPlayerController->GetHUD()))
+			{
+				arpgHUD->InitOverlay(arpgPlayerController, arpgPlayerState, AbilitySystemComponent, AttributeSet);
+			}
 		}
 	}
 	
 
 	InitializeDefaultAttributes();
+}
+
+void AarpgCharacter::HandlePlayerHighlight()
+{
+	//This is only valid on the owning client AND HOST
+	if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))
+	{
+		if (arpgPlayerController->IsLocalController())
+		{
+			GetMesh()->SetCustomDepthStencilValue(LocalMeshBaseHighlightVal);
+			Weapon->SetCustomDepthStencilValue(LocalWeaponBaseHighlightVal);
+			BaseHeadMesh->SetCustomDepthStencilValue(LocalHeadBaseHighlightVal);
+			return;
+		}
+	}
+	
+	GetMesh()->SetCustomDepthStencilValue(RemoteMeshBaseHighlightVal);
+	Weapon->SetCustomDepthStencilValue(RemoteWeaponBaseHighlightVal);
+	BaseHeadMesh->SetCustomDepthStencilValue(RemoteHeadBaseHighlightVal);
+	
 }

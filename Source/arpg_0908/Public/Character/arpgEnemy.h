@@ -71,7 +71,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int WeaponBaseHighlightVal = 0;
 
-	//TODO: Head is not currently accessible for enemies.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int HeadBaseHighlightVal = 0;
 

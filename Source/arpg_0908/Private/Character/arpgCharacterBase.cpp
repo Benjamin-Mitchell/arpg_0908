@@ -20,17 +20,25 @@ AarpgCharacterBase::AarpgCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	Weapon->SetRenderCustomDepth(true);
+	
+	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
+	GetMesh()->SetRenderCustomDepth(true);
 
+	
+	
 	BaseHeadMesh = CreateDefaultSubobject<USkeletalMeshComponent>("HeadMesh");
 	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
 	BaseHeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BaseHeadMesh->SetRenderCustomDepth(true);
+
+	
 }
 
 UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const

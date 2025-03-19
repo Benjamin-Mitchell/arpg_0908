@@ -17,10 +17,9 @@
 AarpgEnemy::AarpgEnemy()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-	GetMesh()->SetRenderCustomDepth(true);
-	Weapon->SetRenderCustomDepth(true);
-	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
-	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
+
+
+	
 
 	AbilitySystemComponent = CreateDefaultSubobject<UarpgAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
@@ -45,7 +44,10 @@ void AarpgEnemy::PossessedBy(AController* NewController)
 
 	if(!HasAuthority()) return;
 
-	
+	//enemy uses flat values for highlight colours
+	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
+	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
+	BaseHeadMesh->SetCustomDepthStencilValue(HeadBaseHighlightVal);
 
 	ArpgAIController = Cast<AArpgAIController>(NewController);
 	ArpgAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);

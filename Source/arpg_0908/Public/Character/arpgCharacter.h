@@ -30,12 +30,30 @@ public:
 	
 protected:
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int LocalMeshBaseHighlightVal = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int LocalWeaponBaseHighlightVal = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int LocalHeadBaseHighlightVal = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int RemoteMeshBaseHighlightVal = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int RemoteWeaponBaseHighlightVal = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
+	int RemoteHeadBaseHighlightVal = 0;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastSetHeadMesh(int headIndex);
 private:
 	virtual void InitAbilityActorInfo() override;
+
+	void HandlePlayerHighlight();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UHeadData> HeadDatabase;	
