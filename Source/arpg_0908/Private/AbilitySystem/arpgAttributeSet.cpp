@@ -9,6 +9,7 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -164,6 +165,13 @@ void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 		}
 		else
 		{
+			const FVector& KnockbackForce =UArpgAbilitySystemLibrary::GetKnockbackForce(EffectProps.EffectContextHandle); 
+			if (!KnockbackForce.IsNearlyZero(1.f))
+			{
+				EffectProps.TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
+				EffectProps.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+			}
+			
 			//Activate any abilities with the "effects_hitReact" tag on the target
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);

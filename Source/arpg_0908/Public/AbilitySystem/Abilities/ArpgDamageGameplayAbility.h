@@ -35,31 +35,40 @@ struct FDamageEffectParams
 
 	FDamageEffectParams(){}
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UObject> WorldContextObject = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAbilitySystemComponent> SourceAbilitySystemComponent = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAbilitySystemComponent> TargetAbilitySystemComponent = nullptr;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float BaseDamage = 0.0f;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float AbilityLevel = 1.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FDebuffInfo> DebuffTags;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float DeathImpulseMagnitude = 0.f;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FVector DeathImpulse = FVector::ZeroVector;
+		
+	UPROPERTY(BlueprintReadWrite)
+	float KnockbackForceMagnitude = 3000.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector KnockbackForce = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadWrite)
+	float KnockbackChance = 0.f;
 };
 /**`
  * 
@@ -74,6 +83,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);
 
+	UFUNCTION(BlueprintPure)
 	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(AActor* TargetActor = nullptr) const;
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -85,9 +95,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	FScalableFloat Damage;
 
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float DeathImpulseMagnitude = 6000.0f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float KnockbackForceMagnitude = 3000.f;
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
-	float DeathImpulseMagnitude = 60.0f;
+	float KnockbackChance = 0.f;
 	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages) const;

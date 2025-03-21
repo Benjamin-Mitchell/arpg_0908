@@ -21,6 +21,7 @@ public:
 	float GetDebuffFrequency() const {return DebuffFrequency;}
 	float GetDebuffDamage() const {return DebuffDamage;}
 	FVector GetDeathImpulse() const {return DeathImpulse;}
+	FVector GetKnockbackForce() const {return KnockbackForce;}
 	TSharedPtr<FGameplayTag> GetDebuffTag() const {return DebuffTag;}
 
 	void SetIsCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
@@ -31,6 +32,7 @@ public:
 	void SetDebuffDamage(float InDebuffDamage){DebuffDamage = InDebuffDamage;}
 	void SetDebuffTag(TSharedPtr<FGameplayTag> InDebuffTag) {DebuffTag = InDebuffTag;}
 	void SetDeathImpulse(const FVector& InImpulse) {DeathImpulse = InImpulse;}
+	void SetKnockbackForce(const FVector& InForce) {KnockbackForce = InForce;}
 	
 	/** Returns the actual struct used for serialization, subclasses must override this! */
 	virtual UScriptStruct* GetScriptStruct() const
@@ -77,6 +79,9 @@ protected:
 	UPROPERTY()
 	FVector DeathImpulse = FVector::ZeroVector;
 	
+	
+	UPROPERTY()
+	FVector KnockbackForce = FVector::ZeroVector;
 };
 
 template<>
