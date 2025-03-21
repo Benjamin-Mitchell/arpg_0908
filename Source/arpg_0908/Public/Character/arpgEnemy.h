@@ -92,6 +92,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AArpgAIController> ArpgAIController;
 
+	UFUNCTION(BlueprintCallable)
+	void SetBlackboardInAir(bool bInAir);
+
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> EnemyUtilityAbilities;
 };

@@ -69,6 +69,9 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	float KnockbackChance = 0.f;
+	
+	UPROPERTY(BlueprintReadWrite)
+	float KnockbackPitch = 45.f;
 };
 /**`
  * 
@@ -103,6 +106,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float KnockbackChance = 0.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float KnockbackPitch = 45.f;
 	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages) const;

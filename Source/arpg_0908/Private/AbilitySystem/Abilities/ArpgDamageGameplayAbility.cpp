@@ -32,6 +32,7 @@ FDamageEffectParams UArpgDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
 	Params.KnockbackForceMagnitude = KnockbackForceMagnitude;
 	Params.KnockbackChance = KnockbackChance;
+	Params.KnockbackPitch = KnockbackPitch;
 
 	//default forces
 	if (IsValid(TargetActor))
@@ -41,7 +42,7 @@ FDamageEffectParams UArpgDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 		if (bKnockback)
 		{
 			FRotator Rotation = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
-			Rotation.Pitch = 45.f;
+			Rotation.Pitch = KnockbackPitch;
 			const FVector ToTarget = Rotation.Vector();
 			Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
 			Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;

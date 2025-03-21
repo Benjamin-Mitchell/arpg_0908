@@ -185,3 +185,8 @@ void AarpgEnemy::InitializeDefaultAttributes() const
 	}
 	
 }
+
+void AarpgEnemy::SetBlackboardInAir(bool bInAir)
+{
+	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("InAir"), bInAir);
+}

@@ -80,7 +80,7 @@ void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 			if (bKnockback)
 			{
 				FRotator Rotation = GetActorRotation();
-				Rotation.Pitch = 45.f;
+				Rotation.Pitch = DamageEffectParams.KnockbackPitch;
 				const FVector KnockbackDirection = Rotation.Vector();
 				const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagnitude;
 				DamageEffectParams.KnockbackForce = KnockbackForce;

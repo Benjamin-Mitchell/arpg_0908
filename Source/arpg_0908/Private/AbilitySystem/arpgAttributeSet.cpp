@@ -169,7 +169,7 @@ void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 			if (!KnockbackForce.IsNearlyZero(1.f))
 			{
 				EffectProps.TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
-				EffectProps.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+				EffectProps.TargetCharacter->LaunchCharacter(KnockbackForce, false, false);
 			}
 			
 			//Activate any abilities with the "effects_hitReact" tag on the target
