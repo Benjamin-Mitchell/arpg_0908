@@ -82,6 +82,14 @@ public:
 	FGameplayTag Effects_HitReact;
 	FGameplayTag Effects_HookPull;
 	FGameplayTag Effects_DodgeRoll;
+
+	FGameplayTag Player_Block_InputPressed;
+	FGameplayTag Player_Block_InputHeld;
+	FGameplayTag Player_Block_InputReleased;
+	FGameplayTag Player_Block_CursorTrace;
+	
+	FGameplayTag Player_EndExisting_Highlight;
+	
 	
 protected:
  

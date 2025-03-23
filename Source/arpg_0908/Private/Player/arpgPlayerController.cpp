@@ -4,6 +4,7 @@
 #include "Player/arpgPlayerController.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "ArpgGameplayTags.h"
 #include "Interaction/HighlightInterface.h"
 
 #include "EnhancedInputSubsystems.h"
@@ -44,6 +45,31 @@ void AarpgPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 
 void AarpgPlayerController::CursorTrace()
 {
+	static bool BlockedLastFrame = false;	
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_CursorTrace))
+	{
+		if (GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_EndExisting_Highlight))
+		{
+			if (ThisActorHighlighted) ThisActorHighlighted->UnHighlightActor();
+			
+			if (LastActorHighlighted) LastActorHighlighted->UnHighlightActor();
+            LastActorHighlighted = nullptr;
+		}
+		
+		ThisActorHighlighted = nullptr;
+		BlockedLastFrame = true;
+		return;
+	}
+	
+	if (BlockedLastFrame)
+	{
+		if (ThisActorHighlighted) ThisActorHighlighted->UnHighlightActor();
+		ThisActorHighlighted = nullptr;
+		if (LastActorHighlighted) LastActorHighlighted->UnHighlightActor();
+		LastActorHighlighted = nullptr;
+	}
+	BlockedLastFrame = false;
+	
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 
@@ -83,18 +109,30 @@ void AarpgPlayerController::CursorTrace()
 
 void AarpgPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
 	if(GetASC() == nullptr) return;
 	GetASC()->AbilityInputTagPressed(InputTag);
 }
 
 void AarpgPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputReleased))
+    {
+    	return;
+    }
 	if(GetASC() == nullptr) return;
 	GetASC()->AbilityInputTagReleased(InputTag);
 }
 
 void AarpgPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputHeld))
+	{
+		return;
+	}
 	if(GetASC() == nullptr) return;
 	GetASC()->AbilityInputTagHeld(InputTag);
 }
@@ -156,6 +194,11 @@ void AarpgPlayerController::SetupInputComponent()
 
 void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
+	
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 
 	const FRotator Rotation = GetControlRotation();
