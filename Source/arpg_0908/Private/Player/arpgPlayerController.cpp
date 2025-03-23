@@ -83,6 +83,8 @@ void AarpgPlayerController::CursorTrace()
 
 void AarpgPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	if(GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagPressed(InputTag);
 }
 
 void AarpgPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)

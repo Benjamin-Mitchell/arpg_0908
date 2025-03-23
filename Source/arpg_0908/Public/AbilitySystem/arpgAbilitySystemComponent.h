@@ -24,6 +24,7 @@ public:
 	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities);
 
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 protected:
 
