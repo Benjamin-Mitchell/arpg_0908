@@ -78,6 +78,11 @@ FOnDeath AarpgCharacterBase::GetOnDeathDelegate()
 	return OnDeath;
 }
 
+USkeletalMeshComponent* AarpgCharacterBase::GetWeapon_Implementation()
+{
+	return Weapon;
+}
+
 void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	Weapon->SetSimulatePhysics(true);

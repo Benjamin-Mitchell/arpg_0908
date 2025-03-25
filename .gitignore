@@ -3,6 +3,8 @@ Intermediate
 Saved
 Build
 Binaries/Windows
+Plugins/AdvancedSessions/Binaries
+Plugins/AdvancedSteamSessions/Binaries
 Content/MC_Sample
 
 *.pdb
