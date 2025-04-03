@@ -9,16 +9,20 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagContainer.h"
-#include "MovieSceneTracksComponentTypes.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "Input/arpgInputComponent.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Interaction/CombatInterface.h"
 #include "UI/Widget/DamageTextComponent.h"
 
 
 AarpgPlayerController::AarpgPlayerController()
 {
 	bReplicates = true;
+
+	//moveComponent = Cast<UCharacterMovementComponent>(GetCharacter()->GetMovementComponent());
 }
 
 void AarpgPlayerController::PlayerTick(float DeltaTime)
@@ -26,6 +30,15 @@ void AarpgPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+
+
+	if (isTargetting)
+	{
+		FRotator Rotation = (TabTargetActor->GetActorLocation() - GetCharacter()->GetActorLocation()).Rotation();
+		Rotation.Pitch = 0.0f;
+
+		GetCharacter()->SetActorRotation(Rotation);
+	}
 }
 
 void AarpgPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
@@ -147,6 +160,99 @@ UarpgAbilitySystemComponent* AarpgPlayerController::GetASC()
 	return ArpgAbilitySystemComponent;
 }
 
+void AarpgPlayerController::SetTargetingEnabled(bool InEnabled)
+{
+	GetCharacter()->GetCharacterMovement()->bOrientRotationToMovement = !InEnabled;
+	isTargetting = InEnabled;
+}
+
+void AarpgPlayerController::SetTarget(AActor* NewTarget)
+{
+	if (NewTarget == nullptr)
+	{
+		//disable VFX
+		if (TabTargetActor != nullptr)
+			DrawDebugSphere(GetWorld(), TabTargetActor->GetActorLocation() + FVector(0.0, 0.0, 100.0), 20, 30, FColor::Red, false, 2.0);
+
+		TabTargetActor = nullptr;
+		SetTargetingEnabled(false);
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("disabling target."));
+	}
+	else
+	{
+		TabTargetActor = NewTarget;
+		SetTargetingEnabled(true);
+
+		//Enable VFX
+		DrawDebugSphere(GetWorld(), NewTarget->GetActorLocation() + FVector(0.0, 0.0, 100.0), 20, 30, FColor::Blue, false, 2.0);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,  FString::Printf(TEXT("New target %s"), *NewTarget->GetName()));
+	}
+}
+
+AActor* AarpgPlayerController::FindNearestTarget(const TArray<AActor*> &ActorsToIgnore)
+{
+	TArray<AActor*> FoundActors;
+	
+	UArpgAbilitySystemLibrary::GetLivePlayersWithinRadius(GetWorld(), FoundActors, ActorsToIgnore, TabInteractDistance, CursorHit.Location);
+	DrawDebugSphere(GetWorld(), CursorHit.Location, TabInteractDistance, 30, FColor::Blue, false, 2.0);
+	if (FoundActors.Num() > 0)
+	{
+		AActor* ClosestActor = nullptr;
+		float ClosestDistance;
+		for(AActor* NearbyActor : FoundActors)
+		{
+			//We can currently only target enemies
+			if (UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(GetCharacter(), NearbyActor))
+			{
+				float DistanceToCheck = FVector::Distance(NearbyActor->GetActorLocation(), CursorHit.Location); 
+				if (ClosestActor == nullptr || DistanceToCheck < ClosestDistance)
+				{
+					ClosestActor = NearbyActor;
+					ClosestDistance = DistanceToCheck;
+				}
+			}
+			
+		}
+
+		return ClosestActor;
+	}
+
+	return nullptr;
+}
+
+void AarpgPlayerController::TabTarget(const struct FInputActionValue& InputActionValue)
+{
+	TArray<AActor*> ActorsToIgnore = {GetCharacter()};
+
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
+
+	AActor* NewTarget;
+	if (CursorHit.GetActor()->Implements<UCombatInterface>() && UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(GetCharacter(), CursorHit.GetActor()))
+	{
+		NewTarget = CursorHit.GetActor();
+	}
+	else
+	{
+		 NewTarget = FindNearestTarget(ActorsToIgnore);
+		
+	}
+	
+
+	if (NewTarget == TabTargetActor)
+	{
+		SetTarget(nullptr);
+	}
+	else
+	{
+		//Set New Target if it exists (nullptr if no other possibilites)
+		//TODO: If Nullptr, rotate to another one?
+		SetTarget(NewTarget);
+	}
+}
+
+
+
 void AarpgPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -187,6 +293,9 @@ void AarpgPlayerController::SetupInputComponent()
 	//Execute the Interact Function if the interact button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(interactAction, ETriggerEvent::Started, this, &AarpgPlayerController::Interact);
 
+	//Execute the Interact Function if the interact button is pressed in the Input Action.
+	ArpgInputComponent->BindAction(TabAction, ETriggerEvent::Started, this, &AarpgPlayerController::TabTarget);
+
 
 	//Bind all other functions to their respective abilities, no need for custom functionality here.
 	ArpgInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
@@ -215,6 +324,8 @@ void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X, false);
 	}
 }
+
+
 
 void AarpgPlayerController::Interact(const struct FInputActionValue& InputActionValue)
 {

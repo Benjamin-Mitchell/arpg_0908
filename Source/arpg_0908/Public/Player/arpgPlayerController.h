@@ -50,6 +50,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> interactAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> TabAction;
 
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Interact(const struct FInputActionValue& InputActionValue);
@@ -79,4 +82,17 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+	//TObjectPtr<UCharacterMovementComponent> moveComponent;
+
+	//Targetting Logic
+	UPROPERTY(EditAnywhere, Category="TabTargetting")
+	float TabInteractDistance = 100.0f;
+
+	void SetTarget(AActor* NewTarget); 
+	void TabTarget(const struct FInputActionValue& InputActionValue);
+	AActor* FindNearestTarget(const TArray<AActor*>& ActorsToIgnore);
+	AActor* TabTargetActor;
+	void SetTargetingEnabled(bool InEnabled);
+	bool isTargetting = false;
 };
