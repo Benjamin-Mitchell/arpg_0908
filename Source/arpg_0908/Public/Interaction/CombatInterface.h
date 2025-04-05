@@ -73,4 +73,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	USkeletalMeshComponent* GetWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	virtual bool IsObjectFriendWithThisBasedOnTag(AActor* SecondActor);
 };
