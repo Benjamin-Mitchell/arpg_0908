@@ -4,7 +4,9 @@
 #include "Character/arpgCharacter.h"
 #include "Player/arpgPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "ArpgGameplayTags.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Actor/HeadData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/arpgPlayerController.h"
@@ -28,6 +30,8 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+	
 	//Init ability actor info for the server
 	InitAbilityActorInfo();
 	HandlePlayerHighlight();
@@ -57,7 +61,7 @@ void AarpgCharacter::SetHead(AarpgHeadActor* NewHeadActor)
 	FVector HeadWorldLocation = NewHeadActor->GetActorLocation();
 
 	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
-	AarpgHeadActor* NewHeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();	
+	AarpgHeadActor* NewHeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();					
 
 	if (CurrentHeadActorClass != nullptr)
 	{
@@ -97,6 +101,43 @@ void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
 	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
 }
 
+void AarpgCharacter::Onrep_Stunned()
+{
+	if (UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
+		
+		FGameplayTagContainer BlockedTags;
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputPressed);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputHeld);
+		BlockedTags.AddTag(GameplayTags.Player_Block_InputReleased);
+		BlockedTags.AddTag(GameplayTags.Player_Block_Rotation);
+
+		if (bIsStunned)
+		{
+			ArpgASC->AddLooseGameplayTags(BlockedTags);
+			StunNiagaraComponent->Activate();
+		}
+		else
+		{
+			ArpgASC->RemoveLooseGameplayTags(BlockedTags);
+			StunNiagaraComponent->Deactivate();
+		}
+	}
+}
+
+void AarpgCharacter::Onrep_Burned()
+{
+	if (bIsBurning)
+	{
+		BurnNiagaraComponent->Activate();
+	}
+	else
+	{
+		BurnNiagaraComponent->Deactivate();
+	}
+}
+
 void AarpgCharacter::InitAbilityActorInfo()
 {
 	AarpgPlayerState* arpgPlayerState = GetPlayerState<AarpgPlayerState>();
@@ -110,6 +151,8 @@ void AarpgCharacter::InitAbilityActorInfo()
 	AttributeSet = arpgPlayerState->GetAttributeSet();
 
 	GetOnASCRegisteredDelegate().Broadcast(AbilitySystemComponent);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgCharacter::StunTagChanged);
 
 	//This is only valid on the owning client AND HOST
 	if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))

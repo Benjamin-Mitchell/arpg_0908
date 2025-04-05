@@ -120,6 +120,16 @@ void UarpgAttributeSet::Debuff(const FEffectProperties& EffectProps)
 	FInheritedTagContainer TagContainer = FInheritedTagContainer();
 	UTargetTagsGameplayEffectComponent& Component = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
 	TagContainer.AddTag(DebuffTag);
+
+	if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
+	{
+		TagContainer.AddTag(GameplayTags.Player_Block_InputPressed);
+		TagContainer.AddTag(GameplayTags.Player_Block_InputHeld);
+		TagContainer.AddTag(GameplayTags.Player_Block_InputReleased);
+		TagContainer.AddTag(GameplayTags.Player_Block_Rotation);
+	}
+		
+	
 	Component.SetAndApplyTargetTagChanges(TagContainer);
 
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;

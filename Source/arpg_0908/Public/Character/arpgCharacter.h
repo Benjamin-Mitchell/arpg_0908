@@ -50,6 +50,10 @@ protected:
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastSetHeadMesh(int headIndex);
+
+	virtual void Onrep_Stunned() override;
+
+	virtual void Onrep_Burned() override;
 private:
 	virtual void InitAbilityActorInfo() override;
 

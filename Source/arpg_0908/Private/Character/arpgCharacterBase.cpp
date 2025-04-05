@@ -8,6 +8,8 @@
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "arpg_0908/arpg_0908.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
 {
@@ -16,6 +18,10 @@ AarpgCharacterBase::AarpgCharacterBase()
 	BurnNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("BurnDebuffComponent");;
 	BurnNiagaraComponent->SetupAttachment(GetRootComponent());
 	BurnNiagaraComponent->DebuffTag = FArpgGameplayTags::Get().Debuff_Burn;
+
+	StunNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffComponent");;
+	StunNiagaraComponent->SetupAttachment(GetRootComponent());
+	StunNiagaraComponent->DebuffTag = FArpgGameplayTags::Get().Debuff_Stun;
 	
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
@@ -39,6 +45,14 @@ AarpgCharacterBase::AarpgCharacterBase()
 	BaseHeadMesh->SetRenderCustomDepth(true);
 
 	
+}
+
+void AarpgCharacterBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AarpgCharacterBase, bIsStunned);
+	DOREPLIFETIME(AarpgCharacterBase, bIsBurning);
 }
 
 UAbilitySystemComponent* AarpgCharacterBase::GetAbilitySystemComponent() const
@@ -68,7 +82,7 @@ TArray<FTaggedMontage> AarpgCharacterBase::GetAttackMontages_Implementation()
 	return AttackMontages;
 }
 
-FOnASCRegistered AarpgCharacterBase::GetOnASCRegisteredDelegate()
+FOnASCRegistered& AarpgCharacterBase::GetOnASCRegisteredDelegate()
 {
 	return OnASCRegistered;
 }
@@ -98,9 +112,27 @@ void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	BurnNiagaraComponent->Deactivate();
+	StunNiagaraComponent->Deactivate();
+	
 	Dissolve();
 	bDead = true;
 	OnDeath.Broadcast(this);
+}
+
+void AarpgCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsStunned = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
+}
+
+void AarpgCharacterBase::Onrep_Stunned()
+{
+	
+}
+
+void AarpgCharacterBase::Onrep_Burned()
+{
 }
 
 void AarpgCharacterBase::BeginPlay()
@@ -116,6 +148,7 @@ FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 	{
 		return Weapon->GetSocketLocation(WeaponTipSocketName);
 	}
+	
 	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
 	{
 		return GetMesh()->GetSocketLocation(LeftHandSocketName);
@@ -123,6 +156,14 @@ FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
 	{
 		return GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftFoot))
+	{
+		return GetMesh()->GetSocketLocation(LeftFootSocketName);
+	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightFoot))
+	{
+		return GetMesh()->GetSocketLocation(RightFootSocketName);
 	}
 
 	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_DamageTraceBegin))

@@ -170,7 +170,8 @@ void AarpgEnemy::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
-
+	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgEnemy::StunTagChanged);
+	
 	if(HasAuthority())
 	{
 		InitializeDefaultAttributes();
@@ -192,6 +193,14 @@ void AarpgEnemy::InitializeDefaultAttributes() const
 		Super::InitializeDefaultAttributes();
 	}
 	
+}
+
+void AarpgEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+	
+	if(ArpgAIController && ArpgAIController->GetBlackboardComponent())
+		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
 }
 
 void AarpgEnemy::SetBlackboardInAir(bool bInAir)

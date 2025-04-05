@@ -23,6 +23,7 @@ class ARPG_0908_API AarpgCharacterBase : public ACharacter, public IAbilitySyste
 public:
 	// Sets default values for this character's properties
 	AarpgCharacterBase();
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
@@ -33,7 +34,7 @@ public:
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die(const FVector& DeathImpulse) override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
-	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 
@@ -54,6 +55,19 @@ public:
 	
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
 	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
+
+	
+	UPROPERTY(ReplicatedUsing=OnRep_Stunned, BlueprintReadOnly)
+	bool bIsStunned = false;
+
+	UPROPERTY(ReplicatedUsing=OnRep_Burned, BlueprintReadOnly)
+	bool bIsBurning = false;
+
+	UFUNCTION()
+	virtual void Onrep_Stunned();
+
+	UFUNCTION()
+	virtual void Onrep_Burned();
 	
 protected:
 	// Called when the game starts or when spawned
@@ -75,6 +89,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName RightHandSocketName;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName LeftFootSocketName;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName RightFootSocketName;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName CustomOrDebugSocketName;
@@ -136,6 +156,14 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> BurnNiagaraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> StunNiagaraComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float BaseWalkSpeed = 250.f;
+	
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
