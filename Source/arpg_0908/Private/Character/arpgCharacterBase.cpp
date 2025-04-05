@@ -73,7 +73,7 @@ FOnASCRegistered AarpgCharacterBase::GetOnASCRegisteredDelegate()
 	return OnASCRegistered;
 }
 
-FOnDeath AarpgCharacterBase::GetOnDeathDelegate()
+FOnDeathSignature& AarpgCharacterBase::GetOnDeathDelegate()
 {
 	return OnDeath;
 }
