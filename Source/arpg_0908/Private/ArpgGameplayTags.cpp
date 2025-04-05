@@ -52,9 +52,10 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Damage"));
 	
 
-	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"));
+	GameplayTags.Abilities_Offensive_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Attack"));
 	
-	GameplayTags.Abilities_Firebolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Firebolt"));
+	GameplayTags.Abilities_Offensive_Firebolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Firebolt"));
+	GameplayTags.Abilities_Offensive_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Electrocute"));
 	GameplayTags.Abilities_Hook = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Hook"));
 	GameplayTags.Abilities_HatProjectileTemp = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HatProjectileTemp"));
 	GameplayTags.Abilities_DodgeRoll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.DodgeRoll"));

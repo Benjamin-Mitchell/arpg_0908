@@ -60,10 +60,11 @@ public:
 	TArray<FGameplayTag> DebuffTags;
 
 	
-	FGameplayTag Abilities_Attack;
+	FGameplayTag Abilities_Offensive_Attack;
+	FGameplayTag Abilities_Offensive_Firebolt;
+	FGameplayTag Abilities_Offensive_Electrocute;
 
 	
-	FGameplayTag Abilities_Firebolt;
 	FGameplayTag Abilities_Hook;
 	FGameplayTag Abilities_HatProjectileTemp;
 	FGameplayTag Abilities_DodgeRoll;
