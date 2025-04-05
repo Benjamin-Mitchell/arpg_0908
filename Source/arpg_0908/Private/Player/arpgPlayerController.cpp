@@ -222,7 +222,6 @@ AActor* AarpgPlayerController::FindNearestTarget(const TArray<AActor*> &ActorsTo
 	TArray<AActor*> FoundActors;
 	
 	UArpgAbilitySystemLibrary::GetLivePlayersWithinRadius(GetWorld(), FoundActors, ActorsToIgnore, TabInteractDistance, CursorHit.Location);
-	DrawDebugSphere(GetWorld(), CursorHit.Location, TabInteractDistance, 30, FColor::Blue, false, 2.0);
 	if (FoundActors.Num() > 0)
 	{
 		AActor* ClosestActor = nullptr;
