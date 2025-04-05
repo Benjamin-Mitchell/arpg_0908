@@ -75,6 +75,7 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputHeld"));
 	GameplayTags.Player_Block_InputReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputReleased"));
 	GameplayTags.Player_Block_CursorTrace = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.CursorTrace"));
+	GameplayTags.Player_Block_Rotation = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.Rotation"));
 
 	GameplayTags.Player_EndExisting_Highlight = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.EndExisting.Highlight"));
 }

@@ -35,10 +35,15 @@ void AarpgPlayerController::PlayerTick(float DeltaTime)
 
 	if (isTargetting)
 	{
-		FRotator Rotation = (TabTargetActor->GetActorLocation() - GetCharacter()->GetActorLocation()).Rotation();
-		Rotation.Pitch = 0.0f;
+		//Some abilities should block rotation for their duration
+		if (GetASC() && !GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_Rotation))
+		{
+			FRotator TargetRotation = (TabTargetActor->GetActorLocation() - GetCharacter()->GetActorLocation()).Rotation();
+			TargetRotation.Pitch = 0.0f;
 
-		GetCharacter()->SetActorRotation(Rotation);
+			
+			SetControlRotation(TargetRotation);
+		}
 	}
 }
 
@@ -59,9 +64,12 @@ void AarpgPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 
 void AarpgPlayerController::CursorTrace()
 {
-	static bool BlockedLastFrame = false;	
+	static bool BlockedLastFrame = false;
+	
+	//Some abilities flag that cursor trace should be blocked until they are complete
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_CursorTrace))
 	{
+		//Some abilities flag that existing highlight should be ended when they begin
 		if (GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_EndExisting_Highlight))
 		{
 			if (ThisActorHighlighted) ThisActorHighlighted->UnHighlightActor();
@@ -123,6 +131,7 @@ void AarpgPlayerController::CursorTrace()
 
 void AarpgPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	//Some abilities flag that input should be blocked until they are complete
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed))
 	{
 		return;
@@ -133,6 +142,7 @@ void AarpgPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 void AarpgPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
+	//Some abilities flag that input should be blocked until they are complete
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputReleased))
     {
     	return;
@@ -143,6 +153,7 @@ void AarpgPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 
 void AarpgPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
+	//Some abilities flag that input should be blocked until they are complete
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputHeld))
 	{
 		return;
@@ -320,6 +331,7 @@ void AarpgPlayerController::SetupInputComponent()
 
 void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	//Some abilities flag that input should be blocked until they are complete
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed))
 	{
 		return;
@@ -327,7 +339,10 @@ void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 	
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 
-	const FRotator Rotation = GetControlRotation();
+	//Doesn't work with targetControlRotation being set (we don't want movement to be afftected by Controller's understanding of rotation)
+	//const FRotator Rotation = GetControlRotation();
+	
+	const FRotator Rotation = FRotator(0, 0, 0);
 	const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
 
 
