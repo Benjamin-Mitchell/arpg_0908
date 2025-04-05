@@ -15,6 +15,10 @@ class UGameplayAbility;
 class UBehaviorTree;
 class AArpgAIController;
 
+
+//Must be defined multicast to allow blueprint assignable
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargettedSignature, bool, NewValue);
+
 /**
  * 
  */
@@ -46,6 +50,9 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnTargettedSignature OnTargettedByPlayer;
 
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
@@ -85,6 +92,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent> TargettedIcon;
 
 	UPROPERTY(EditAnywhere, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;

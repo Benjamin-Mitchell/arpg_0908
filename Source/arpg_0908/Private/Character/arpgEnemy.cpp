@@ -36,6 +36,9 @@ AarpgEnemy::AarpgEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+	
+	TargettedIcon = CreateDefaultSubobject<UWidgetComponent>("TargettedIcon");
+    TargettedIcon ->SetupAttachment(GetMesh(), FName("UpperChestSocket"));
 }
 
 void AarpgEnemy::PossessedBy(AController* NewController)
@@ -119,6 +122,11 @@ void AarpgEnemy::BeginPlay()
 	}
 
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(HealthBar->GetUserWidgetObject()))
+	{
+		ArpgUserWidget->SetWidgetController(this);
+	}
+
+	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(TargettedIcon->GetUserWidgetObject()))
 	{
 		ArpgUserWidget->SetWidgetController(this);
 	}

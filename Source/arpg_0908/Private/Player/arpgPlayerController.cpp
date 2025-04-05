@@ -11,6 +11,7 @@
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "Character/arpgEnemy.h"
 #include "Input/arpgInputComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -109,7 +110,7 @@ void AarpgPlayerController::CursorTrace()
 		}
 		else
 		{
-			//If theyre not the same
+			//If they're not the same
 			if (LastActorHighlighted != ThisActorHighlighted)
 			{
 				//Un-highlight old, highlight new
@@ -172,21 +173,36 @@ void AarpgPlayerController::SetTarget(AActor* NewTarget)
 	{
 		//disable VFX
 		if (TabTargetActor != nullptr)
-			DrawDebugSphere(GetWorld(), TabTargetActor->GetActorLocation() + FVector(0.0, 0.0, 100.0), 20, 30, FColor::Red, false, 2.0);
-
+		{
+			//Disable VFX
+			if (AarpgEnemy* Enemy = Cast<AarpgEnemy>(TabTargetActor))
+			{
+				//trigger event for on enemy target
+				Enemy->OnTargettedByPlayer.Broadcast(false);
+			}
+		}
 		TabTargetActor = nullptr;
 		SetTargetingEnabled(false);
 
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("disabling target."));
-	}
+		}
 	else
 	{
+		//Disable VFX on old one
+		if (AarpgEnemy* Enemy = Cast<AarpgEnemy>(TabTargetActor))
+		{
+			//trigger event for on enemy target
+			Enemy->OnTargettedByPlayer.Broadcast(false);
+		}
+		
 		TabTargetActor = NewTarget;
 		SetTargetingEnabled(true);
 
 		//Enable VFX
-		DrawDebugSphere(GetWorld(), NewTarget->GetActorLocation() + FVector(0.0, 0.0, 100.0), 20, 30, FColor::Blue, false, 2.0);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow,  FString::Printf(TEXT("New target %s"), *NewTarget->GetName()));
+		if (AarpgEnemy* Enemy = Cast<AarpgEnemy>(TabTargetActor))
+		{
+			//trigger event for on enemy target
+			Enemy->OnTargettedByPlayer.Broadcast(true);
+		}
 	}
 }
 
@@ -228,9 +244,10 @@ void AarpgPlayerController::TabTarget(const struct FInputActionValue& InputActio
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 
 	AActor* NewTarget;
-	if (CursorHit.GetActor()->Implements<UCombatInterface>() && UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(GetCharacter(), CursorHit.GetActor()))
+	AActor* HitActor = CursorHit.GetActor();
+	if (HitActor->Implements<UCombatInterface>() && UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(GetCharacter(), HitActor))
 	{
-		NewTarget = CursorHit.GetActor();
+		NewTarget = HitActor;
 	}
 	else
 	{
@@ -245,7 +262,7 @@ void AarpgPlayerController::TabTarget(const struct FInputActionValue& InputActio
 	}
 	else
 	{
-		//Set New Target if it exists (nullptr if no other possibilites)
+		//Set New Target if it exists (nullptr if no other possibilities)
 		//TODO: If Nullptr, rotate to another one?
 		SetTarget(NewTarget);
 	}
@@ -287,7 +304,7 @@ void AarpgPlayerController::SetupInputComponent()
 
 	UarpgInputComponent* ArpgInputComponent = CastChecked<UarpgInputComponent>(InputComponent);
 
-	//Execute the Move Function whenever a Moove button is pressed in the Input Action.
+	//Execute the Move Function whenever a Move button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Move);
 
 	//Execute the Interact Function if the interact button is pressed in the Input Action.
