@@ -217,13 +217,13 @@ void AarpgCharacterBase::InitializeDefaultAttributes() const
 	
 }
 
-void AarpgCharacterBase::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities)
+void AarpgCharacterBase::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities, bool ActivateImmediately)
 {
 	if(!HasAuthority()) return;
 
 	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
 
-	ArpgASC->AddCharacterAbilities(Abilities);
+	ArpgASC->AddCharacterAbilities(Abilities, ActivateImmediately);
 }
 
 void AarpgCharacterBase::RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities)

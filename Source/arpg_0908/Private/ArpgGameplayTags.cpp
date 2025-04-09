@@ -53,9 +53,15 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	
 
 	GameplayTags.Abilities_Offensive_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Attack"));
-	
 	GameplayTags.Abilities_Offensive_Firebolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Firebolt"));
 	GameplayTags.Abilities_Offensive_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Electrocute"));
+
+	GameplayTags.Abilities_Passive_HaloOfProtection = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Passive.HaloOfProtection"));
+	GameplayTags.Abilities_Passive_LifeSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Passive.LifeSiphon"));
+	
+	GameplayTags.Abilities_Synchronize_ElectrocuteWithFriends = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Synchronize.ElectrocuteWithFriends"));
+	GameplayTags.Abilities_Synchronize_InControl = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Synchronize.InControl"));
+	
 	GameplayTags.Abilities_Hook = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Hook"));
 	GameplayTags.Abilities_HatProjectileTemp = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HatProjectileTemp"));
 	GameplayTags.Abilities_DodgeRoll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.DodgeRoll"));

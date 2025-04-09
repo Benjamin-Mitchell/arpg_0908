@@ -53,7 +53,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget = FTransform());
 	
-	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
+	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities, bool ActivateImmediately = false);
 	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
 
 	

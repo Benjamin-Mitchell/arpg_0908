@@ -64,6 +64,11 @@ public:
 	FGameplayTag Abilities_Offensive_Firebolt;
 	FGameplayTag Abilities_Offensive_Electrocute;
 
+	FGameplayTag Abilities_Passive_HaloOfProtection;
+	FGameplayTag Abilities_Passive_LifeSiphon;
+
+	FGameplayTag Abilities_Synchronize_ElectrocuteWithFriends;
+	FGameplayTag Abilities_Synchronize_InControl;
 	
 	FGameplayTag Abilities_Hook;
 	FGameplayTag Abilities_HatProjectileTemp;

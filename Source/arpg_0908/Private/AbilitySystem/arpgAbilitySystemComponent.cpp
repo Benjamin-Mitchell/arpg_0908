@@ -10,7 +10,7 @@ void UarpgAbilitySystemComponent::AbilityActorInfoSet()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UarpgAbilitySystemComponent::ClientEffectApplied);
 }
 
-void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities)
+void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities, bool ActivateImmediately)
 {
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : Abilities)
 	{
@@ -22,13 +22,16 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		}
 
 		FGameplayAbilitySpecHandle Handle = AbilitySpec.Handle;
-		GiveAbility(AbilitySpec);
+
+		if (ActivateImmediately)
+			GiveAbilityAndActivateOnce(AbilitySpec);
+		else
+			GiveAbility(AbilitySpec);
 
 		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
 		
 		OwnedAbilities.Add(FirstTag, Handle);
 		
-		//GiveAbilityAndActivateOnce(AbilitySpec);
 	}
 }
 
@@ -123,7 +126,7 @@ void UarpgAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 }
 
 void UarpgAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec,
-                                                FActiveGameplayEffectHandle ActiveEffectHandle)
+                                                                     FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);

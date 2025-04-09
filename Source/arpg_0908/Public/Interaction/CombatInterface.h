@@ -69,6 +69,9 @@ public:
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetInStaffOverheadChannelingLoop(bool bInLoop);
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetInChannelingLoop(bool bInLoop);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
