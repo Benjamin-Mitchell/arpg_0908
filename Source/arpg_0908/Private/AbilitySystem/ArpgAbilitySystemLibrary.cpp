@@ -268,9 +268,9 @@ void UArpgAbilitySystemLibrary::SetKnockbackForce(FGameplayEffectContextHandle& 
 	}
 }
 
-void UArpgAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
+void UArpgAbilitySystemLibrary::GetLivePlayersWithinSphereRadius(const UObject* WorldContextObject,
                                                            TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius,
-                                                           const FVector& SphereOrigin)
+                                                           const FVector& SphereOrigin, const TArray<FName>& IgnoreTags, bool DrawDebug)
 {
 	FCollisionQueryParams SphereParams;
 	SphereParams.AddIgnoredActors(ActorsToIgnore);
@@ -279,11 +279,60 @@ void UArpgAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	{
 		TArray<FOverlapResult> Overlaps;
 		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(Radius), SphereParams);
+
+		if (DrawDebug) DrawDebugSphere(World, SphereOrigin, Radius, 12, FColor::Green);
+		
 		for (FOverlapResult& Overlap : Overlaps)
 		{
-			if (Overlap.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			if (Overlap.GetActor()->Implements<UCombatInterface>()
+				&& !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
 			{
-				OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+				bool ignore = false;
+				
+				for (FName TagToTest : IgnoreTags)
+				{
+					if (Overlap.GetActor()->ActorHasTag(TagToTest))
+						ignore = true;
+					
+				}
+				
+				if (!ignore)
+					OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
+			}
+		}
+	}
+}
+
+void UArpgAbilitySystemLibrary::GetLivePlayersWithinCircleRadius(const UObject* WorldContextObject,
+														   TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius,
+														   const FVector& SphereOrigin, const TArray<FName>& IgnoreTags, bool DrawDebug)
+{
+	FCollisionQueryParams SphereParams;
+	SphereParams.AddIgnoredActors(ActorsToIgnore);
+	
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		TArray<FOverlapResult> Overlaps;
+		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeCapsule(Radius, 1.0f), SphereParams);
+
+		if (DrawDebug) DrawDebugCapsule(World, SphereOrigin, 1.0f, Radius, FQuat::Identity, FColor::Green);
+		
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			if (Overlap.GetActor()->Implements<UCombatInterface>()
+				&& !ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			{
+				bool ignore = false;
+				
+				for (FName TagToTest : IgnoreTags)
+				{
+					if (Overlap.GetActor()->ActorHasTag(TagToTest))
+						ignore = true;
+					
+				}
+				
+				if (!ignore)
+					OutOverlappingActors.AddUnique(ICombatInterface::Execute_GetAvatar(Overlap.GetActor()));
 			}
 		}
 	}

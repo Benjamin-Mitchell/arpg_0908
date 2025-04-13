@@ -127,9 +127,6 @@ protected:
 	
 	virtual void InitializeDefaultAttributes() const;
 
-	//Hook Target
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void UpdateTraverseTarget(const FVector& target);
 	
 	FTransform TraversalTarget;
 	bool bIsTraversing = false; //While Traversing, cannot use normal movement/input.

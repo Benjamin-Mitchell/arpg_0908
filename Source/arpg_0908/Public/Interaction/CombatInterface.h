@@ -51,6 +51,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& target);
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateTraverseTarget(const FVector& target);
+	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
 
