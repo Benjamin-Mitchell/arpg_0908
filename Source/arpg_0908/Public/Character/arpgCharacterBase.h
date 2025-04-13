@@ -55,7 +55,6 @@ public:
 	
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities, bool ActivateImmediately = false);
 	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
-
 	
 	UPROPERTY(ReplicatedUsing=OnRep_Stunned, BlueprintReadOnly)
 	bool bIsStunned = false;
@@ -168,4 +167,16 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+
+	//DEBUG VARIABLES
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TestScene")
+	float WaitTimeBetweenTestAbilityCasts = 1.0f;
+protected:
+
+	
+	UFUNCTION(BlueprintCallable)
+	TSubclassOf<UGameplayAbility> GetFirstStartupAbility() const {return StartupAbilities[0];};
 };
