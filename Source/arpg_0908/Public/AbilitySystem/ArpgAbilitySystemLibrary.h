@@ -93,4 +93,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|DamageEffect")
 	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& Params);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|DamageEffect")
+	static FVector GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength = 500.0f);
 };

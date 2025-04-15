@@ -13,7 +13,7 @@
 //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("boobs"));
 //GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Health NewValue: %f"), NewValue));
 
-//DrawDebugSphere(GetWorld(), NewTarget->GetActorLocation() , 20, 30, FColor::Blue);
+//DrawDebugSphere(World, Location , 20, 30, FColor::Blue, false, 1.0f);
 
 class FArpgModule : public IModuleInterface
 {

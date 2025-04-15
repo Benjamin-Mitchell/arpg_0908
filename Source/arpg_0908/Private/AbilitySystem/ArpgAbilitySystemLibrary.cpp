@@ -377,3 +377,24 @@ FGameplayEffectContextHandle UArpgAbilitySystemLibrary::ApplyDamageEffect(const 
 	return EffectContextHandle;
 	
 }
+
+FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength)
+{
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		//This, by default, will not trigger overlaps on pawns.
+		ECollisionChannel CollisionChannel = ECollisionChannel::ECC_Visibility;
+		FHitResult Hit;
+		
+		FVector DownVector = FVector(0.0, 0.0, -1.0);
+		FVector EndLocation = InLocation + DownVector * RayLength;
+
+		if (World->LineTraceSingleByChannel(Hit, InLocation, EndLocation, CollisionChannel))
+		{
+			return Hit.Location;
+		}
+		
+	}
+
+	return InLocation;
+}
