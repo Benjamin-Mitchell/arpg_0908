@@ -19,12 +19,14 @@ class ARPG_0908_API AArpgProjectile : public AActor
 public:	
 	AArpgProjectile();
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FDamageEffectParams DamageEffectParams;
 
+	float ProjectileSpeed = 550.f;
+
+	bool CollidesWithPawns = false;
 protected:
 	virtual void BeginPlay() override;
 	void OnHit();
@@ -37,6 +39,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.f;
+	
+	
 	
 	bool bHit = false;
 
