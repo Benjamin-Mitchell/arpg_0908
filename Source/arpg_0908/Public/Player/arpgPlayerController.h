@@ -61,6 +61,8 @@ private:
 	void Interact(const struct FInputActionValue& InputActionValue);
 	void Dance(const struct FInputActionValue& InputActionValue);
 
+	void OnDanceMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
 	UFUNCTION(Server, Reliable)
 	void ServerInteract(AActor* Interacted);
 	

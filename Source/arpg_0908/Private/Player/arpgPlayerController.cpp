@@ -372,13 +372,31 @@ void AarpgPlayerController::Interact(const struct FInputActionValue& InputAction
 
 void AarpgPlayerController::Dance(const struct FInputActionValue& InputActionValue)
 {
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
+	
 	AarpgCharacter* ArpgCharacter = Cast<AarpgCharacter>(GetCharacter());
 	
 	int index = FMath::RandRange(0, ArpgCharacter->DanceMontages.Num() - 1);
 
 	UAnimInstance* AnimInstance = ArpgCharacter->GetMesh()->GetAnimInstance();
-
 	AnimInstance->Montage_Play(ArpgCharacter->DanceMontages[index]);
+
+	//disable inputpress while dancing
+	GetASC()->AddLooseGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed);
+
+	//register a delegate for when the dance montage has ended
+	FOnMontageEnded MontageEndedDelegate;
+	MontageEndedDelegate.BindUObject(this, &AarpgPlayerController::OnDanceMontageEnded);
+	AnimInstance->Montage_SetBlendingOutDelegate(MontageEndedDelegate, ArpgCharacter->DanceMontages[index]);
+	//AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, ArpgCharacter->DanceMontages[index]);
+}
+
+void AarpgPlayerController::OnDanceMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	GetASC()->RemoveLooseGameplayTag(FArpgGameplayTags::Get().Player_Block_InputPressed);
 }
 
 void AarpgPlayerController::ServerInteract_Implementation(AActor* Interacted)
