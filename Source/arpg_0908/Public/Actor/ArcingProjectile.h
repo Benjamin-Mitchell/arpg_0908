@@ -16,8 +16,9 @@ class ARPG_0908_API AArcingProjectile : public AArpgProjectile
 public:
 	AArcingProjectile();
 
-	
+	UPROPERTY(BlueprintReadOnly)
 	FVector ArcTargetLocation;
+	
 protected:
 	virtual void BeginPlay() override;
 

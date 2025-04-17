@@ -23,10 +23,12 @@ void AArcingProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Alpha = Alpha + (DeltaTime / TimeToTarget);
-	
+
 	if (Alpha > 1)
 	{
 		OnHit();
+		OnDestroy(nullptr);
+		Destroy();
 	}
 
 	float Beta = (Alpha - 0.5f) * 2.0f;

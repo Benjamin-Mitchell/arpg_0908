@@ -79,7 +79,7 @@ void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="
 
 		ArcingProjectile->ArcTargetLocation = ProjectileTargetLocation;
 		ArcingProjectile->ProjectileSpeed = ProjectileSpeed;
-		ArcingProjectile->CollidesWithPawns = CollidesWithPawns;
+		ArcingProjectile->CollisionEnabled = ProjectilesShouldCollide;
 		
 		ArcingProjectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults(nullptr);
 

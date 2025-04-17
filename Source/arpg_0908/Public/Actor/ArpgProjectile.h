@@ -26,11 +26,17 @@ public:
 
 	float ProjectileSpeed = 550.f;
 
-	bool CollidesWithPawns = false;
+	bool CollisionEnabled = true;
 protected:
 	virtual void BeginPlay() override;
 	void OnHit();
 	virtual void Destroyed() override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDestroy(AActor* OtherActor);
+
+	UFUNCTION(BlueprintCallable)
+	void DamageTargetASC(AActor* OtherActor);
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -26,7 +26,7 @@ protected:
 	float ProjectileSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool CollidesWithPawns = true;
+	bool ProjectilesShouldCollide = true;
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void FireProjectile(const FVector& ProjectileTargetLocation);

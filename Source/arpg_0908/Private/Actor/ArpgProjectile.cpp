@@ -21,14 +21,8 @@ AArpgProjectile::AArpgProjectile()
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	SetRootComponent(Sphere);
 	Sphere->SetCollisionObjectType(ECC_Projectile);
-	
-	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
 
-	if (CollidesWithPawns)
-		Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 }
 
 void AArpgProjectile::BeginPlay()
@@ -39,6 +33,19 @@ void AArpgProjectile::BeginPlay()
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AArpgProjectile::OnSphereOverlap);
 	
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+	
+	if (CollisionEnabled)
+	{
+		Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+		Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+		Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
+		Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	}
+	else
+	{
+		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 void AArpgProjectile::OnHit()
@@ -66,35 +73,43 @@ void AArpgProjectile::Destroyed()
 	Super::Destroyed();
 }
 
-void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AArpgProjectile::DamageTargetASC(AActor* OtherActor)
 {
 	if (!IsValidOverlap(OtherActor)) return;
 	
+	if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+	{
+		const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+		DamageEffectParams.DeathImpulse = DeathImpulse;
+		const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
+
+		if (bKnockback)
+		{
+			//FRotator Rotation = GetActorRotation();
+
+			FRotator Rotation = (OtherActor->GetActorLocation() - GetActorLocation()).Rotation();
+			Rotation.Pitch = DamageEffectParams.KnockbackPitch;
+			const FVector KnockbackDirection = Rotation.Vector();
+			
+			const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagnitude;
+			DamageEffectParams.KnockbackForce = KnockbackForce;
+		}
+		DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+
+		UArpgAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
+	}
+}
+
+void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{	
+	if (!IsValidOverlap(OtherActor)) return;
+
 	if(!bHit) OnHit();
-		
 
 	if(HasAuthority())
 	{
-		if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-		{
-			const FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
-			DamageEffectParams.DeathImpulse = DeathImpulse;
-			const bool bKnockback = FMath::RandRange(1, 100) < DamageEffectParams.KnockbackChance;
-
-			if (bKnockback)
-			{
-				FRotator Rotation = GetActorRotation();
-				Rotation.Pitch = DamageEffectParams.KnockbackPitch;
-				const FVector KnockbackDirection = Rotation.Vector();
-				const FVector KnockbackForce = KnockbackDirection * DamageEffectParams.KnockbackForceMagnitude;
-				DamageEffectParams.KnockbackForce = KnockbackForce;
-			}
-			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
-
-			UArpgAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
-		}
-		
+		OnDestroy(OtherActor);
 		Destroy();
 	}
 	else
