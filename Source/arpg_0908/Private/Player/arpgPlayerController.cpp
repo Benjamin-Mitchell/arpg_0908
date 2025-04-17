@@ -11,6 +11,7 @@
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "Character/arpgCharacter.h"
 #include "Character/arpgEnemy.h"
 #include "Input/arpgInputComponent.h"
 #include "GameFramework/Character.h"
@@ -323,6 +324,8 @@ void AarpgPlayerController::SetupInputComponent()
 	//Execute the Interact Function if the interact button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(TabAction, ETriggerEvent::Started, this, &AarpgPlayerController::TabTarget);
 
+	//Execute the Dance Function if the Dance button is pressed in the Input Action.
+	ArpgInputComponent->BindAction(DanceAction, ETriggerEvent::Started, this, &AarpgPlayerController::Dance);
 
 	//Bind all other functions to their respective abilities, no need for custom functionality here.
 	ArpgInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
@@ -365,6 +368,17 @@ void AarpgPlayerController::Interact(const struct FInputActionValue& InputAction
 		AActor* Passable = Cast<AActor>(ThisActorHighlighted);
 		ServerInteract(Passable);
 	}
+}
+
+void AarpgPlayerController::Dance(const struct FInputActionValue& InputActionValue)
+{
+	AarpgCharacter* ArpgCharacter = Cast<AarpgCharacter>(GetCharacter());
+	
+	int index = FMath::RandRange(0, ArpgCharacter->DanceMontages.Num() - 1);
+
+	UAnimInstance* AnimInstance = ArpgCharacter->GetMesh()->GetAnimInstance();
+
+	AnimInstance->Montage_Play(ArpgCharacter->DanceMontages[index]);
 }
 
 void AarpgPlayerController::ServerInteract_Implementation(AActor* Interacted)

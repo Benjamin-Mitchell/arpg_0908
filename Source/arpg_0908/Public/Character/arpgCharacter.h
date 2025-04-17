@@ -27,6 +27,9 @@ public:
 	virtual int32 GetPlayerLevel() override;
 
 	void SetHead(AarpgHeadActor* HeadActor);
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<UAnimMontage*> DanceMontages;
 	
 protected:
 

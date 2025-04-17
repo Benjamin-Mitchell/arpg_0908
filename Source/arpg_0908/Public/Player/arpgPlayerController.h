@@ -54,8 +54,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> TabAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> DanceAction;
+	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Interact(const struct FInputActionValue& InputActionValue);
+	void Dance(const struct FInputActionValue& InputActionValue);
 
 	UFUNCTION(Server, Reliable)
 	void ServerInteract(AActor* Interacted);
