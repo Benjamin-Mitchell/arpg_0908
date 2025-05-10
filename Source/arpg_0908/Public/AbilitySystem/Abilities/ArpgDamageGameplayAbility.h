@@ -116,4 +116,17 @@ protected:
 	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages) const;
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector TargetLocation;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float TraversalDistanceMin = 0.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float TraversalDistanceMax = 0.f;
+
+	UFUNCTION(BlueprintCallable)
+	void SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor);
+
 };

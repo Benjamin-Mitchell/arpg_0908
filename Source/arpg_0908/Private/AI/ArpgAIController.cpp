@@ -15,3 +15,15 @@ AArpgAIController::AArpgAIController()
 	check(BehaviorTreeComponent);
 	
 }
+
+void AArpgAIController::CustomTeleportToLocation(const FVector& NewLocation)
+{
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		// Stop active movement
+		StopMovement();
+
+		// Teleport with collision checks
+		ControlledPawn->SetActorLocation(NewLocation, false, nullptr, ETeleportType::TeleportPhysics);
+	}
+}

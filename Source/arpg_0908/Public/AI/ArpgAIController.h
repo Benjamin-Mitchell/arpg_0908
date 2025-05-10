@@ -19,8 +19,9 @@ class ARPG_0908_API AArpgAIController : public AAIController
 
 public:
 	AArpgAIController();
-	
 
+	UFUNCTION(BlueprintCallable)
+	void CustomTeleportToLocation(const FVector& NewLocation);
 
 protected:
 

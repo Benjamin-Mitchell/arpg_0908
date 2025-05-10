@@ -68,6 +68,8 @@ public:
 	UFUNCTION()
 	virtual void Onrep_Burned();
 	
+	UFUNCTION(BlueprintCallable)
+	void SetCapsulePawnCollisionEnabled(const bool Enabled);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -94,6 +96,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName RightFootSocketName;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName UpperChestSocketName;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName HeadSocketName;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName CustomOrDebugSocketName;

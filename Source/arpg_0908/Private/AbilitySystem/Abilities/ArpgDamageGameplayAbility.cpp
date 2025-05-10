@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "ArpgGameplayTags.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 
 void UArpgDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 {
@@ -66,5 +67,44 @@ FTaggedMontage UArpgDamageGameplayAbility::GetRandomTaggedMontageFromArray(
 	}
 	return FTaggedMontage();
 }
+
+//Sets Rotation (Facing) and Movement (Traversal) Targets. Call before animation trigger
+void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor)
+{
+	
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);	
+	
+	if (IsValid(TargetActor))
+	{
+		TargetLocation = TargetActor->GetActorLocation();
+
+		CombatInterface->Execute_UpdateFacingTarget(AvatarActor, TargetLocation);
+
+		//Check length of avatar -> target, clamp the traversal target within min/max
+		FVector ToTarget = TargetLocation - AvatarActor->GetActorLocation();
+		float TraversalDistance = (ToTarget).Length();
+		TraversalDistance = FMath::Clamp(TraversalDistance, TraversalDistanceMin, TraversalDistanceMax);
+
+		TargetLocation = AvatarActor->GetActorLocation() + ToTarget.Normalize() * TraversalDistance;
+	}
+	else
+	{		
+		TargetLocation = AvatarActor->GetActorLocation();
+		
+		//Move the minimum traversal distance, in the direction we are facing already
+		TargetLocation += AvatarActor->GetActorForwardVector() * TraversalDistanceMin;
+	}
+	
+	FVector TraverseTarget;
+	if (SnapToFloorBelowTarget)
+		TraverseTarget = UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(AvatarActor, TargetLocation);
+	else
+		TraverseTarget = TargetLocation;
+
+	CombatInterface->Execute_UpdateTraverseTarget(AvatarActor, TraverseTarget);
+
+}
+
 
 

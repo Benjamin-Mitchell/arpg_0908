@@ -79,6 +79,8 @@ public:
 	FGameplayTag Montage_Attack_LeftHand;
 	FGameplayTag Montage_Attack_RightFoot;
 	FGameplayTag Montage_Attack_LeftFoot;
+	FGameplayTag Montage_Attack_UpperChest;
+	FGameplayTag Montage_Attack_Head;
 
 	//Line-Trace Tags
 	FGameplayTag Montage_Attack_DamageTraceBegin;

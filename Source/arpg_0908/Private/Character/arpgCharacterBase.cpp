@@ -135,6 +135,14 @@ void AarpgCharacterBase::Onrep_Burned()
 {
 }
 
+void AarpgCharacterBase::SetCapsulePawnCollisionEnabled(const bool Enabled)
+{
+	if (Enabled)
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	else
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
 void AarpgCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -165,6 +173,16 @@ FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 	{
 		return GetMesh()->GetSocketLocation(RightFootSocketName);
 	}
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_UpperChest))
+	{
+		return GetMesh()->GetSocketLocation(UpperChestSocketName);
+	}
+
+	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Head))
+	{
+		return GetMesh()->GetSocketLocation(HeadSocketName);
+	}
+
 
 	if(MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_DamageTraceBegin))
 	{
