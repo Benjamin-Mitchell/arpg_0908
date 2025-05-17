@@ -13,6 +13,8 @@
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "Character/arpgCharacter.h"
 #include "Character/arpgEnemy.h"
+#include "Game/ArpgGameModeBase.h"
+#include "Game/ArpgGameState.h"
 #include "Input/arpgInputComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -280,6 +282,11 @@ void AarpgPlayerController::TabTarget(const struct FInputActionValue& InputActio
 }
 
 
+void AarpgPlayerController::ServerReportCardVote_Implementation(int voteIndex)
+{
+	AArpgGameState* GameState = Cast<AArpgGameState>(GetWorld()->GetGameState());
+	GameState->PassVoteToGameMode(voteIndex, this);
+}
 
 void AarpgPlayerController::BeginPlay()
 {

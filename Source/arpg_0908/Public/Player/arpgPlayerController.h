@@ -36,6 +36,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
 
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void ServerReportCardVote(int voteIndex);
+
 protected:
 
 	virtual void BeginPlay() override;

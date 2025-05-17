@@ -3,14 +3,36 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CardProgressData.h"
 #include "Engine/GameInstance.h"
 #include "ArpgGameInstance.generated.h"
 
 enum EGameState
 {
 	GameState_Menu,
-	GameState_GameHost,
-	GameState_GameClient
+	GameState_GameClient,
+	GameState_GameHost
+};
+
+USTRUCT()
+struct FCardDecisions
+{
+	GENERATED_BODY()
+
+	// Add this to enable network serialization
+	//bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
+
+	UPROPERTY()	//MUST BE UPROPERTIES FOR SERIALIZATION
+	int CurrentStage;
+	
+	UPROPERTY()
+	int FirstCardChoiceIndex;
+
+	UPROPERTY()
+	int SecondCardChoiceIndex;
+	
+	UPROPERTY()
+	int ThirdCardChoiceIndex;
 };
 
 /**
@@ -37,13 +59,25 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameStart")
 	void LeftGame();
+
+	void NotifyLevelComplete(FCardDecisions& OutCurrentCardDecisions);
 	
+	void NotifyLevelSelectionConfirmed(int CardIndex);
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;
 
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Game Data")
+	TObjectPtr<UCardProgressData> CardProgressData;
 	
 private:
+
+	int CurrentStage;
 	EGameState GameState;
+
+	FCardDecisions CurrentCardDecisions;
+	FCardDecisions MakeCardDecisions();
+
+	void LoadMapWithCallback(const FString& MapName);
+	
 };
