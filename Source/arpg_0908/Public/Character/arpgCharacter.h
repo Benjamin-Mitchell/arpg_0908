@@ -28,7 +28,7 @@ public:
 
 	void SetHead(AarpgHeadActor* HeadActor);
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meme stuff")
 	TArray<UAnimMontage*> DanceMontages;
 	
 protected:

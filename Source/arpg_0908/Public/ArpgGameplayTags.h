@@ -44,6 +44,8 @@ public:
 	FGameplayTag InputTag_4;
 	FGameplayTag InputTag_Interact;
 	FGameplayTag InputTag_Dodge;
+	FGameplayTag InputTag_Dance;
+	
 
 	FGameplayTag Damage;
 

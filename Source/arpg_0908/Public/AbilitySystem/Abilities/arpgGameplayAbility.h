@@ -17,4 +17,5 @@ class ARPG_0908_API UarpgGameplayAbility : public UGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag StartupInputTag;
+
 };
