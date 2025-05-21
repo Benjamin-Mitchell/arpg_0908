@@ -96,4 +96,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|DamageEffect")
 	static FVector GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength = 500.0f);
+
+	UFUNCTION(BlueprintPure, Category = "Ability|Prediction", meta = (DisplayName = "Get Ability Prediction Key"))
+	static int32 GetAbilityPredictionKey(const FGameplayAbilityActivationInfo& ActivationInfo);
 };

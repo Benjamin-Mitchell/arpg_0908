@@ -398,3 +398,8 @@ FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* 
 
 	return InLocation;
 }
+
+int32 UArpgAbilitySystemLibrary::GetAbilityPredictionKey(const FGameplayAbilityActivationInfo& ActivationInfo)
+{
+	return ActivationInfo.GetActivationPredictionKey().Current;
+}
