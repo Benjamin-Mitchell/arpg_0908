@@ -61,8 +61,16 @@ public:
 	void LeftGame();
 
 	void NotifyLevelComplete(FCardDecisions& OutCurrentCardDecisions);
+
+	UFUNCTION(BlueprintCallable, Category = "GameStart")
+	void NotifyPlayerReadyComplete(int NumPlayers);
+
+	UFUNCTION(BlueprintCallable, Category = "GameStart")
+	bool AreAllPlayersConnected(int InNumPlayers);
 	
 	void NotifyLevelSelectionConfirmed(int CardIndex);
+
+	bool HasBeenThroughIntroMap = false;
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -72,6 +80,7 @@ protected:
 	
 private:
 
+	int NumPlayersThisGame;
 	int CurrentStage;
 	EGameState GameState;
 

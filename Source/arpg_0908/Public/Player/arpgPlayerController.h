@@ -39,6 +39,7 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void ServerReportCardVote(int voteIndex);
 
+
 protected:
 
 	virtual void BeginPlay() override;

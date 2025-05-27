@@ -32,6 +32,17 @@ void UArpgGameInstance::NotifyLevelComplete(FCardDecisions& OutCurrentCardDecisi
 	
 }
 
+void UArpgGameInstance::NotifyPlayerReadyComplete(int NumPlayers)
+{
+	NumPlayersThisGame = NumPlayers;
+	HasBeenThroughIntroMap = true;
+}
+
+bool UArpgGameInstance::AreAllPlayersConnected(int InNumPlayers)
+{
+	return InNumPlayers == NumPlayersThisGame;
+}
+
 void UArpgGameInstance::NotifyLevelSelectionConfirmed(int CardIndex)
 {
 	TArray<FCardProperties> CardProperties = CardProgressData->CardPropertiesByStage[CurrentStage].CardPropertiesPossibilities;
