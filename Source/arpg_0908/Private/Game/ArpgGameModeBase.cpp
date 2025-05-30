@@ -3,6 +3,8 @@
 
 #include "Game/ArpgGameModeBase.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "EngineUtils.h"
 #include "Game/ArpgGameInstance.h"
 #include "Game/ArpgGameState.h"
@@ -194,7 +196,18 @@ void AArpgGameModeBase::SpawnPlayersManually()
 				FTransform SpawnTransform = PlayerStartActor->GetActorTransform();
 				APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterClassToSpawn, SpawnTransform);
 
+				 UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SpawnedCharacter);
+				
 				PlayerController->Possess(SpawnedCharacter);
+				
+				if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(SpawnedCharacter))
+				{
+					CharacterBase->OnCustomSpawned();
+				}
+				// FGameplayAbilitySpec SpawnSpec(SpawnAbilityClass);
+				// ASC->GiveAbilityAndActivateOnce();
+				
+
 				//PlayerController->SpawnAnimOrSomething
 			}
 		}
