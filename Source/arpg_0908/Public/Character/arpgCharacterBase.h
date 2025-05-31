@@ -8,6 +8,7 @@
 #include "Interaction/CombatInterface.h"
 #include "arpgCharacterBase.generated.h"
 
+class UArpgTemporaryTextComponent;
 class UDebuffNiagaraComponent;
 class UGameplayAbility;
 class UGameplayEffect;
@@ -75,6 +76,13 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCustomSpawned();
+
+	UFUNCTION(BlueprintCallable)
+	void ShowSpeechBP(FString Text, float Duration, FVector LocalOffset);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastShowSpeech(const FString& Text, float Duration, FVector LocalOffset);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -176,6 +184,10 @@ protected:
 	float BaseWalkSpeed = 250.f;
 	
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UArpgTemporaryTextComponent> SpeechTextComponentClass;
+	
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

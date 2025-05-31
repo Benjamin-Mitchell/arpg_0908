@@ -10,6 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "UI/Widget/ArpgTemporaryTextComponent.h"
 
 AarpgCharacterBase::AarpgCharacterBase()
 {
@@ -141,6 +142,35 @@ void AarpgCharacterBase::SetCapsulePawnCollisionEnabled(const bool Enabled)
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	else
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void AarpgCharacterBase::ShowSpeechBP(FString Text, float Duration, FVector LocalOffset)
+{
+	if (HasAuthority())
+	{
+		MulticastShowSpeech(Text, Duration, LocalOffset);
+	}
+}
+
+void AarpgCharacterBase::MulticastShowSpeech_Implementation(const FString& Text, float Duration, FVector LocalOffset)
+{
+	if(SpeechTextComponentClass)
+	{
+		UArpgTemporaryTextComponent* SpeechText = NewObject<UArpgTemporaryTextComponent>(this, SpeechTextComponentClass);
+		SpeechText->RegisterComponent();
+
+		//Attach to set location, immediately detach.
+		SpeechText->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+		FTransform TempTransform(FQuat::Identity, LocalOffset, FVector::OneVector);
+		SpeechText->AddLocalTransform(TempTransform);
+
+		//SpeechText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		SpeechText->SetTemporaryText(Text, Duration);
+
+		
+	}
 }
 
 void AarpgCharacterBase::BeginPlay()

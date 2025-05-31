@@ -11,6 +11,7 @@
 //forward declaration to avoid including header files.
 
 
+class UArpgTemporaryTextComponent;
 class AarpgHeadActor;
 class UDamageTextComponent;
 struct FGameplayTag;
@@ -87,6 +88,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UArpgTemporaryTextComponent> SpeechTextComponentClass;
 
 	//TObjectPtr<UCharacterMovementComponent> moveComponent;
 

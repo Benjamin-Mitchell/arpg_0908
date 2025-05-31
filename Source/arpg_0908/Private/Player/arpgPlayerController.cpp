@@ -19,6 +19,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/CombatInterface.h"
+#include "UI/Widget/ArpgTemporaryTextComponent.h"
 #include "UI/Widget/DamageTextComponent.h"
 
 
