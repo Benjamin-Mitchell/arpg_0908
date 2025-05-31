@@ -165,16 +165,17 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 	{
 		//Then we can start a timer to trigger the game start logic manually.
 		//We use a counter to allow time for all clients to join in Editor.
-		GetWorld()->GetTimerManager().ClearTimer(EditorGameStartTimerHandle);
-	
+		//GetWorld()->GetTimerManager().ClearTimer(EditorGameStartTimerHandle);
+
+		LevelBegin();
 		// Set a timer for when countdown ends
-		GetWorld()->GetTimerManager().SetTimer(
-			CountdownTimerHandle,
-			this,
-			&AArpgGameModeBase::LevelBegin,
-			1.0,
-			false // Don't loop
-		);	
+		// GetWorld()->GetTimerManager().SetTimer(
+		// 	CountdownTimerHandle,
+		// 	this,
+		// 	&AArpgGameModeBase::LevelBegin,
+		// 	1.0,
+		// 	false // Don't loop
+		// );	
 	}
 
 
