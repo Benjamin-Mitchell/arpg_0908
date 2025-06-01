@@ -77,12 +77,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCustomSpawned();
 
-	UFUNCTION(BlueprintCallable)
-	void ShowSpeechBP(FString Text, float Duration, FVector LocalOffset);
-	
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastShowSpeech(const FString& Text, float Duration, FVector LocalOffset);
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

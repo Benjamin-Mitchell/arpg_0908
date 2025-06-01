@@ -167,7 +167,6 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 		//We use a counter to allow time for all clients to join in Editor.
 		//GetWorld()->GetTimerManager().ClearTimer(EditorGameStartTimerHandle);
 
-		LevelBegin();
 		// Set a timer for when countdown ends
 		// GetWorld()->GetTimerManager().SetTimer(
 		// 	CountdownTimerHandle,
@@ -175,7 +174,9 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 		// 	&AArpgGameModeBase::LevelBegin,
 		// 	1.0,
 		// 	false // Don't loop
-		// );	
+		// );
+		
+		LevelBegin();
 	}
 
 
@@ -205,11 +206,6 @@ void AArpgGameModeBase::SpawnPlayersManually()
 				{
 					CharacterBase->OnCustomSpawned();
 				}
-				// FGameplayAbilitySpec SpawnSpec(SpawnAbilityClass);
-				// ASC->GiveAbilityAndActivateOnce();
-				
-
-				//PlayerController->SpawnAnimOrSomething
 			}
 		}
 	}
