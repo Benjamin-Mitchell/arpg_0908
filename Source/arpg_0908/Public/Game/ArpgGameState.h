@@ -7,6 +7,8 @@
 #include "GameFramework/GameState.h"
 #include "ArpgGameState.generated.h"
 
+class ALevelSequenceActor;
+class ULevelSequence;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnVoteCast, int, APlayerController*);
 
 struct FCardDecisions;
@@ -48,9 +50,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game Data")
 	TObjectPtr<UCardProgressData> CardProgressData;
 
-
 	int RemainingSecondsOnCountdown;
 	FTimerHandle CountdownTimerPerSecondHandle;
-	
-	
 };

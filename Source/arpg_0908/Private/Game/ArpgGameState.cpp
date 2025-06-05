@@ -3,6 +3,8 @@
 
 #include "Game/ArpgGameState.h"
 
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
 #include "Game/ArpgGameInstance.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Net/UnrealNetwork.h"

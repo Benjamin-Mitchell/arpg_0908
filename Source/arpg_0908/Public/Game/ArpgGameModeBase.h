@@ -9,6 +9,9 @@
 #include "ArpgGameModeBase.generated.h"
 
 
+class UCameraComponent;
+class ULevelSequence;
+class AarpgPlayerController;
 class AarpgCharacter;
 class UHeadData;
 class UCharacterClassInfo;
@@ -55,7 +58,14 @@ protected:
 
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnPlayersManually();
+	TArray<AarpgPlayerController*> SpawnPlayersManually();
+	
+	UFUNCTION(BlueprintCallable)
+	void BeginIntroCinematic(ULevelSequence* LevelSequenceAsset, FTransform SpawnTransform);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void IntroEnded();
+	
 private:
 	bool LevelCompleted = false;
 
@@ -70,8 +80,16 @@ private:
 	bool LevelBegun = false;
 
 	int PlayerSpawnStartOffset = 0;
+
+	UFUNCTION()
+	void HandleIntroCameraCut(UCameraComponent* CameraComponent);
+
+	UFUNCTION()
+	void HandleIntroEnd();
+	
 	
 #if WITH_EDITOR
 	FTimerHandle EditorGameStartTimerHandle;
 #endif
 };
+

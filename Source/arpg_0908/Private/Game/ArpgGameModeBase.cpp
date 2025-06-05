@@ -6,12 +6,15 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "EngineUtils.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
 #include "Game/ArpgGameInstance.h"
 #include "Game/ArpgGameState.h"
 #include "Game/ArpgPlayerStart.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/arpgCharacter.h"
+#include "Player/arpgPlayerController.h"
 
 
 AActor* AArpgGameModeBase::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
@@ -61,6 +64,8 @@ AActor* AArpgGameModeBase::FindPlayerStart_Implementation(AController* Player, c
 	return Super::FindPlayerStart_Implementation(Player, IncomingName);
 		
 }
+
+
 
 void AArpgGameModeBase::LevelComplete()
 {
@@ -186,19 +191,23 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 	
 }
 
-void AArpgGameModeBase::SpawnPlayersManually()
+TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 {
+	TArray<AarpgPlayerController*> PlayerControllers;
+	
 	if (UArpgGameInstance* ArpgGameInstance = Cast<UArpgGameInstance>(GetGameInstance()))
 	{
 		for (int i = 0; i < GetNumPlayers(); i++)
 		{
 			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), i))
 			{
+				PlayerControllers.Add(Cast<AarpgPlayerController>(PlayerController));
+				
 				AActor* PlayerStartActor = FindPlayerStart(PlayerController);
 				FTransform SpawnTransform = PlayerStartActor->GetActorTransform();
 				APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterClassToSpawn, SpawnTransform);
 
-				 UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SpawnedCharacter);
+				UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SpawnedCharacter);
 				
 				PlayerController->Possess(SpawnedCharacter);
 				
@@ -209,6 +218,55 @@ void AArpgGameModeBase::SpawnPlayersManually()
 			}
 		}
 	}
+	
+	return PlayerControllers;
+}
+
+void AArpgGameModeBase::BeginIntroCinematic(ULevelSequence* LevelSequenceAsset, FTransform SpawnTransform)
+{
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.ObjectFlags |= RF_Transient;
+	SpawnParams.bAllowDuringConstructionScript = true;
+
+	// Defer construction for autoplay so that BeginPlay() is called
+	SpawnParams.bDeferConstruction = true;
+	
+	// Spawn the Level Sequence Actor
+	ALevelSequenceActor* SequenceActor = GetWorld()->SpawnActor<ALevelSequenceActor>(
+		ALevelSequenceActor::StaticClass(),
+		SpawnTransform
+	);
+	
+	SequenceActor->SetReplicates(true);
+
+	FMovieSceneSequencePlaybackSettings PlaybackSettings;
+	//PlaybackSettings.bAutoPlay = true;
+	SequenceActor->PlaybackSettings = PlaybackSettings;
+	SequenceActor->GetSequencePlayer()->SetPlaybackSettings(PlaybackSettings);
+
+	SequenceActor->SetSequence(LevelSequenceAsset);
+
+	SequenceActor->InitializePlayer();
+
+	//equenceActor->FinishSpawning(SpawnTransform);
+
+	SequenceActor->GetSequencePlayer()->Play();
+
+	//Now we need PlayerControllers to attach to a delegate for OnCameraCutEnd
+	//SequenceActor->GetSequencePlayer()->OnCameraCut.AddDynamic(this, &AArpgGameModeBase::HandleIntroCameraCut); //Unfortunately this only calls on beginning of camera cut.
+	SequenceActor->GetSequencePlayer()->OnFinished.AddDynamic(this, &AArpgGameModeBase::HandleIntroEnd);
+}
+
+void AArpgGameModeBase::HandleIntroCameraCut(UCameraComponent* CameraComponent)
+{
+
+}
+
+void AArpgGameModeBase::HandleIntroEnd()
+{
+	IntroEnded();
 }
 
 void AArpgGameModeBase::StartNextLevelCountdown(int HighestVoteIndex)

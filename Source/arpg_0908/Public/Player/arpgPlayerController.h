@@ -11,6 +11,7 @@
 //forward declaration to avoid including header files.
 
 
+class ULevelSequence;
 class UArpgTemporaryTextComponent;
 class AarpgHeadActor;
 class UDamageTextComponent;
@@ -40,6 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void ServerReportCardVote(int voteIndex);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void RevertToNormalCamera();
 
 protected:
 
@@ -60,12 +63,13 @@ private:
 	TObjectPtr<UInputAction> TabAction;
 
 	
+	virtual void AcknowledgePossession(class APawn* P) override;
+	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Interact(const struct FInputActionValue& InputActionValue);
 
 	UFUNCTION(Server, Reliable)
 	void ServerInteract(AActor* Interacted);
-	
 
 	void CursorTrace();
 	

@@ -9,6 +9,8 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagContainer.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "Character/arpgCharacter.h"
@@ -64,6 +66,13 @@ void AarpgPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 
 		DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
 	}
+}
+
+void AarpgPlayerController::AcknowledgePossession(class APawn* P)
+{
+	Super::AcknowledgePossession(P);
+
+	RevertToNormalCamera();
 }
 
 void AarpgPlayerController::CursorTrace()

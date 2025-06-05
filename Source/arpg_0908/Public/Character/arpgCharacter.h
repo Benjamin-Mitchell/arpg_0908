@@ -6,6 +6,7 @@
 #include "Character/arpgCharacterBase.h"
 #include "arpgCharacter.generated.h"
 
+class UCameraComponent;
 class AarpgHeadActor;
 class UHeadData;
 /**
@@ -30,7 +31,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meme stuff")
 	TArray<UAnimMontage*> DanceMontages;
-	
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
@@ -58,6 +58,9 @@ protected:
 
 	virtual void Onrep_Burned() override;
 private:
+
+	
+	
 	virtual void InitAbilityActorInfo() override;
 
 	void HandlePlayerHighlight();
