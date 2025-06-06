@@ -42,6 +42,7 @@ public:
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
+	FGameplayTag InputTag_5;
 	FGameplayTag InputTag_Interact;
 	FGameplayTag InputTag_Dodge;
 	FGameplayTag InputTag_Dance;
@@ -61,7 +62,7 @@ public:
 
 	TArray<FGameplayTag> DebuffTags;
 
-	
+	//Ability Tags 
 	FGameplayTag Abilities_Offensive_Attack;
 	FGameplayTag Abilities_Offensive_Firebolt;
 	FGameplayTag Abilities_Offensive_Electrocute;
@@ -76,6 +77,10 @@ public:
 	FGameplayTag Abilities_HatProjectileTemp;
 	FGameplayTag Abilities_DodgeRoll;
 
+	//Cooldown Tags
+	FGameplayTag Cooldown_Offensive_BasicAttack;
+
+	//Montage Tags
 	FGameplayTag Montage_Attack_Weapon;
 	FGameplayTag Montage_Attack_RightHand;
 	FGameplayTag Montage_Attack_LeftHand;

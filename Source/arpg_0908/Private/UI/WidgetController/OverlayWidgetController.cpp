@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/arpgAttributeSet.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -15,6 +16,14 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	
 	OnManaChanged.Broadcast(arpgAttributeSet->GetMana());
 	OnMaxManaChanged.Broadcast(arpgAttributeSet->GetMaxMana());
+
+	if (UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (ArpgASC->bStartupAbilitiesGiven)
+		{
+			OnInitializeStartupAbilities(ArpgASC);
+		}
+	}
 
 }
 
@@ -50,19 +59,50 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		}
 	);
 
-	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[this](const FGameplayTagContainer& AssetTags)
+	if (UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (ArpgASC->bStartupAbilitiesGiven)
 		{
-			for(const FGameplayTag& Tag : AssetTags)
-			{
+			OnInitializeStartupAbilities(ArpgASC);	
+		}
+		else
+		{
+			ArpgASC->AbilitiesGiven.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
+		}
+		
 
-				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-				if(Tag.MatchesTag(MessageTag))
+		ArpgASC->EffectAssetTags.AddLambda(
+			[this](const FGameplayTagContainer& AssetTags)
+			{
+				for(const FGameplayTag& Tag : AssetTags)
 				{
-					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-					MessageWidgetRowDelegate.Broadcast(*Row);
+
+					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+					if(Tag.MatchesTag(MessageTag))
+					{
+						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+						MessageWidgetRowDelegate.Broadcast(*Row);
+					}
 				}
 			}
-		}
-	);
+		);
+	}
+}
+
+void UOverlayWidgetController::OnInitializeStartupAbilities(UarpgAbilitySystemComponent* ArpgAbilitySystemComponent)
+{
+	if (!ArpgAbilitySystemComponent->bStartupAbilitiesGiven) return;
+
+	//This is quite cool. We create a lambda function that constructs some ability info from an input spec and ASC.
+	//We then bound it to "For Each Ability", so that each ability spec executes this function.
+	FForEachAbility BroadcastDelegate;
+	BroadcastDelegate.BindLambda([this, ArpgAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
+	{
+		FArpgAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(ArpgAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
+		Info.InputTag = ArpgAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
+		//Internally, this delegate broadcasts another delegate that widget components can bind to!
+		AbilityInfoDelegate.Broadcast(Info);
+	});
+	
+	ArpgAbilitySystemComponent->ForEachAbility(BroadcastDelegate);
 }

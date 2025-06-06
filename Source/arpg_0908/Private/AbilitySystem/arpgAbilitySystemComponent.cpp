@@ -4,6 +4,7 @@
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/Abilities/arpgGameplayAbility.h"
+#include "arpg_0908/ArpgLogChannels.h"
 
 void UarpgAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -32,6 +33,67 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		
 		OwnedAbilities.Add(FirstTag, Handle);
 		
+	}
+	
+	bStartupAbilitiesGiven = true;
+	AbilitiesGiven.Broadcast(this);
+}
+
+void UarpgAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
+{
+	//Lock changes to the activatable list
+	FScopedAbilityListLock ActiveScopeLock(*this);
+	
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (!Delegate.ExecuteIfBound(AbilitySpec))
+		{
+			UE_LOG(LogArpg, Error, TEXT("Failed to execute delegate in %hs"), __FUNCTION__);
+		}
+	}
+}
+
+FGameplayTag UarpgAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.Ability)
+	{
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities"))))
+			{
+				return Tag;
+			}
+		}
+	}
+
+	return FGameplayTag();
+}
+
+FGameplayTag UarpgAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.Ability)
+	{
+		for (FGameplayTag Tag : AbilitySpec.GetDynamicSpecSourceTags())
+		{
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
+			{
+				return Tag;
+			}
+		}
+	}
+	
+	return FGameplayTag();
+}
+
+void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+	//This will run on the clients, where bStartupAbilitiesGiven will still be false. (Will be true on server)
+	if (!bStartupAbilitiesGiven)
+	{
+		bStartupAbilitiesGiven = true;
+		AbilitiesGiven.Broadcast(this);
 	}
 }
 

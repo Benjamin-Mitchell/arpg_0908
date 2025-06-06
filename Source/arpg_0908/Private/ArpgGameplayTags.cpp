@@ -8,6 +8,7 @@ FArpgGameplayTags FArpgGameplayTags::GameplayTags;
 
 void FArpgGameplayTags::InitializeNativeGameplayTags()
 {
+	//Attribute Tags
 	GameplayTags.Attributes_Power_AttackDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Power.AttackDamage"));
 	GameplayTags.Attributes_Power_AbilityPower = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Power.AbilityPower"));
 	
@@ -29,12 +30,14 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Primary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Vigor"));
 
 
+	//Input Tags - used for tying abilities and UI elements to inputs.
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.LMB"));
 	GameplayTags.InputTag_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.RMB"));
 	GameplayTags.InputTag_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.1"));
 	GameplayTags.InputTag_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.2"));
 	GameplayTags.InputTag_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.3"));
 	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.4"));
+	GameplayTags.InputTag_5 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.5"));
 	GameplayTags.InputTag_Interact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Interact"));
 	GameplayTags.InputTag_Dodge = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Dodge"));
 	GameplayTags.InputTag_Dance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Dance"));
@@ -42,6 +45,7 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"),
 		FString("Tag for assigning magnitude of ability specs (amount of damage to do)"));
 
+	//Debuff Tags - used for passing debuffs across the network to notify clients when an ability has a debuff
 	GameplayTags.Debuff_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Burn"));
 	GameplayTags.DebuffTags.Add(GameplayTags.Debuff_Burn);
 	GameplayTags.Debuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Stun"));
@@ -53,6 +57,7 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Damage"));
 	
 
+	//Ability Tags - Used for tying gameplay and UI elements to equipped abilities
 	GameplayTags.Abilities_Offensive_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Attack"));
 	GameplayTags.Abilities_Offensive_Firebolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Firebolt"));
 	GameplayTags.Abilities_Offensive_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Offensive.Electrocute"));
@@ -67,11 +72,16 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_HatProjectileTemp = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HatProjectileTemp"));
 	GameplayTags.Abilities_DodgeRoll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.DodgeRoll"));
 
+	//Cooldown tags
+	GameplayTags.Cooldown_Offensive_BasicAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Offensive.BasicAttack"));
+
+	//Effect tags
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"));
 	GameplayTags.Effects_HookPull = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HookPull"));
 	GameplayTags.Effects_DodgeRoll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.DodgeRoll"));
 
 
+	//Montage tags, used for signalling in montages when a specific attack is happening (one of the basic ones where damaged is applied around socket locations)
 	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.Weapon"));
 	GameplayTags.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.RightHand"));
 	GameplayTags.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.LeftHand"));
@@ -83,7 +93,8 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_Attack_DamageTraceBegin = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.DamageTraceBegin"));
 	GameplayTags.Montage_Attack_DamageTraceEnd = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.DamageTraceEnd"));
 	GameplayTags.Montage_Attack_CustomOrDebug = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.CustomOrDebug"));
-	
+
+	//Block tags, used for preventing player actions during other actions (e.g. disable movement during stun)
 	GameplayTags.Player_Block_InputPressed = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputPressed"));
 	GameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputHeld"));
 	GameplayTags.Player_Block_InputReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputReleased"));
