@@ -65,6 +65,9 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void IntroEnded();
+
+	UPROPERTY(EditDefaultsOnly)
+	bool DebugSkipCinematic = false;
 	
 private:
 	bool LevelCompleted = false;
