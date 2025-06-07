@@ -44,7 +44,7 @@ void UWaitCooldownChange::CooldownTagChanged(const FGameplayTag InCooldownTag, i
 {
 	if (NewCount == 0)
 	{
-		OnCooldownEnded.Broadcast(0.f);
+		OnCooldownEnded.Broadcast(0.f, InCooldownTag);
 	}
 }
 
@@ -73,8 +73,8 @@ void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* TargetASC
 					TimeRemaining = TimesRemaining[i];
 				}
 			}
-						
-			OnCooldownBegan.Broadcast(TimeRemaining);
+
+			OnCooldownBegan.Broadcast(TimeRemaining, CooldownTag);
 		}
 	}
 }

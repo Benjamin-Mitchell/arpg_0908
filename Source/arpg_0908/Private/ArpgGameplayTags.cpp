@@ -73,7 +73,16 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Abilities_DodgeRoll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.DodgeRoll"));
 
 	//Cooldown tags
-	GameplayTags.Cooldown_Offensive_BasicAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Offensive.BasicAttack"));
+	GameplayTags.Cooldown_Weapon_BasicAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Weapon.BasicAttack"));
+	GameplayTags.Cooldown_Weapon_SecondaryAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Weapon.Secondary"));
+	
+	GameplayTags.Cooldown_Head_Ability1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Head.Ability1"));
+	GameplayTags.Cooldown_Head_Ability2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Head.Ability2"));
+	GameplayTags.Cooldown_Head_Ability3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Head.Ability3"));
+
+	GameplayTags.Cooldown_Utility_Ability1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Utility.Ability1"));
+	GameplayTags.Cooldown_Utility_Ability2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Utility.Ability2"));
+	
 
 	//Effect tags
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"));

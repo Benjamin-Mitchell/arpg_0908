@@ -11,8 +11,9 @@ struct FGameplayEffectSpec;
 struct FActiveGameplayEffectHandle;
 class UAbilitySystemComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChangedSignature, float, TimeRemaining);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChangedSignature, float, TimeRemaining);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCooldownChangedSignature, float, TimeRemaining, FGameplayTag, CooldownTag);
 /**
  * 
  */

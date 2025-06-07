@@ -225,6 +225,12 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 void AArpgGameModeBase::BeginIntroCinematic(ULevelSequence* LevelSequenceAsset, FTransform SpawnTransform)
 {
 
+	if (DebugSkipCinematic)
+	{
+		HandleIntroEnd();
+		return;
+	}
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.ObjectFlags |= RF_Transient;

@@ -12,6 +12,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FAbilitiesGiven, UarpgAbilitySystemComponent
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /*Ablity Tag*/)
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&)
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityActivateFailed, const FGameplayTag&, FailedInputTag);
+
 /**
  * 
  */
@@ -25,6 +27,9 @@ public:
 	FEffectAssetTags EffectAssetTags;
 	FAbilitiesGiven AbilitiesGiven;
 	FDeactivatePassiveAbility DeactivatePassiveAbility;
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
+	FAbilityActivateFailed AbilityActivateFailed;
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities, bool ActivateImmediately = false);
 	void RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities);
@@ -48,5 +53,6 @@ protected:
 
 private:
 
+	bool bReleasedPress = false;
 	TMap<FGameplayTag,  FGameplayAbilitySpecHandle> OwnedAbilities;
 };

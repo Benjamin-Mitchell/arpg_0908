@@ -78,7 +78,13 @@ public:
 	FGameplayTag Abilities_DodgeRoll;
 
 	//Cooldown Tags
-	FGameplayTag Cooldown_Offensive_BasicAttack;
+	FGameplayTag Cooldown_Weapon_BasicAttack;
+	FGameplayTag Cooldown_Weapon_SecondaryAttack;
+	FGameplayTag Cooldown_Head_Ability1;
+	FGameplayTag Cooldown_Head_Ability2;
+	FGameplayTag Cooldown_Head_Ability3;
+	FGameplayTag Cooldown_Utility_Ability1;
+	FGameplayTag Cooldown_Utility_Ability2;
 
 	//Montage Tags
 	FGameplayTag Montage_Attack_Weapon;
