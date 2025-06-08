@@ -38,7 +38,6 @@ void UDynamicCooldownVizWidget::SetCooldownRemaining(const FGameplayTag AbilityC
 	if (FAbilityCooldownInfo* Found = AbilityCooldownInfos.Find(AbilityCooldownTag))
 	{
 		Found->RemainingCooldown = RemainingCooldown;
-		UE_LOG(LogArpg, Error, TEXT("Found info for AbilityTag [%s], setting Cooldown to %f"), *AbilityCooldownTag.ToString(), RemainingCooldown);
 	}
 	else
 	{
@@ -72,15 +71,7 @@ void UDynamicCooldownVizWidget::CustomTickDeductCounters(float InDeltaTime)
 {
 	for (auto It = AbilityCooldownInfos.CreateIterator(); It; ++It)
 	{
-		It->Value.RemainingCooldown = It->Value.RemainingCooldown - InDeltaTime;
+		if (It->Value.RemainingCooldown >= 0.0)
+			It->Value.RemainingCooldown = It->Value.RemainingCooldown - InDeltaTime;
 	}
-	// for (TTuple<FGameplayTag, FAbilityCooldownInfo> Info : AbilityCooldownInfos)
-	// {
-	// 	if (Info.Value.RemainingCooldown > 0.0f)
-	// 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Pre val: %f"), Info.Value.RemainingCooldown));
-	// 	Info.Value.RemainingCooldown -= InDeltaTime;
-	// 	
-	// 	if (Info.Value.RemainingCooldown > 0.0f)
-	// 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Post val: %f"), Info.Value.RemainingCooldown));
-	// }
 }

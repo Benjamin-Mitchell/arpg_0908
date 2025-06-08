@@ -4,6 +4,7 @@
 #include "AbilitySystem/AsyncTasks/WaitCooldownChange.h"
 
 #include "AbilitySystemComponent.h"
+#include "arpg_0908/ArpgLogChannels.h"
 
 UWaitCooldownChange* UWaitCooldownChange::WaitForCooldownChange(UAbilitySystemComponent* AbilitySystemComponent,
                                                                 const FGameplayTag& InCooldownTag)
@@ -14,6 +15,8 @@ UWaitCooldownChange* UWaitCooldownChange::WaitForCooldownChange(UAbilitySystemCo
 
 	if (!IsValid(AbilitySystemComponent) || !InCooldownTag.IsValid())
 	{
+		UE_LOG(LogArpg, Error, TEXT("WaitForCooldownChange Initialization failed with tag %s, in Function %hs"), *InCooldownTag.ToString(), __FUNCTION__);
+		
 		WaitCooldownChange->EndTask();
 		return nullptr;
 	}
@@ -33,7 +36,7 @@ UWaitCooldownChange* UWaitCooldownChange::WaitForCooldownChange(UAbilitySystemCo
 void UWaitCooldownChange::EndTask()
 {
 	if (!IsValid(AbilitySystemComponent)) return;
-		
+
 	AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 
 	SetReadyToDestroy();

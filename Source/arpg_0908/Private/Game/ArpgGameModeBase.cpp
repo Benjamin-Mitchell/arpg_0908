@@ -166,7 +166,7 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 #if WITH_EDITOR
 
 	//If we haven't through the introMap, are not current in the intro map, and this is the first player to connect 
-	if (!ArpgGameInstance->HasBeenThroughIntroMap && GetWorld()->GetMapName() != FString("UEDPIE_0_IntroMap") && GetNumPlayers() == 2)
+	if (!ArpgGameInstance->HasBeenThroughIntroMap && GetWorld()->GetMapName() != FString("UEDPIE_0_IntroMap") && GetNumPlayers() == NumDebugPlayers)
 	{
 		//Then we can start a timer to trigger the game start logic manually.
 		//We use a counter to allow time for all clients to join in Editor.

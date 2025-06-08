@@ -123,22 +123,14 @@ void UarpgAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 			AbilitySpecInputPressed(AbilitySpec);
 			if(!AbilitySpec.IsActive())
 			{
-				if (TryActivateAbility(AbilitySpec.Handle))
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Yellow, TEXT("Activation Succeeded"));
-				}
-				else
+				if (!TryActivateAbility(AbilitySpec.Handle))
 				{
 					if (bReleasedPress)
 					{
 						AbilityActivateFailed.Broadcast(InputTag);
-						bReleasedPress = false;
 					}
-					//Widget Controller could bind to a delegate that is broadcast here if we are trying (and failing) a different ability to last time.
-					//GEngine->AddOnScreenDebugMessage(-1, 2.5f, FColor::Yellow, TEXT("Activation Failed"));
-
-					
 				}
+				bReleasedPress = false;
 			}
 		}
 	}

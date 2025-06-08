@@ -68,7 +68,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	bool DebugSkipCinematic = false;
-	
+
+	UPROPERTY(EditDefaultsOnly)
+	int NumDebugPlayers = 2;
 private:
 	bool LevelCompleted = false;
 

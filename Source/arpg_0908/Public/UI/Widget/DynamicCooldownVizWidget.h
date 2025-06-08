@@ -9,6 +9,8 @@
 #include "DynamicCooldownVizWidget.generated.h"
 
 
+class UWaitCooldownChange;
+
 USTRUCT(BlueprintType)
 struct FAbilityCooldownInfo
 {
@@ -47,7 +49,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void CustomTickDeductCounters(float InDeltaTime);
-	
+
+	UPROPERTY(BlueprintReadWrite)
+	TMap<FGameplayTag, UWaitCooldownChange*> CooldownTagToWaitCooldownAsyncTasks;
 	
 	TMap<FGameplayTag, FGameplayTag> InputTagToCooldownTags;
 	
