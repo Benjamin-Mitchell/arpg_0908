@@ -9,6 +9,7 @@
 #include "ArpgGameModeBase.generated.h"
 
 
+class AArpgPlayerStart;
 class UCameraComponent;
 class ULevelSequence;
 class AarpgPlayerController;
@@ -85,6 +86,7 @@ private:
 	bool LevelBegun = false;
 
 	int PlayerSpawnStartOffset = 0;
+	TArray<AArpgPlayerStart*> PlayerStarts;
 
 	UFUNCTION()
 	void HandleIntroCameraCut(UCameraComponent* CameraComponent);

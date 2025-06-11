@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
+#include "arpg_0908/ArpgLogChannels.h"
 #include "Game/ArpgGameInstance.h"
 #include "Game/ArpgGameState.h"
 #include "Game/ArpgPlayerStart.h"
@@ -22,31 +23,27 @@ AActor* AArpgGameModeBase::FindPlayerStart_Implementation(AController* Player, c
 	//When level is begun, spawn players properly.
 	if (LevelBegun)
 	{
-		TArray<AArpgPlayerStart*> PlayerStarts;
-		for (TActorIterator<AArpgPlayerStart> It(GetWorld()); It; ++It)
+		if (PlayerStarts[PlayerSpawnStartOffset]->IsIntroStart)
 		{
-			PlayerStarts.Add(*It);
+			PlayerSpawnStartOffset++;
 		}
 
-		if (PlayerStarts[PlayerSpawnStartOffset]->IsIntroStart)
-			PlayerSpawnStartOffset++;
-
 		AArpgPlayerStart* ReturnPlayerStart = PlayerStarts[PlayerSpawnStartOffset];
+		
 		PlayerSpawnStartOffset++;
-
+		
 		return ReturnPlayerStart;
 	}
 	else
 	{
-		TArray<APlayerStart*> PlayerStarts;
-		for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
+		//This is handled by the engine when the level starts. We need to gather PlayerStarts here since this will always hapepn first.
+		
+		//Fill the array of player starts with the ones in the world.
+		for (TActorIterator<AArpgPlayerStart> It(GetWorld()); It; ++It)
 		{
 			PlayerStarts.Add(*It);
 		}
-		//TSubclassOf<APlayerStart> PlayerStartClass = APlayerStart::StaticClass();
-		//UWorld* TempWorld = GetWorld();
-		//UGameplayStatics::GetAllActorsOfClass(TempWorld, APlayerStart::StaticClass(), PlayerStarts);
-
+		
 		for (AActor* PlayerStart : PlayerStarts)
 		{
 			AArpgPlayerStart* ArpgPlayerStart = Cast<AArpgPlayerStart>(PlayerStart);
@@ -69,6 +66,7 @@ AActor* AArpgGameModeBase::FindPlayerStart_Implementation(AController* Player, c
 
 void AArpgGameModeBase::LevelComplete()
 {
+	
 	if (LevelCompleted)
 		return;
 
@@ -144,6 +142,7 @@ void AArpgGameModeBase::ReceiveVote(int index, APlayerController* CallingControl
 
 void AArpgGameModeBase::LevelBegin()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("LevelBegin()"));
 	LevelBegun = true;
 	LevelBeginBP();
 }
@@ -160,13 +159,18 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 	if (ReadyToStart)
 	{
 		LevelBegin();
+		return;
 	}
 
 	//Special handling for if we are playing a level directly
 #if WITH_EDITOR
 
-	//If we haven't through the introMap, are not current in the intro map, and this is the first player to connect 
-	if (!ArpgGameInstance->HasBeenThroughIntroMap && GetWorld()->GetMapName() != FString("UEDPIE_0_IntroMap") && GetNumPlayers() == NumDebugPlayers)
+	if (GetNumPlayers() > NumDebugPlayers)
+	{
+		UE_LOG(LogArpg, Error, TEXT("GetNumPlayers() is GREATER than NumDebugPlayers. This will cause issues."));
+	}
+	//If we haven't through the introMap, and this is the first player to connect 
+	if (!ArpgGameInstance->HasBeenThroughIntroMap && GetNumPlayers() == NumDebugPlayers)
 	{
 		//Then we can start a timer to trigger the game start logic manually.
 		//We use a counter to allow time for all clients to join in Editor.
@@ -218,7 +222,7 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 			}
 		}
 	}
-	
+
 	return PlayerControllers;
 }
 

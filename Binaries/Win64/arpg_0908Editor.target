@@ -3446,6 +3446,26 @@
 			"Type": "RequiredResource"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/Binaries/Win64/UnrealEditor-WaveformEditor.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/Binaries/Win64/UnrealEditor-WaveformEditorWidgets.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/Binaries/Win64/UnrealEditor-WaveformTransformations.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/Binaries/Win64/UnrealEditor-WaveformTransformationsWidgets.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Editor/WorldPartitionHLODUtilities/Binaries/Win64/UnrealEditor-WorldPartitionHLODUtilities.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -30304,6 +30324,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/WaveformEditor.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Editor/WorldPartitionHLODUtilities/WorldPartitionHLODUtilities.uplugin",
 			"Type": "UFS"
 		},
@@ -31021,6 +31045,7 @@
 		"VisualStudioCodeSourceCodeAccess",
 		"VisualStudioSourceCodeAccess",
 		"WaveTable",
+		"WaveformEditor",
 		"WebMMedia",
 		"WebMMoviePlayer",
 		"WindowsDeviceProfileSelector",

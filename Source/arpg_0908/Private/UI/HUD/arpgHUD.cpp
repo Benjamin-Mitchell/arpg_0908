@@ -38,6 +38,10 @@ void AarpgHUD::InitOverlay(APlayerController* PlayerController, APlayerState* Pl
 	WidgetController->BroadcastInitialValues();
 
 	Widget->AddToViewport();
+
+	//This is a blueprint assignable delegate for initializing any properties related to the current game.
+	//Use this instead of BeginPlay for initialization in relation to the HUD/Overlay.
+	OnWidgetInitialized.Broadcast();
 }
 
 void AarpgHUD::DisplayCards(FCardProperties FirstCardProperties, FCardProperties SecondCardProperties,

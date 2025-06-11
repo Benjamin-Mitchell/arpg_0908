@@ -12,6 +12,10 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 struct FWidgetControllerParams;
 class UOverlayWidgetController;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWidgetInitialized);
+
+
 /**
  * 
  */
@@ -33,6 +37,9 @@ public:
 	void UpdateVotes(int FirstCardVotes, int SecondCardVotes, int ThirdCardVotes);
 
 	void UpdateNextLevelCountdown(int RemainingSeconds);
+
+	UPROPERTY(BlueprintAssignable, Category="Initialization")
+	FOnWidgetInitialized OnWidgetInitialized;
 
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerReadyCountUIEnabled(bool InEnabled);
