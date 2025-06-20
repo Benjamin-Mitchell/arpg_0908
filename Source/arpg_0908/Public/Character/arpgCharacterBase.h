@@ -38,6 +38,7 @@ public:
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
+	virtual bool IsInPlay_Implementation() const override;
 
 	FOnASCRegistered OnASCRegistered;
 	FOnDeathSignature OnDeath;
@@ -53,7 +54,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget = FTransform());
-
+	
 	UFUNCTION(BlueprintCallable)
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities, bool ActivateImmediately = false);
 	
@@ -73,6 +74,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetCapsulePawnCollisionEnabled(const bool Enabled);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetInPlay(const bool InIsInPlay);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCustomSpawned();
@@ -123,6 +127,8 @@ protected:
 	FName TraceEndSocketName;
 	
 	bool bDead = false;
+	
+	bool bInPlay = false;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

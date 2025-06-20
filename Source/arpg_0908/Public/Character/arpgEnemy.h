@@ -102,6 +102,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void SetBlackboardInAir(bool bInAir);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetBlackboardCustomBool(FName BoolName, bool Val);
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> EnemyUtilityAbilities;

@@ -103,6 +103,12 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_Attack_DamageTraceEnd = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.DamageTraceEnd"));
 	GameplayTags.Montage_Attack_CustomOrDebug = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.CustomOrDebug"));
 
+
+	GameplayTags.Montage_Offset_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.1"));
+	GameplayTags.Montage_Offset_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.2"));
+	GameplayTags.Montage_Offset_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.3"));
+	GameplayTags.Montage_Offset_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.4"));
+
 	//Block tags, used for preventing player actions during other actions (e.g. disable movement during stun)
 	GameplayTags.Player_Block_InputPressed = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputPressed"));
 	GameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputHeld"));

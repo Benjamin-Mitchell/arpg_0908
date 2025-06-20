@@ -207,3 +207,11 @@ void AarpgEnemy::SetBlackboardInAir(bool bInAir)
 {
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("InAir"), bInAir);
 }
+
+void AarpgEnemy::SetBlackboardCustomBool(FName BoolName, bool Val)
+{
+	if (HasAuthority())
+	{
+		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(BoolName, Val);
+	}
+}

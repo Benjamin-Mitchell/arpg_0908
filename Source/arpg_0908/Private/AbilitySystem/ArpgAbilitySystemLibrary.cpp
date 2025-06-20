@@ -378,7 +378,7 @@ FGameplayEffectContextHandle UArpgAbilitySystemLibrary::ApplyDamageEffect(const 
 	
 }
 
-FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength)
+FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength, bool DrawDebug)
 {
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
@@ -389,8 +389,11 @@ FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* 
 		FVector DownVector = FVector(0.0, 0.0, -1.0);
 		FVector EndLocation = InLocation + DownVector * RayLength;
 
+		if (DrawDebug) DrawDebugLine(World, InLocation, EndLocation, FColor::Red, false, 1, 0, 1);
+
 		if (World->LineTraceSingleByChannel(Hit, InLocation, EndLocation, CollisionChannel))
 		{
+			if(DrawDebug) DrawDebugSphere(World, Hit.Location, 100.0f, 12, FColor::Red, false, 1.0f);
 			return Hit.Location;
 		}
 		

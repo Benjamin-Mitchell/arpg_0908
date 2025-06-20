@@ -42,13 +42,16 @@ public:
 	void ServerReportCardVote(int voteIndex);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void RevertToNormalCamera();
+	void RevertToNormalCamera(float BlendTime);
+
 
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+	UPROPERTY(EditAnywhere)
+	float CameraBlendtimeOnPossess = 5.0f;
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> arpgIMContext;

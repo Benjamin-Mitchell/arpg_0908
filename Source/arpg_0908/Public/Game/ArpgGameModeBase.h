@@ -43,6 +43,9 @@ public:
 	void LevelBeginBP();
 
 	virtual AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName = TEXT("")) override;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool DebugSkipCinematic = false;
 	
 protected:
 
@@ -67,8 +70,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void IntroEnded();
 
-	UPROPERTY(EditDefaultsOnly)
-	bool DebugSkipCinematic = false;
+	
 
 	UPROPERTY(EditDefaultsOnly)
 	int NumDebugPlayers = 2;

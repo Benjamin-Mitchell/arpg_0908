@@ -98,6 +98,11 @@ USkeletalMeshComponent* AarpgCharacterBase::GetWeapon_Implementation()
 	return Weapon;
 }
 
+bool AarpgCharacterBase::IsInPlay_Implementation() const
+{
+	return bInPlay;
+}
+
 void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	Weapon->SetSimulatePhysics(true);
@@ -142,6 +147,11 @@ void AarpgCharacterBase::SetCapsulePawnCollisionEnabled(const bool Enabled)
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	else
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+}
+
+void AarpgCharacterBase::SetInPlay(const bool InIsInPlay)
+{
+	bInPlay = InIsInPlay;
 }
 
 void AarpgCharacterBase::BeginPlay()

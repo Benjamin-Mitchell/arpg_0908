@@ -95,6 +95,12 @@ public:
 	FGameplayTag Montage_Attack_UpperChest;
 	FGameplayTag Montage_Attack_Head;
 
+	//Montage Tags for payload-ing offsets for motion warping.
+	FGameplayTag Montage_Offset_1;
+	FGameplayTag Montage_Offset_2;
+	FGameplayTag Montage_Offset_3;
+	FGameplayTag Montage_Offset_4;
+
 	//Line-Trace Tags
 	FGameplayTag Montage_Attack_DamageTraceBegin;
 	FGameplayTag Montage_Attack_DamageTraceEnd;

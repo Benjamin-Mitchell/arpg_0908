@@ -21,6 +21,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/Widget/ArpgTemporaryTextComponent.h"
 #include "UI/Widget/DamageTextComponent.h"
 
@@ -72,7 +73,7 @@ void AarpgPlayerController::AcknowledgePossession(class APawn* P)
 {
 	Super::AcknowledgePossession(P);
 
-	RevertToNormalCamera();
+	RevertToNormalCamera(CameraBlendtimeOnPossess);
 }
 
 void AarpgPlayerController::CursorTrace()

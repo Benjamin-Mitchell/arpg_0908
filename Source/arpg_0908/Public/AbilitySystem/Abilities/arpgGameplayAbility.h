@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "arpgGameplayAbility.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameplayAbilityEnded);
 /**
  * 
  */
@@ -18,4 +19,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag StartupInputTag;
 
+	FGameplayAbilityEnded OnAbilityEnded;
+protected:
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 };
