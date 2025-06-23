@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/arpgGameplayAbility.h"
+#include "arpg_0908/ArpgLogChannels.h"
 
 UListenForGameplayAbilityEnded* UListenForGameplayAbilityEnded::ListenForGameplayAbilityEnded(
 	UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UGameplayAbility> AbilityClass)
@@ -15,8 +16,12 @@ UListenForGameplayAbilityEnded* UListenForGameplayAbilityEnded::ListenForGamepla
 	}
 
 	auto AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(AbilityClass);
-	
+
 	auto AbilityInstance = AbilitySpec->GetPrimaryInstance();
+	if (!IsValid(AbilityInstance))
+	{
+		UE_LOG(LogArpg, Error, TEXT("Ability Instance is NULL in ListenForGameplayAbilityEnded. This is probably because Ability is set to Instance per Execution, instead of per Actor. Only Instanced per Actor Abilities can be listened to for completion."));
+	}
 	
 	UarpgGameplayAbility* ActiveAbility = Cast<UarpgGameplayAbility>(AbilityInstance);
 	
