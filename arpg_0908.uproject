@@ -67,6 +67,10 @@
 		{
 			"Name": "WaveformEditor",
 			"Enabled": true
+		},
+		{
+			"Name": "PhysicsControl",
+			"Enabled": true
 		}
 	]
 }
