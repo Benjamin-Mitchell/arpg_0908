@@ -11,6 +11,7 @@
 //forward declaration to avoid including header files.
 
 
+class AArpgPlayerCameraManager;
 class ULevelSequence;
 class UArpgTemporaryTextComponent;
 class AarpgHeadActor;
@@ -44,7 +45,19 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void RevertToNormalCamera(float BlendTime);
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<AArpgPlayerCameraManager> ArpgPlayerCameraManager;
 
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void ClientSetCameraTransitionViaOffset(FVector TransitionOffset, FRotator InTargetRotator,
+                                          float InTransitionDuration, bool InTransitionRotation);
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void ClientSetCameraTransitionToFrozen(FVector InTargetLocation, FRotator InTargetRotator,
+									  float InTransitionDuration, bool InTransitionRotation, bool InTransitionZValue);
+
+	UFUNCTION(BlueprintCallable, Client, Reliable)
+	void ClientSetCameraFrozen();
 protected:
 
 	virtual void BeginPlay() override;
@@ -64,6 +77,7 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> TabAction;
+
 
 	
 	virtual void AcknowledgePossession(class APawn* P) override;

@@ -22,6 +22,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/ArpgPlayerCameraManager.h"
 #include "UI/Widget/ArpgTemporaryTextComponent.h"
 #include "UI/Widget/DamageTextComponent.h"
 
@@ -29,6 +30,7 @@
 AarpgPlayerController::AarpgPlayerController()
 {
 	bReplicates = true;
+
 
 	//moveComponent = Cast<UCharacterMovementComponent>(GetCharacter()->GetMovementComponent());
 }
@@ -67,6 +69,12 @@ void AarpgPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 
 		DamageText->SetDamageText(DamageAmount, bBlockedHit, bCriticalHit);
 	}
+}
+
+void AarpgPlayerController::ClientSetCameraTransitionToFrozen_Implementation(FVector InTargetLocation,
+	FRotator InTargetRotator, float InTransitionDuration, bool InTransitionRotation, bool InTransitionZValue)
+{
+	ArpgPlayerCameraManager->SetTransitionTowardsFrozenTarget(InTargetLocation, InTargetRotator, InTransitionDuration, InTransitionRotation, true);
 }
 
 void AarpgPlayerController::AcknowledgePossession(class APawn* P)
@@ -292,11 +300,22 @@ void AarpgPlayerController::TabTarget(const struct FInputActionValue& InputActio
 	}
 }
 
-
 void AarpgPlayerController::ServerReportCardVote_Implementation(int voteIndex)
 {
 	AArpgGameState* GameState = Cast<AArpgGameState>(GetWorld()->GetGameState());
 	GameState->PassVoteToGameMode(voteIndex, this);
+}
+
+void AarpgPlayerController::ClientSetCameraTransitionViaOffset_Implementation(FVector TransitionOffset,
+	FRotator InTargetRotator, float InTransitionDuration, bool InTransitionRotation)
+{
+	FVector LocalNewTarget = ArpgPlayerCameraManager->GetLastKnownLocation() + TransitionOffset;
+	ArpgPlayerCameraManager->SetTransitionTowardsFrozenTarget(LocalNewTarget, InTargetRotator, InTransitionDuration, InTransitionRotation, true);
+}
+
+void AarpgPlayerController::ClientSetCameraFrozen_Implementation()
+{
+	ArpgPlayerCameraManager->SetFrozen();
 }
 
 void AarpgPlayerController::BeginPlay()
@@ -323,6 +342,14 @@ void AarpgPlayerController::BeginPlay()
 	InputModeData.SetHideCursorDuringCapture(false);
 
 	SetInputMode(InputModeData);
+	
+	ArpgPlayerCameraManager = Cast<AArpgPlayerCameraManager>(PlayerCameraManager);
+	
+	if (IsLocalController())
+	{
+		ArpgPlayerCameraManager->SetOwner(this);
+		ArpgPlayerCameraManager->bAlwaysRelevant = true;
+	}
 }
 
 void AarpgPlayerController::SetupInputComponent()
@@ -385,7 +412,8 @@ void AarpgPlayerController::Interact(const struct FInputActionValue& InputAction
 void AarpgPlayerController::ServerInteract_Implementation(AActor* Interacted)
 {
 	IHighlightInterface* InteractInterface = Cast<IHighlightInterface>(Interacted);
-	InteractInterface->Interact(this);
-	
+	InteractInterface->Interact(this);	
 }
+
+
 

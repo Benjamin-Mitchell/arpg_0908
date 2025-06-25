@@ -3,15 +3,21 @@
 
 #include "Player/ArpgPlayerCameraManager.h"
 
+AArpgPlayerCameraManager::AArpgPlayerCameraManager()
+{
+	bReplicates = true;
+}
+
 void AArpgPlayerCameraManager::SetFrozen()
 {
 	CurrentCameraState = ECameraState::Frozen;
 }
 
-void AArpgPlayerCameraManager::SetTransitionTowardsFrozenTarget(FVector InTargetLocation, FRotator InTargetRotator, float InTransitionDuration, bool InTransitionRotation, bool InTransitionZValue)
-{
+void AArpgPlayerCameraManager::SetTransitionTowardsFrozenTarget(FVector InTargetLocation, FRotator InTargetRotator,
+	float InTransitionDuration, bool InTransitionRotation, bool InTransitionZValue)
+{	
 	CurrentCameraState = ECameraState::TransitionTowardsFrozenTarget;
-
+	
 	if (InTransitionZValue)
 		TransitionTargetLocation = InTargetLocation;
 	else
@@ -31,8 +37,9 @@ void AArpgPlayerCameraManager::SetTransitionTowardsFrozenTarget(FVector InTarget
 }
 
 void AArpgPlayerCameraManager::SetTransitionViaOffset(FVector TransitionOffset, FRotator InTargetRotator,
-	float InTransitionDuration, bool InTransitionRotation)
+    float InTransitionDuration, bool InTransitionRotation)
 {
+	
 	FVector LocalNewTarget = LastKnownCameraTransform.GetLocation() + TransitionOffset;
 	SetTransitionTowardsFrozenTarget(LocalNewTarget, InTargetRotator, InTransitionDuration, InTransitionRotation, true);
 }
@@ -40,6 +47,11 @@ void AArpgPlayerCameraManager::SetTransitionViaOffset(FVector TransitionOffset, 
 void AArpgPlayerCameraManager::SetReturnToGameplay()
 {
 	CurrentCameraState = ECameraState::Gameplay;
+}
+
+FVector AArpgPlayerCameraManager::GetLastKnownLocation()
+{
+	return LastKnownCameraTransform.GetLocation();
 }
 
 

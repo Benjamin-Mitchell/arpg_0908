@@ -24,17 +24,20 @@ class ARPG_0908_API AArpgPlayerCameraManager : public APlayerCameraManager
 	GENERATED_BODY()
 
 public:
+	AArpgPlayerCameraManager();
+
 	UFUNCTION(BlueprintCallable, Category="ArpgPlayerCameraManager")
 	void SetFrozen();
 
-	UFUNCTION(BlueprintCallable, Category="ArpgPlayerCameraManager")
 	void SetTransitionTowardsFrozenTarget(FVector InTargetLocation, FRotator InTargetRotator, float InTransitionDuration, bool InTransitionRotation, bool InTransitionZValue);
-
+	
 	UFUNCTION(BlueprintCallable, Category="ArpgPlayerCameraManager")
 	void SetTransitionViaOffset(FVector TransitionOffset, FRotator InTargetRotator, float InTransitionDuration, bool InTransitionRotation);
 
 	UFUNCTION(BlueprintCallable, Category="ArpgPlayerCameraManager")
 	void SetReturnToGameplay();
+
+	FVector GetLastKnownLocation();
 	
 protected:
 
@@ -52,9 +55,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ArpgPlayerCameraManager")
 	FTransform LastKnownCameraTransform;
-	
+
+	//TODO: Make this replicated?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ArpgPlayerCameraManager")
 	ECameraState CurrentCameraState = ECameraState::Gameplay;
-	
-
 };

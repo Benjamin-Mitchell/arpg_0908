@@ -142,7 +142,6 @@ void AArpgGameModeBase::ReceiveVote(int index, APlayerController* CallingControl
 
 void AArpgGameModeBase::LevelBegin()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("LevelBegin()"));
 	LevelBegun = true;
 	LevelBeginBP();
 }
