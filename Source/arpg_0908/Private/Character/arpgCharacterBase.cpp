@@ -103,6 +103,41 @@ bool AarpgCharacterBase::IsInPlay_Implementation() const
 	return bInPlay;
 }
 
+void AarpgCharacterBase::ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase* Target, const FName SocketName)
+{
+	MulticastBeginSnapToTargetSocket(Target, SocketName);
+}
+
+void AarpgCharacterBase::ServerSetClientEndSnapToTargetSocket()
+{
+	MulticastEndSnapToTargetSocket();
+}
+
+
+void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCharacterBase* Target, const FName SocketName)
+{
+	GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
+
+	//start a timer
+	GetWorld()->GetTimerManager().SetTimer(
+	SnapTimerHandle,
+	[this, Target, SocketName]() 
+		{
+			FTransform MoveToTransform = Target->GetMesh()->GetSocketTransform(SocketName);
+			MoveToTransform.SetScale3D(GetActorTransform().GetScale3D());
+					
+			SetActorTransform(MoveToTransform);
+		},
+	0.01f,
+	true // Don't loop
+);
+}
+
+void AarpgCharacterBase::MulticastEndSnapToTargetSocket_Implementation()
+{
+	//clear timer
+	GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
+}
 void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	Weapon->SetSimulatePhysics(true);

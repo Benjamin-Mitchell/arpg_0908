@@ -46,6 +46,8 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector& DeathImpulse);
 
+	
+
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
 
@@ -81,6 +83,21 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCustomSpawned();
 
+	
+	///Ability Callable functions for specific functionality.
+	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
+	void ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName);
+	
+	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
+	void ServerSetClientEndSnapToTargetSocket();
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastEndSnapToTargetSocket();
+	
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -192,6 +209,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	FTimerHandle SnapTimerHandle;
 
 
 	//DEBUG VARIABLES
