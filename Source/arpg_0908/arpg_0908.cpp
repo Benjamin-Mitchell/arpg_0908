@@ -10,8 +10,8 @@
 
 void FArpgModule::StartupModule()
 {
-	FString ShaderDirectory = FPaths::Combine(FPaths::ProjectDir(), TEXT("Shaders"));
-	AddShaderSourceDirectoryMapping("/Project", ShaderDirectory);
+	//FString ShaderDirectory = FPaths::Combine(FPaths::ProjectDir(), TEXT("Shaders"));
+	//AddShaderSourceDirectoryMapping("/Project", ShaderDirectory);
 }
 
 void FArpgModule::ShutdownModule()
