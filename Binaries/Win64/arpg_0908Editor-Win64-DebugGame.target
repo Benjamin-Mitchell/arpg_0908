@@ -3126,6 +3126,26 @@
 			"Type": "RequiredResource"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/Binaries/Win64/UnrealEditor-ControlRigPhysics.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/Binaries/Win64/UnrealEditor-PhysicsControl.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/Binaries/Win64/UnrealEditor-PhysicsControlEditor.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/Binaries/Win64/UnrealEditor-PhysicsControlUncookedOnly.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/PlanarCutPlugin/Binaries/Win64/UnrealEditor-PlanarCut.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -28556,6 +28576,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/PhysicsControl.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/PlanarCutPlugin/PlanarCut.uplugin",
 			"Type": "UFS"
 		},
@@ -29110,6 +29134,7 @@
 		"OodleNetwork",
 		"Paper2D",
 		"PerforceSourceControl",
+		"PhysicsControl",
 		"PixWinPlugin",
 		"PlanarCut",
 		"PlasticSourceControl",

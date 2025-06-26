@@ -85,14 +85,15 @@ public:
 
 	
 	///Ability Callable functions for specific functionality.
+	//SnappingDuration is an optional parameter. Leave negative for unlimited snapping duration (must be cancelled manually by the server)
 	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
-	void ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName);
+	void ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName, const float SnappingDuration = -1.0f);
 	
 	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
 	void ServerSetClientEndSnapToTargetSocket();
 
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName);
+	virtual void MulticastBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName, const float SnappingDuration = -1.0f);
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastEndSnapToTargetSocket();
@@ -211,10 +212,11 @@ private:
 	TObjectPtr<UAnimMontage> HitReactMontage;
 
 	FTimerHandle SnapTimerHandle;
+	FTimerHandle OptionalSnapDurationHandle;
 
 
-	//DEBUG VARIABLES
 
+	///DEBUG VARIABLES
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "TestScene")
 	float WaitTimeBetweenTestAbilityCasts = 1.0f;

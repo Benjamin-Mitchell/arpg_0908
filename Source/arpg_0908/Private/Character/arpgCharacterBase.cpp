@@ -103,9 +103,9 @@ bool AarpgCharacterBase::IsInPlay_Implementation() const
 	return bInPlay;
 }
 
-void AarpgCharacterBase::ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase* Target, const FName SocketName)
+void AarpgCharacterBase::ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase* Target, const FName SocketName, const float SnappingDuration)
 {
-	MulticastBeginSnapToTargetSocket(Target, SocketName);
+	MulticastBeginSnapToTargetSocket(Target, SocketName, SnappingDuration);
 }
 
 void AarpgCharacterBase::ServerSetClientEndSnapToTargetSocket()
@@ -114,9 +114,10 @@ void AarpgCharacterBase::ServerSetClientEndSnapToTargetSocket()
 }
 
 
-void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCharacterBase* Target, const FName SocketName)
+void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCharacterBase* Target, const FName SocketName, const float SnappingDuration)
 {
 	GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(OptionalSnapDurationHandle);
 
 	//start a timer
 	GetWorld()->GetTimerManager().SetTimer(
@@ -129,8 +130,24 @@ void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCh
 			SetActorTransform(MoveToTransform);
 		},
 	0.01f,
-	true // Don't loop
-);
+	true // Do loop
+	);
+
+
+	//Snapping Duration is optional. if the duration is negative, abilities should end the snapping themselves.
+	if (SnappingDuration > 0.0f)
+	{
+		//start a timer
+		GetWorld()->GetTimerManager().SetTimer(
+		OptionalSnapDurationHandle,
+		[this]() 
+			{
+				GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
+			},
+		SnappingDuration,
+		false // Don't loop
+		);
+	}
 }
 
 void AarpgCharacterBase::MulticastEndSnapToTargetSocket_Implementation()
