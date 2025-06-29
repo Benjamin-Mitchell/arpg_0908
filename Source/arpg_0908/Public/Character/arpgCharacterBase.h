@@ -39,6 +39,8 @@ public:
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	virtual bool IsInPlay_Implementation() const override;
+	virtual void SetPassiveAbilityTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetPassiveAbilityTarget_Implementation() const override;
 
 	FOnASCRegistered OnASCRegistered;
 	FOnDeathSignature OnDeath;
@@ -46,7 +48,8 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector& DeathImpulse);
 
-	
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> PassiveAbilityTarget;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;

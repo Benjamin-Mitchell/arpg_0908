@@ -103,6 +103,16 @@ bool AarpgCharacterBase::IsInPlay_Implementation() const
 	return bInPlay;
 }
 
+void AarpgCharacterBase::SetPassiveAbilityTarget_Implementation(AActor* InCombatTarget)
+{
+	PassiveAbilityTarget = InCombatTarget;
+}
+
+AActor* AarpgCharacterBase::GetPassiveAbilityTarget_Implementation() const
+{
+	return PassiveAbilityTarget;
+}
+
 void AarpgCharacterBase::ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase* Target, const FName SocketName, const float SnappingDuration)
 {
 	MulticastBeginSnapToTargetSocket(Target, SocketName, SnappingDuration);

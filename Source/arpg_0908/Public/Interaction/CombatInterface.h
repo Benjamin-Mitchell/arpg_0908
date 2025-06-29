@@ -82,4 +82,12 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	USkeletalMeshComponent* GetWeapon();
+
+	//Passive abilities can temporarily set a target on character when they're activated,
+	//which can be saved in the GA blueprint if used in the ability.
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetPassiveAbilityTarget(AActor* InCombatTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetPassiveAbilityTarget() const;
 };

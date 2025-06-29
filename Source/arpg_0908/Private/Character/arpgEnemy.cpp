@@ -215,3 +215,11 @@ void AarpgEnemy::SetBlackboardCustomBool(FName BoolName, bool Val)
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(BoolName, Val);
 	}
 }
+
+void AarpgEnemy::SetBlackboardCustomObject(FName KeyName, UObject* Obj)
+{
+	if (HasAuthority())
+	{
+		ArpgAIController->GetBlackboardComponent()->SetValueAsObject(KeyName, Obj);
+	}
+}

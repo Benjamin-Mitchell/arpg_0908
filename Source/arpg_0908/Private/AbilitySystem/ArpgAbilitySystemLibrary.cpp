@@ -8,6 +8,7 @@
 #include "ArpgAbilityTypes.h"
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/Abilities/ArpgDamageGameplayAbility.h"
+#include "arpg_0908/ArpgLogChannels.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -405,4 +406,34 @@ FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* 
 int32 UArpgAbilitySystemLibrary::GetAbilityPredictionKey(const FGameplayAbilityActivationInfo& ActivationInfo)
 {
 	return ActivationInfo.GetActivationPredictionKey().Current;
+}
+
+void UArpgAbilitySystemLibrary::CancelAbilityByClass(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	if (!IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+
+	auto AbilitySpec = AbilitySystemComponent->FindAbilitySpecFromClass(AbilityClass);
+
+	auto AbilityInstance = AbilitySpec->GetPrimaryInstance();
+	if (!IsValid(AbilityInstance))
+	{
+		UE_LOG(LogArpg, Error, TEXT("Ability Instance is NULL in CancelAbilityByClass. This is probably because Ability is set to Instance per Execution, instead of per Actor. Only Instanced per Actor Abilities can be listened to for completion."));
+	}
+	
+	UarpgGameplayAbility* ActiveAbility = Cast<UarpgGameplayAbility>(AbilityInstance);
+
+	AbilitySystemComponent->CancelAbility(ActiveAbility);
+}
+
+void UArpgAbilitySystemLibrary::CancelAbilitiesByTag(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTagContainer& Tags, const FGameplayTagContainer& WithoutTags)
+{
+	if (!IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+
+	AbilitySystemComponent->CancelAbilities(&Tags, &WithoutTags);
 }

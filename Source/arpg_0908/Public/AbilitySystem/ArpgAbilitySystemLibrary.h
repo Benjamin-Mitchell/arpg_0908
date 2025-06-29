@@ -99,4 +99,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Ability|Prediction", meta = (DisplayName = "Get Ability Prediction Key"))
 	static int32 GetAbilityPredictionKey(const FGameplayAbilityActivationInfo& ActivationInfo);
+
+	UFUNCTION(BlueprintCallable, Category = "Ability|AbilityUtility", meta = (DisplayName = "Cancel Ability By Class"))
+	static void CancelAbilityByClass(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UGameplayAbility> AbilityClass);
+	
+	UFUNCTION(BlueprintCallable, Category = "Ability|AbilityUtility", meta = (DisplayName = "Cancel Abilities By Tag"))
+	static void CancelAbilitiesByTag(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTagContainer& Tags, const FGameplayTagContainer& WithoutTags);
 };

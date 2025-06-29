@@ -44,6 +44,7 @@ public:
 
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
+	
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;
@@ -105,6 +106,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetBlackboardCustomBool(FName BoolName, bool Val);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetBlackboardCustomObject(FName KeyName, UObject* Obj);
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> EnemyUtilityAbilities;

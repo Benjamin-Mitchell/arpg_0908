@@ -2,29 +2,30 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
-#include "ListenForGameplayAbilityEnded.generated.h"
+#include "ListenForAbilityEndedByTag.generated.h"
 
-class UGameplayAbility;
+struct FGameplayTagContainer;
 class UarpgGameplayAbility;
 class UAbilitySystemComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameplayAbilityCaught);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameplayAbilityCaughtByTag);
 /**
  * 
  */
 UCLASS()
-class ARPG_0908_API UListenForGameplayAbilityEnded : public UBlueprintAsyncActionBase
+class ARPG_0908_API UListenForAbilityEndedByTag : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(BlueprintAssignable)
-	FGameplayAbilityCaught OnAbilityEnd;
+	FGameplayAbilityCaughtByTag OnAbilityEnd;
 	
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))
-	static UListenForGameplayAbilityEnded* ListenForGameplayAbilityEnded(UAbilitySystemComponent* AbilitySystemComponent, TSubclassOf<UGameplayAbility> abilityClass);
+	static UListenForAbilityEndedByTag* ListenForAbilityEndedByTag(UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer Tag);
 
 	UFUNCTION()
 	void OnAbilityEndCallback();
