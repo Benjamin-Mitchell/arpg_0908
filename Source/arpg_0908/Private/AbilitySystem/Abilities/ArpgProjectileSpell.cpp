@@ -53,8 +53,12 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag SpawnLocationTag, const FVector& ProjectileTargetLocation)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
-	if(!bIsServer) return;
+	if(!bIsServer)
+	{
+		return;
+	}
 
+	
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if(CombatInterface)
 	{
@@ -76,9 +80,14 @@ void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		AArcingProjectile* ArcingProjectile = CastChecked<AArcingProjectile>(Projectile);
-
-		ArcingProjectile->ArcTargetLocation = ProjectileTargetLocation;
-		ArcingProjectile->ProjectileSpeed = ProjectileSpeed;
+		
+		FArcingProjectileInitData InitData;
+		InitData.ArcTargetLocation = ProjectileTargetLocation;
+		InitData.ProjectileSpeed = ProjectileSpeed;
+		
+		ArcingProjectile->InitData = InitData;
+		
+		//TODO: this should be in the actor blueprint, not here (it will only do anything on the server anyway)
 		ArcingProjectile->CollisionEnabled = ProjectilesShouldCollide;
 		
 		ArcingProjectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults(nullptr);

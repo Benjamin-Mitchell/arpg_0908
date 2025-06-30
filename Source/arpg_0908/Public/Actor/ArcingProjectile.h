@@ -6,6 +6,17 @@
 #include "Actor/ArpgProjectile.h"
 #include "ArcingProjectile.generated.h"
 
+USTRUCT(BlueprintType)
+struct FArcingProjectileInitData
+{
+	GENERATED_BODY()
+    
+	UPROPERTY()
+	FVector ArcTargetLocation;
+    
+	UPROPERTY()
+	float ProjectileSpeed;
+};
 /**
  * 
  */
@@ -19,16 +30,25 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	FVector ArcTargetLocation;
 	
+	// Replicated initialization data
+	UPROPERTY(ReplicatedUsing=OnRep_InitializationData)
+	FArcingProjectileInitData InitData;
+	
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+	
+	UFUNCTION()
+	void OnRep_InitializationData();
 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 private:
 	float Alpha = 0;
 	float Distance = 0;
 	float TimeToTarget = 0;
 	FVector SourceLocation;
 	
-	
+	void Initialize();
 };
+
