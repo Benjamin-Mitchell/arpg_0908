@@ -240,12 +240,6 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 					}
 				}
 			);
-			
-			// if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(PlayerController->GetCharacter()))
-			// {
-			// 	CharacterBase->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(ActivateTagContainer);
-			// 	//CharacterBase->OnCustomSpawned();
-			// }
 		}
 	}
 
@@ -258,7 +252,6 @@ void AArpgGameModeBase::TriggerCustomSpawns()
 	{
 		if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(PlayerController->GetCharacter()))
 		{
-			//CharacterBase->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(ActivateTagContainer);
 			CharacterBase->OnCustomSpawned();
 		}
 	}

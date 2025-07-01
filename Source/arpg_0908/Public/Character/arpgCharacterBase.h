@@ -116,7 +116,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
-	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;
 	
