@@ -80,4 +80,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")		
 	float ActorLevel = 1.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	int IndexToPassToCue = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	FVector OffsetToPassToCue = FVector(0.0f, 0.0f, 0.0f);
 };

@@ -8,6 +8,8 @@
 #include "Data/CharacterClassInfo.h"
 #include "ArpgAbilitySystemLibrary.generated.h"
 
+struct FGameplayAbilityTargetDataHandle;
+struct FGameplayAbilityTargetData_CueInfo;
 class UAbilitySystemComponent;
 enum class ECharacterClass : uint8;
 /**
@@ -54,6 +56,12 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="ArpgAbilitySystemLibrary|GameplayEffects")
 	static FVector GetKnockbackForce(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="ArpgAbilitySystemLibrary|GameplayEffects")
+	static FGameplayAbilityTargetDataHandle GetTargetDataHandleFromEffectHandle(const FGameplayEffectContextHandle& EffectContextHandle);
+	
+	UFUNCTION(BlueprintPure, Category="ArpgAbilitySystemLibrary|GameplayEffects")
+	static bool  GetCueTargetData(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FGameplayAbilityTargetData_CueInfo& OutCueInfo);
 
 	UFUNCTION(BlueprintCallable, Category="ArpgAbilitySystemLibrary|GameplayEffects")
 	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit);

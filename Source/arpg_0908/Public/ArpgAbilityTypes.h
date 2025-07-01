@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameplayEffectTypes.h"
+#include "Abilities/GameplayAbilityTargetTypes.h"
 #include "ArpgAbilityTypes.generated.h"
 
 class UGameplayEffect;
@@ -33,6 +34,11 @@ public:
 	void SetDebuffTag(TSharedPtr<FGameplayTag> InDebuffTag) {DebuffTag = InDebuffTag;}
 	void SetDeathImpulse(const FVector& InImpulse) {DeathImpulse = InImpulse;}
 	void SetKnockbackForce(const FVector& InForce) {KnockbackForce = InForce;}
+
+	void SetTargetData(const FGameplayAbilityTargetDataHandle& Handle) { TargetData = Handle; }
+	const FGameplayAbilityTargetDataHandle& GetTargetData() const { return TargetData; }
+	
+	
 	
 	/** Returns the actual struct used for serialization, subclasses must override this! */
 	virtual UScriptStruct* GetScriptStruct() const
@@ -50,6 +56,7 @@ public:
 			// Does a deep copy of the hit result
 			NewContext->AddHitResult(*GetHitResult(), true);
 		}
+		NewContext->TargetData = TargetData;
 		return NewContext;
 	}
 	
@@ -57,6 +64,9 @@ public:
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
 protected:
 
+	UPROPERTY()
+	FGameplayAbilityTargetDataHandle TargetData;
+	
 	UPROPERTY()
 	bool bIsCriticalHit = false;
 
@@ -91,5 +101,47 @@ struct TStructOpsTypeTraits<FArpgGameplayEffectContext> : TStructOpsTypeTraitsBa
 	{
 		WithNetSerializer = true,
 		WithCopy = true
+	};
+};
+
+///////////// TARGET DATA ///////////////////////////
+USTRUCT(BlueprintType)
+struct ARPG_0908_API FGameplayAbilityTargetData_CueInfo : public FGameplayAbilityTargetData
+{
+	GENERATED_BODY()
+public:
+
+	FGameplayAbilityTargetData_CueInfo()
+	{ }
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector OffsetVector = FVector(0.0f, 0.0f, 0.0f);
+
+	UPROPERTY(BlueprintReadOnly)
+	int Index = 0;
+
+	// This is required for all child structs of FGameplayAbilityTargetData
+	virtual UScriptStruct* GetScriptStruct() const override
+	{
+		return FGameplayAbilityTargetData_CueInfo::StaticStruct();
+	}
+
+	// This is required for all child structs of FGameplayAbilityTargetData
+	bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+	{
+		// The engine already defined NetSerialize for FName & FPredictionKey, thanks Epic!
+		OffsetVector.NetSerialize(Ar, Map, bOutSuccess);
+		Ar << Index; 
+		bOutSuccess = true;
+		return true;
+	}
+}; 
+
+template<>
+struct TStructOpsTypeTraits<FGameplayAbilityTargetData_CueInfo> : public TStructOpsTypeTraitsBase2<FGameplayAbilityTargetData_CueInfo>
+{
+	enum
+	{
+		WithNetSerializer = true // This is REQUIRED for FGameplayAbilityTargetDataHandle net serialization to work
 	};
 };

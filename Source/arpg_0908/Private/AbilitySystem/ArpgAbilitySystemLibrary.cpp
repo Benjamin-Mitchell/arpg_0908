@@ -190,6 +190,35 @@ FVector UArpgAbilitySystemLibrary::GetKnockbackForce(const FGameplayEffectContex
 	return FVector::ZeroVector;
 }
 
+FGameplayAbilityTargetDataHandle UArpgAbilitySystemLibrary::GetTargetDataHandleFromEffectHandle(
+	const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if(const FArpgGameplayEffectContext* ArpgEffectContext = static_cast<const FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return ArpgEffectContext->GetTargetData();
+	}
+	return nullptr;
+}
+
+bool UArpgAbilitySystemLibrary::GetCueTargetData(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FGameplayAbilityTargetData_CueInfo& OutCueInfo)
+{
+	FGameplayAbilityTargetData* Data = const_cast<FGameplayAbilityTargetData*>(TargetDataHandle.Get(0));
+
+	if(Data == nullptr)
+	{
+		return false;
+	}
+
+	if(Data->GetScriptStruct() == FGameplayAbilityTargetData_CueInfo::StaticStruct())
+	{
+		FGameplayAbilityTargetData_CueInfo* CueData = static_cast<FGameplayAbilityTargetData_CueInfo*>(Data);
+		OutCueInfo = *CueData;
+		return true;
+	}
+	
+	return false;
+}
+
 void UArpgAbilitySystemLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool InIsBlockedHit)
 {
 	if(FArpgGameplayEffectContext* ArpgEffectContext = static_cast<FArpgGameplayEffectContext*>(EffectContextHandle.Get()))
