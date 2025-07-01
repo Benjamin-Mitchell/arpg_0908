@@ -9,6 +9,7 @@
 
 
 //forward declaration to avoid including header files.
+DECLARE_MULTICAST_DELEGATE(FOnPossesDelegate)
 
 
 class AArpgPlayerCameraManager;
@@ -58,6 +59,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Client, Reliable)
 	void ClientSetCameraFrozen();
+	
+	FOnPossesDelegate OnPossesDelegate;
 protected:
 
 	virtual void BeginPlay() override;
@@ -81,12 +84,16 @@ private:
 
 	
 	virtual void AcknowledgePossession(class APawn* P) override;
+	virtual void OnPossess(APawn* InPawn) override;
+
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* Interacted);
 	
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Interact(const struct FInputActionValue& InputActionValue);
 
 	UFUNCTION(Server, Reliable)
-	void ServerInteract(AActor* Interacted);
+	void ServerReportPossessionComplete();
 
 	void CursorTrace();
 	

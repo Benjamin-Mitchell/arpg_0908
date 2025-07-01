@@ -9,6 +9,7 @@
 #include "ArpgGameModeBase.generated.h"
 
 
+struct FGameplayTagContainer;
 class AArpgPlayerStart;
 class UCameraComponent;
 class ULevelSequence;
@@ -63,6 +64,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AarpgPlayerController*> SpawnPlayersManually();
+
 	
 	UFUNCTION(BlueprintCallable)
 	void BeginIntroCinematic(ULevelSequence* LevelSequenceAsset, FTransform SpawnTransform);
@@ -75,6 +77,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int NumDebugPlayers = 2;
 private:
+
+	void TriggerCustomSpawns();
+	TArray<AarpgPlayerController*> PlayerControllers;
+
+	TArray<uint32> PossessedPlayersIDs;
+	
 	bool LevelCompleted = false;
 
 	TMap<uint32, int> Votes;

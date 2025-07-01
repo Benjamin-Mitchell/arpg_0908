@@ -196,8 +196,6 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 
 TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 {
-	TArray<AarpgPlayerController*> PlayerControllers;
-	
 	if (UArpgGameInstance* ArpgGameInstance = Cast<UArpgGameInstance>(GetGameInstance()))
 	{
 		for (int i = 0; i < GetNumPlayers(); i++)
@@ -209,20 +207,61 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 				AActor* PlayerStartActor = FindPlayerStart(PlayerController);
 				FTransform SpawnTransform = PlayerStartActor->GetActorTransform();
 				APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterClassToSpawn, SpawnTransform);
-
-				UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(SpawnedCharacter);
 				
 				PlayerController->Possess(SpawnedCharacter);
-				
-				if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(SpawnedCharacter))
-				{
-					CharacterBase->OnCustomSpawned();
-				}
 			}
+		}
+
+		//Register delegates to report back when possession is complete.
+		for (AarpgPlayerController* PlayerController : PlayerControllers)
+		{			
+			PlayerController->OnPossesDelegate.AddLambda(
+			[this, PlayerController]()
+				{
+					uint32 ID = PlayerController->GetUniqueID();
+
+					for (uint32 KnownID : PossessedPlayersIDs)
+					{
+						if (KnownID == ID)
+						{
+							//This Shouldn't happen
+							return;
+						}
+					}
+					PossessedPlayersIDs.Add(ID);
+
+					int Capacity = PlayerControllers.Num();
+					if (GetNetMode() == NM_ListenServer)
+						Capacity -= 1;
+				
+					if (PossessedPlayersIDs.Num() == Capacity)
+					{
+						TriggerCustomSpawns();
+					}
+				}
+			);
+			
+			// if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(PlayerController->GetCharacter()))
+			// {
+			// 	CharacterBase->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(ActivateTagContainer);
+			// 	//CharacterBase->OnCustomSpawned();
+			// }
 		}
 	}
 
 	return PlayerControllers;
+}
+
+void AArpgGameModeBase::TriggerCustomSpawns()
+{
+	for (APlayerController* PlayerController : PlayerControllers)
+	{
+		if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(PlayerController->GetCharacter()))
+		{
+			//CharacterBase->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(ActivateTagContainer);
+			CharacterBase->OnCustomSpawned();
+		}
+	}
 }
 
 void AArpgGameModeBase::BeginIntroCinematic(ULevelSequence* LevelSequenceAsset, FTransform SpawnTransform)

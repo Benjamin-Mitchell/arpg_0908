@@ -80,8 +80,19 @@ void AarpgPlayerController::ClientSetCameraTransitionToFrozen_Implementation(FVe
 void AarpgPlayerController::AcknowledgePossession(class APawn* P)
 {
 	Super::AcknowledgePossession(P);
-
 	RevertToNormalCamera(CameraBlendtimeOnPossess);
+
+	ServerReportPossessionComplete();
+}
+
+void AarpgPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+}
+
+void AarpgPlayerController::ServerReportPossessionComplete_Implementation()
+{
+	OnPossesDelegate.Broadcast();
 }
 
 void AarpgPlayerController::CursorTrace()
