@@ -35,3 +35,5 @@ Binaries/Win64/boost_system-mt-x64.dll
 Binaries/Win64/boost_thread-mt-x64.dll
 Binaries/Win64/tbb.dll
 Binaries/Win64/tbbmalloc.dll
+Binaries/Win64/tbb12.dll
+Binaries/Win64/arpg_0908-Win64-DebugGame.*

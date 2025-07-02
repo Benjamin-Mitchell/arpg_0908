@@ -9,6 +9,7 @@
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/Abilities/ArpgDamageGameplayAbility.h"
 #include "arpg_0908/ArpgLogChannels.h"
+#include "Character/arpgCharacterBase.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
