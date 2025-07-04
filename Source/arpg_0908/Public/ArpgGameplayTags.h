@@ -15,6 +15,11 @@ public:
     static const FArpgGameplayTags& Get() {return GameplayTags;};
     static void InitializeNativeGameplayTags();
 
+	FGameplayTag ObjectType_Player_Character;
+	FGameplayTag ObjectType_Player_Friendly;
+	FGameplayTag ObjectType_Enemy_Boss;
+	FGameplayTag ObjectType_Enemy_Minion;
+
     FGameplayTag Attributes_Power_AttackDamage;
     FGameplayTag Attributes_Power_AbilityPower;
 	

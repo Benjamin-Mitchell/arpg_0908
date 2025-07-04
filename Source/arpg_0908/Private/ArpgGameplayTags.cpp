@@ -8,6 +8,12 @@ FArpgGameplayTags FArpgGameplayTags::GameplayTags;
 
 void FArpgGameplayTags::InitializeNativeGameplayTags()
 {
+	//Object Type Tags
+	GameplayTags.ObjectType_Player_Character = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("ObjectType.Player.Character"));
+	GameplayTags.ObjectType_Player_Friendly = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("ObjectType.Player.Friendly"));
+	GameplayTags.ObjectType_Enemy_Boss = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("ObjectType.Enemy.Boss"));
+	GameplayTags.ObjectType_Enemy_Minion = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("ObjectType.Enemy.Minion"));
+	
 	//Attribute Tags
 	GameplayTags.Attributes_Power_AttackDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Power.AttackDamage"));
 	GameplayTags.Attributes_Power_AbilityPower = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Power.AbilityPower"));

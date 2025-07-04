@@ -27,21 +27,31 @@ public:
 	float ProjectileSpeed = 550.f;
 
 	bool CollisionEnabled = true;
+
+	UFUNCTION(BlueprintCallable, Category = "HookProjectile")
+	FTransform GetSpawnTransform() {return SpawnTransform;};
+
+	void SetSpawnTransform(FTransform Transform) {SpawnTransform = Transform;};
+
+	void SetCollisionTags(const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
+	const TArray<AActor*> &InAvoidActors);
 protected:
 	virtual void BeginPlay() override;
 	void OnHit();
 	virtual void Destroyed() override;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnDestroy(AActor* OtherActor);
+	void CustomOnDestroyLogic(AActor* OtherActor);
 
 	UFUNCTION(BlueprintCallable)
 	void DamageTargetASC(AActor* OtherActor);
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	bool IsValidOverlap(AActor* OtherActor, bool& OutOtherActorHasASC);
 
-	bool IsValidOverlap(AActor* OtherActor);
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.f;
@@ -64,5 +74,16 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	
+	FTransform SpawnTransform;
+
+	UPROPERTY(Replicated)
+	FGameplayTagContainer WithTags;
+
+	UPROPERTY(Replicated)
+	FGameplayTagContainer PassThroughTags;
+
+	UPROPERTY(Replicated)
+	TArray<TObjectPtr<AActor>> AvoidActors;
 
 };

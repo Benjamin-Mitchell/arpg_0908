@@ -39,7 +39,7 @@ void AArcingProjectile::Tick(float DeltaTime)
 	if (Alpha > 1)
 	{
 		OnHit();
-		OnDestroy(nullptr);
+		CustomOnDestroyLogic(nullptr);
 		Destroy();
 	}
 

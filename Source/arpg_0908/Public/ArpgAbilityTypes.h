@@ -99,7 +99,7 @@ struct TStructOpsTypeTraits<FArpgGameplayEffectContext> : TStructOpsTypeTraitsBa
 {
 	enum
 	{
-		WithNetSerializer = true,
+		WithNetSerializer = true, 
 		WithCopy = true
 	};
 };

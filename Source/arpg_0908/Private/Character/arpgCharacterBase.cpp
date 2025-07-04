@@ -219,7 +219,24 @@ void AarpgCharacterBase::SetInPlay(const bool InIsInPlay)
 void AarpgCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->AddLooseGameplayTags(ObjectTypeTags);
+	}
+	else
+	{
+		GetOnASCRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* InASC)
+			{
+				AbilitySystemComponent->AddLooseGameplayTags(ObjectTypeTags);
+			}
+		);
+		
+	}
+
+	if (ObjectTypeTags.Num() == 0)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("WARNING, Class %s doesn't have an ObjectType"),  *this->GetClass()->GetName()));
+	//AbilitySystemComponent->AddReplicatedLooseGameplayTags(ObjectTypeTags);
 }
 
 FVector AarpgCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag MontageTag)
@@ -326,7 +343,7 @@ void AarpgCharacterBase::RemoveCharacterAbilities(const TArray<TSubclassOf<UGame
 	ArpgASC->RemoveCharacterAbilities(Abilities);
 }
 
-void AarpgCharacterBase::SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget)
+void AarpgCharacterBase::SetIsTraversing(const bool bInIsTraversing, const FTransform InTarget)
 {
 	TraversalTarget = InTarget;
 	bIsTraversing = bInIsTraversing;

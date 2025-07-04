@@ -13,6 +13,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "Net/UnrealNetwork.h"
 
 AArpgProjectile::AArpgProjectile()
 {
@@ -23,6 +24,19 @@ AArpgProjectile::AArpgProjectile()
 	Sphere->SetCollisionObjectType(ECC_Projectile);
 
 
+}
+
+void AArpgProjectile::SetCollisionTags(const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
+	const TArray<AActor*> &InAvoidActors)
+{
+	//These are all replicated variables, and should only be assigned if the info is useful
+	
+	if (!InWithTags.IsEmpty())
+		WithTags = InWithTags;
+	if (!InPassThroughTags.IsEmpty())
+		PassThroughTags = InPassThroughTags;
+	if (AvoidActors.Num() > 0)
+		AvoidActors = InAvoidActors;
 }
 
 void AArpgProjectile::BeginPlay()
@@ -75,7 +89,8 @@ void AArpgProjectile::Destroyed()
 
 void AArpgProjectile::DamageTargetASC(AActor* OtherActor)
 {
-	if (!IsValidOverlap(OtherActor)) return;
+	bool ActorHasValidASC = false;
+	if (!IsValidOverlap(OtherActor, ActorHasValidASC)) return;
 	
 	if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 	{
@@ -102,14 +117,18 @@ void AArpgProjectile::DamageTargetASC(AActor* OtherActor)
 
 void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
-	if (!IsValidOverlap(OtherActor)) return;
+{
+	
+	bool OtherActorHasASC = true;
+	if (!IsValidOverlap(OtherActor, OtherActorHasASC)) return;
 
 	if(!bHit) OnHit();
 
 	if(HasAuthority())
 	{
-		OnDestroy(OtherActor);
+		//We assume all valid targets have an ASC, otherwise its blocking geometry.
+		if (OtherActorHasASC)
+			CustomOnDestroyLogic(OtherActor);
 		Destroy();
 	}
 	else
@@ -118,13 +137,39 @@ void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
-bool AArpgProjectile::IsValidOverlap(AActor* OtherActor)
+bool AArpgProjectile::IsValidOverlap(AActor* OtherActor, bool& OutOtherActorHasASC)
 {
-	if (DamageEffectParams.SourceAbilitySystemComponent == nullptr) return false;
-	AActor* SourceAvatarActor = DamageEffectParams.SourceAbilitySystemComponent->GetAvatarActor();
-	if (SourceAvatarActor == OtherActor) return false;
-	if (!UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(SourceAvatarActor, OtherActor)) return false;
+	if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+	{
+		OutOtherActorHasASC = true;
+		//If we don't have all the WithTags, fail overlap. (NOTE: if there are no With Tags, it will always pass overlap)
+		if (!TargetASC->HasAllMatchingGameplayTags(WithTags))
+			return false;
+
+		//If we have any of the PassThroughTags, we fail.
+		if (TargetASC->HasAnyMatchingGameplayTags(PassThroughTags))
+			return false;
+		
+		if (AvoidActors.Contains(OtherActor))
+			return false;
+	}
+	else
+	{
+		OutOtherActorHasASC = false;
+		return true;
+	}
+
+	//if (!UArpgAbilitySystemLibrary::IsNotFriendBasedOnTag(SourceAvatarActor, OtherActor)) return false;
 
 	return true;
+}
+
+void AArpgProjectile::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AArpgProjectile, WithTags);
+	DOREPLIFETIME(AArpgProjectile, PassThroughTags);
+	DOREPLIFETIME(AArpgProjectile, AvoidActors);
 }
 

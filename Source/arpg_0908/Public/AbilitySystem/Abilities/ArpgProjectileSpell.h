@@ -28,8 +28,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool ProjectilesShouldCollide = true;
 
-	UFUNCTION(BlueprintCallable, Category = "Projectile")
-	void FireProjectile(const FVector& ProjectileTargetLocation);
+	UFUNCTION(BlueprintCallable, Category = "Projectile", meta = (AutoCreateRefTerm = "InWithTags,InPassThroughTags,InAvoidActors"))
+	void FireProjectile(const FVector& ProjectileTargetLocation, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
+	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage);
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag SpawnLocationTag, const FVector& ProjectileTargetLocation);

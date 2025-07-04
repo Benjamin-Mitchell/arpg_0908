@@ -58,7 +58,7 @@ public:
 	FTransform GetTraversalTargetTransform() const {return TraversalTarget;};
 
 	UFUNCTION(BlueprintCallable)
-	void SetIsTraversing(const bool& bInIsTraversing, const FTransform InTarget = FTransform());
+	void SetIsTraversing(const bool bInIsTraversing, const FTransform InTarget = FTransform());
 	
 	UFUNCTION(BlueprintCallable)
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities, bool ActivateImmediately = false);
@@ -145,6 +145,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName TraceEndSocketName;
+
+	UPROPERTY(EditAnywhere, Category = "ObjectType")
+	FGameplayTagContainer ObjectTypeTags;
 	
 	bool bDead = false;
 	
