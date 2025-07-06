@@ -132,6 +132,8 @@ void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCh
 	GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
 	GetWorld()->GetTimerManager().ClearTimer(OptionalSnapDurationHandle);
 
+	GetCapsuleComponent()->SetWorldRotation(FRotator::ZeroRotator);
+
 	FVector GrabOffset = DefaultGrabOffsetToMesh;
 	//start a timer
 	GetWorld()->GetTimerManager().SetTimer(
@@ -237,6 +239,15 @@ FVector AarpgCharacterBase::GetGrabRelativeLocation()
 	return GrabLocationComponent->GetRelativeLocation();
 }
 
+void AarpgCharacterBase::ServerResetMeshRelativeTransformToDefault(float ResetDuration)
+{
+	//Send dispatch to all the clients to reset the transformation
+	MulticastResetMeshRelativeTransformToDefault(ResetDuration);
+
+	//Then handle it locally
+	ResetMeshRelativeTransformToDefault(ResetDuration);
+}
+
 void AarpgCharacterBase::ResetMeshRelativeTransformToDefault(float ResetDuration)
 {
 	if (ResetDuration < 0.0f)
@@ -269,6 +280,11 @@ void AarpgCharacterBase::ResetMeshRelativeTransformToDefault(float ResetDuration
 	}
 
 	
+}
+
+void AarpgCharacterBase::MulticastResetMeshRelativeTransformToDefault_Implementation(float ResetDuration)
+{
+	ResetMeshRelativeTransformToDefault(ResetDuration);
 }
 
 void AarpgCharacterBase::BeginPlay()

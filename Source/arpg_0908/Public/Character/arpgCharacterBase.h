@@ -108,7 +108,10 @@ public:
 	FVector GetGrabRelativeLocation();
 
 	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
-	void ResetMeshRelativeTransformToDefault(float ResetDuration = -1.0f);
+	void ServerResetMeshRelativeTransformToDefault(float ResetDuration = -1.0f);
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastResetMeshRelativeTransformToDefault(float ResetDuration = -1.0f);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -223,6 +226,7 @@ protected:
 	TSubclassOf<UArpgTemporaryTextComponent> SpeechTextComponentClass;
 	
 private:
+	void ResetMeshRelativeTransformToDefault(float ResetDuration = -1.0f);
 
 	FTransform DefaultMeshRelativeTransform;
 	FTimerHandle MeshRelativeTransformTimerHandle;
