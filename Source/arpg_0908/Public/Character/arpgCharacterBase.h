@@ -55,6 +55,9 @@ public:
 	TArray<FTaggedMontage> AttackMontages;
 
 	UFUNCTION(BlueprintCallable)
+	void ClearMovementRestrictions();
+	
+	UFUNCTION(BlueprintCallable)
 	FTransform GetTraversalTargetTransform() const {return TraversalTarget;};
 
 	UFUNCTION(BlueprintCallable)
@@ -90,17 +93,22 @@ public:
 	///Ability Callable functions for specific functionality.
 	//SnappingDuration is an optional parameter. Leave negative for unlimited snapping duration (must be cancelled manually by the server)
 	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
-	void ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName, const float SnappingDuration = -1.0f);
+	void ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase *SnapToTargetActor, const FName SocketName, const float SnappingDuration = -1.0f);
 	
 	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
 	void ServerSetClientEndSnapToTargetSocket();
 
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastBeginSnapToTargetSocket(AarpgCharacterBase *Target, const FName SocketName, const float SnappingDuration = -1.0f);
+	virtual void MulticastBeginSnapToTargetSocket(AarpgCharacterBase *SnapToTargetActor, const FName SocketName, const float SnappingDuration = -1.0f);
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastEndSnapToTargetSocket();
-	
+
+	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
+	FVector GetGrabRelativeLocation();
+
+	UFUNCTION(BlueprintCallable, Category = "AbilityCallable")
+	void ResetMeshRelativeTransformToDefault(float ResetDuration = -1.0f);
 	
 protected:
 	// Called when the game starts or when spawned
@@ -115,6 +123,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<USceneComponent> GrabLocationComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;
@@ -213,6 +224,12 @@ protected:
 	
 private:
 
+	FTransform DefaultMeshRelativeTransform;
+	FTimerHandle MeshRelativeTransformTimerHandle;
+	float RelativeTransformAlpha = 0.0f;
+
+	FVector DefaultGrabOffsetToMesh;
+	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 

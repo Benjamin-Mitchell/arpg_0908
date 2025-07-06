@@ -23,6 +23,9 @@ AarpgCharacterBase::AarpgCharacterBase()
 	StunNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("StunDebuffComponent");;
 	StunNiagaraComponent->SetupAttachment(GetRootComponent());
 	StunNiagaraComponent->DebuffTag = FArpgGameplayTags::Get().Debuff_Stun;
+
+	GrabLocationComponent = CreateDefaultSubobject<USceneComponent>("GrabLocationComponent");
+	GrabLocationComponent->SetupAttachment(GetRootComponent());
 	
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
@@ -124,20 +127,32 @@ void AarpgCharacterBase::ServerSetClientEndSnapToTargetSocket()
 }
 
 
-void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCharacterBase* Target, const FName SocketName, const float SnappingDuration)
+void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCharacterBase* SnapToTargetActor, const FName SocketName, const float SnappingDuration)
 {
 	GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
 	GetWorld()->GetTimerManager().ClearTimer(OptionalSnapDurationHandle);
 
+	FVector GrabOffset = DefaultGrabOffsetToMesh;
 	//start a timer
 	GetWorld()->GetTimerManager().SetTimer(
 	SnapTimerHandle,
-	[this, Target, SocketName]() 
+	[this, SnapToTargetActor, SocketName, GrabOffset]() 
 		{
-			FTransform MoveToTransform = Target->GetMesh()->GetSocketTransform(SocketName);
-			MoveToTransform.SetScale3D(GetActorTransform().GetScale3D());
-					
-			SetActorTransform(MoveToTransform);
+			//New
+			//Remove relative offset of our mesh.
+			GetMesh()->SetRelativeLocation(FVector::Zero());
+
+			FTransform SocketTransform = SnapToTargetActor->GetMesh()->GetSocketTransform(SocketName);
+			//Move entire Actor to SocketName's Location.
+			SetActorLocation(SocketTransform.GetLocation());
+			
+			//Rotate Our Mesh to SocketName's rotation.
+			FRotator SocketRotation = SocketTransform.GetRotation().Rotator();
+			GetMesh()->SetWorldRotation(SocketRotation);
+			
+			FVector RotatedGrabOffset = SocketRotation.RotateVector(GrabOffset);
+			GetMesh()->AddRelativeLocation(RotatedGrabOffset);
+			
 		},
 	0.01f,
 	true // Do loop
@@ -153,6 +168,7 @@ void AarpgCharacterBase::MulticastBeginSnapToTargetSocket_Implementation(AarpgCh
 		[this]() 
 			{
 				GetWorld()->GetTimerManager().ClearTimer(SnapTimerHandle);
+				GetWorld()->GetTimerManager().ClearTimer(OptionalSnapDurationHandle);
 			},
 		SnappingDuration,
 		false // Don't loop
@@ -216,6 +232,45 @@ void AarpgCharacterBase::SetInPlay(const bool InIsInPlay)
 	bInPlay = InIsInPlay;
 }
 
+FVector AarpgCharacterBase::GetGrabRelativeLocation()
+{
+	return GrabLocationComponent->GetRelativeLocation();
+}
+
+void AarpgCharacterBase::ResetMeshRelativeTransformToDefault(float ResetDuration)
+{
+	if (ResetDuration < 0.0f)
+		GetMesh()->SetRelativeTransform(DefaultMeshRelativeTransform);
+	else
+	{
+
+		FTransform MeshStartRelativeTransform = GetMesh()->GetRelativeTransform();
+		RelativeTransformAlpha = 0.0f;
+		float TimeStep = 0.05f;
+		
+		//start a timer
+		GetWorld()->GetTimerManager().SetTimer(
+		MeshRelativeTransformTimerHandle,
+		[this, MeshStartRelativeTransform, TimeStep, ResetDuration]() 
+			{
+				RelativeTransformAlpha += TimeStep;
+				float ActualAlpha = RelativeTransformAlpha / ResetDuration;
+				FTransform Res;
+				Res.Blend(MeshStartRelativeTransform, DefaultMeshRelativeTransform, RelativeTransformAlpha);
+
+				GetMesh()->SetRelativeTransform(Res);
+
+				if (ActualAlpha >= 1.0f)
+					GetWorld()->GetTimerManager().ClearTimer(MeshRelativeTransformTimerHandle);
+			},
+		TimeStep,
+		true // Do loop
+		);
+	}
+
+	
+}
+
 void AarpgCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -236,6 +291,9 @@ void AarpgCharacterBase::BeginPlay()
 
 	if (ObjectTypeTags.Num() == 0)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("WARNING, Class %s doesn't have an ObjectType"),  *this->GetClass()->GetName()));
+
+	DefaultMeshRelativeTransform = GetMesh()->GetRelativeTransform();
+	DefaultGrabOffsetToMesh = GetMesh()->GetRelativeLocation() - GetGrabRelativeLocation();
 	//AbilitySystemComponent->AddReplicatedLooseGameplayTags(ObjectTypeTags);
 }
 
@@ -341,6 +399,21 @@ void AarpgCharacterBase::RemoveCharacterAbilities(const TArray<TSubclassOf<UGame
 	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
 
 	ArpgASC->RemoveCharacterAbilities(Abilities);
+}
+
+void AarpgCharacterBase::ClearMovementRestrictions()
+{
+	FGameplayTagContainer Restrictions;
+	Restrictions.AddTag(FArpgGameplayTags::Get().Player_Block_InputPressed);
+	Restrictions.AddTag(FArpgGameplayTags::Get().Player_Block_InputReleased);
+	Restrictions.AddTag(FArpgGameplayTags::Get().Player_Block_InputHeld);
+	Restrictions.AddTag(FArpgGameplayTags::Get().Player_Block_Rotation);
+	
+	AbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(Restrictions);
+
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 }
 
 void AarpgCharacterBase::SetIsTraversing(const bool bInIsTraversing, const FTransform InTarget)
