@@ -83,10 +83,11 @@ void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowT
 
 		//Check length of avatar -> target, clamp the traversal target within min/max
 		FVector ToTarget = TargetLocation - AvatarActor->GetActorLocation();
-		float TraversalDistance = (ToTarget).Length();
+		float TraversalDistance = ToTarget.Length();
 		TraversalDistance = FMath::Clamp(TraversalDistance, TraversalDistanceMin, TraversalDistanceMax);
 
-		TargetLocation = AvatarActor->GetActorLocation() + ToTarget.Normalize() * TraversalDistance;
+		FVector ToTargetOffset = ToTarget.GetSafeNormal() * TraversalDistance;
+		TargetLocation = AvatarActor->GetActorLocation() + ToTargetOffset;
 	}
 	else
 	{		
