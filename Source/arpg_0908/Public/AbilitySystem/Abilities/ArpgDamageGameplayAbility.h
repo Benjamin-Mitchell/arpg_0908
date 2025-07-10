@@ -127,6 +127,6 @@ protected:
 	float TraversalDistanceMax = 0.f;
 
 	UFUNCTION(BlueprintCallable)
-	void SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor);
+	void SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor, FRotator AdditionalRotation = FRotator::ZeroRotator);
 
 };

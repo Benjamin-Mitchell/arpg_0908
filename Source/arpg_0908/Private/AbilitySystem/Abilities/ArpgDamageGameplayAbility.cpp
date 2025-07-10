@@ -69,7 +69,7 @@ FTaggedMontage UArpgDamageGameplayAbility::GetRandomTaggedMontageFromArray(
 }
 
 //Sets Rotation (Facing) and Movement (Traversal) Targets. Call before animation trigger
-void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor)
+void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor, FRotator AdditionalRotation)
 {
 	
 	AActor* AvatarActor = GetAvatarActorFromActorInfo();
@@ -79,8 +79,6 @@ void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowT
 	{
 		TargetLocation = TargetActor->GetActorLocation();
 
-		CombatInterface->Execute_UpdateFacingTarget(AvatarActor, TargetLocation);
-
 		//Check length of avatar -> target, clamp the traversal target within min/max
 		FVector ToTarget = TargetLocation - AvatarActor->GetActorLocation();
 		float TraversalDistance = ToTarget.Length();
@@ -88,6 +86,9 @@ void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowT
 
 		FVector ToTargetOffset = ToTarget.GetSafeNormal() * TraversalDistance;
 		TargetLocation = AvatarActor->GetActorLocation() + ToTargetOffset;
+		
+		FVector RotatedFaceTarget = AdditionalRotation.RotateVector(ToTarget) + AvatarActor->GetActorLocation();
+		CombatInterface->Execute_UpdateFacingTarget(AvatarActor, RotatedFaceTarget);
 	}
 	else
 	{		
