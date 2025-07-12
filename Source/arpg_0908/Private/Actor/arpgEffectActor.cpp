@@ -14,6 +14,26 @@ AarpgEffectActor::AarpgEffectActor()
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("SceneRoot"));
 }
 
+int AarpgEffectActor::GetCurrentNumberOfActiveInfiniteEffects()
+{
+	return ActiveEffectHandles.Num();
+}
+
+void AarpgEffectActor::TriggerEffectActorDestroy()
+{
+	//remove all currently active infinite effects
+	for(TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*> HandlePair : ActiveEffectHandles)
+	{
+		UAbilitySystemComponent* TargetASC = HandlePair.Value;
+		TargetASC->RemoveActiveGameplayEffect(HandlePair.Key, 1);
+	}
+
+	ActiveEffectHandles.Empty();
+	
+	//destroy
+	Destroy();
+}
+
 void AarpgEffectActor::BeginPlay()
 {
 	Super::BeginPlay();

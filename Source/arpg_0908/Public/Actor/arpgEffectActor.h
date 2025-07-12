@@ -48,6 +48,12 @@ class ARPG_0908_API AarpgEffectActor : public AActor
 	
 public:	
 	AarpgEffectActor();
+
+	UFUNCTION(BlueprintCallable, Category = "Ability Callable")
+	int GetCurrentNumberOfActiveInfiniteEffects();
+
+	UFUNCTION(BlueprintCallable, Category = "Ability Callable")
+	void TriggerEffectActorDestroy();
 	
 protected:
 	virtual void BeginPlay() override;
