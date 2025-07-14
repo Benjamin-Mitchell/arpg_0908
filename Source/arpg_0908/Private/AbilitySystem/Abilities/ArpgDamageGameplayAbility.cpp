@@ -69,26 +69,19 @@ FTaggedMontage UArpgDamageGameplayAbility::GetRandomTaggedMontageFromArray(
 }
 
 //Sets Rotation (Facing) and Movement (Traversal) Targets. Call before animation trigger
-void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor, FRotator AdditionalRotation)
+void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor, FRotator AdditionalRotation, bool AdditionalRotationAffectsTraverseTarget, bool DebugSphere)
 {
 	
 	AActor* AvatarActor = GetAvatarActorFromActorInfo();
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);	
+
+	FVector TargetLocation;
 	
 	if (IsValid(TargetActor))
 	{
 		TargetLocation = TargetActor->GetActorLocation();
 
-		//Check length of avatar -> target, clamp the traversal target within min/max
-		FVector ToTarget = TargetLocation - AvatarActor->GetActorLocation();
-		float TraversalDistance = ToTarget.Length();
-		TraversalDistance = FMath::Clamp(TraversalDistance, TraversalDistanceMin, TraversalDistanceMax);
-
-		FVector ToTargetOffset = ToTarget.GetSafeNormal() * TraversalDistance;
-		TargetLocation = AvatarActor->GetActorLocation() + ToTargetOffset;
-		
-		FVector RotatedFaceTarget = AdditionalRotation.RotateVector(ToTarget) + AvatarActor->GetActorLocation();
-		CombatInterface->Execute_UpdateFacingTarget(AvatarActor, RotatedFaceTarget);
+		SetTargetsBasedOnInputLocation(SnapToFloorBelowTarget, TargetLocation, AdditionalRotation, AdditionalRotationAffectsTraverseTarget, DebugSphere);
 	}
 	else
 	{		
@@ -96,16 +89,48 @@ void UArpgDamageGameplayAbility::SetTargetsIfTargetExists(bool SnapToFloorBelowT
 		
 		//Move the minimum traversal distance, in the direction we are facing already
 		TargetLocation += AvatarActor->GetActorForwardVector() * TraversalDistanceMin;
+
+		SetTargetsBasedOnInputLocation(SnapToFloorBelowTarget, TargetLocation, FRotator::ZeroRotator, false, DebugSphere);
 	}
+}
+
+void UArpgDamageGameplayAbility::SetTargetsBasedOnInputLocation(bool SnapToFloorBelowTarget,
+	FVector TraversalTargetLocation, FRotator AdditionalRotation, bool AdditionalRotationAffectsTraverseTarget, bool DebugSphere)
+{
+	AActor* AvatarActor = GetAvatarActorFromActorInfo();
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(AvatarActor);
+	
+	//Check length of avatar -> target, clamp the traversal target within min/max
+	FVector ToTarget = TraversalTargetLocation - AvatarActor->GetActorLocation();
+	float TraversalDistance = ToTarget.Length();
+	TraversalDistance = FMath::Clamp(TraversalDistance, TraversalDistanceMin, TraversalDistanceMax);
+
+
+	FVector RotatedToTarget = AdditionalRotation.RotateVector(ToTarget);
+	FVector RotatedFaceTarget = RotatedToTarget + AvatarActor->GetActorLocation();
+	CombatInterface->Execute_UpdateFacingTarget(AvatarActor, RotatedFaceTarget);
+
+	FVector ToTargetOffset;
+	if (AdditionalRotationAffectsTraverseTarget)
+		ToTargetOffset = RotatedToTarget.GetSafeNormal() * TraversalDistance;
+	else
+		ToTargetOffset = ToTarget.GetSafeNormal() * TraversalDistance;
+	
+	TraversalTargetLocation = AvatarActor->GetActorLocation() + ToTargetOffset;
 	
 	FVector TraverseTarget;
 	if (SnapToFloorBelowTarget)
-		TraverseTarget = UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(AvatarActor, TargetLocation);
+		TraverseTarget = UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(AvatarActor, TraversalTargetLocation);
 	else
-		TraverseTarget = TargetLocation;
+		TraverseTarget = TraversalTargetLocation;
 
 	CombatInterface->Execute_UpdateTraverseTarget(AvatarActor, TraverseTarget);
 
+	if (DebugSphere)
+	{
+		const UWorld* World = GEngine->GetWorldFromContextObject(AvatarActor, EGetWorldErrorMode::LogAndReturnNull);
+		DrawDebugSphere(World, TraverseTarget , 100, 30, FColor::Blue, false, 8.0f);
+	}
 }
 
 

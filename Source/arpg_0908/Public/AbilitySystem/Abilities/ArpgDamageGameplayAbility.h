@@ -116,9 +116,9 @@ protected:
 	
 	UFUNCTION(BlueprintPure)
 	FTaggedMontage GetRandomTaggedMontageFromArray(const TArray<FTaggedMontage>& TaggedMontages) const;
-
-	UPROPERTY(BlueprintReadWrite)
-	FVector TargetLocation;
+	//
+	// UPROPERTY(BlueprintReadWrite)
+	// FVector TargetLocation;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float TraversalDistanceMin = 0.f;
@@ -127,6 +127,9 @@ protected:
 	float TraversalDistanceMax = 0.f;
 
 	UFUNCTION(BlueprintCallable)
-	void SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor, FRotator AdditionalRotation = FRotator::ZeroRotator);
+	void SetTargetsIfTargetExists(bool SnapToFloorBelowTarget, AActor* TargetActor, FRotator AdditionalRotation = FRotator::ZeroRotator, bool AdditionalRotationAffectsTraverseTarget = false, bool DebugSphere = false);
+	
+	UFUNCTION(BlueprintCallable)
+	void SetTargetsBasedOnInputLocation(bool SnapToFloorBelowTarget, FVector TraversalTargetLocation, FRotator AdditionalRotation = FRotator::ZeroRotator, bool AdditionalRotationAffectsTraverseTarget = false, bool DebugSphere = false);
 
 };
