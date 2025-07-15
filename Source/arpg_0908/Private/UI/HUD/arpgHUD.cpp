@@ -21,6 +21,11 @@ UOverlayWidgetController* AarpgHUD::GetOverlayWidgetController(const FWidgetCont
 	return OverlayWidgetController;
 }
 
+bool AarpgHUD::GetIsWidgetAlreadyInitialized() const
+{
+	return WidgetInitialized;
+}
+
 void AarpgHUD::InitOverlay(APlayerController* PlayerController, APlayerState* PlayerState,
 	UAbilitySystemComponent* AbilitySystemComponent, UAttributeSet* AttributeSet)
 {
@@ -42,6 +47,7 @@ void AarpgHUD::InitOverlay(APlayerController* PlayerController, APlayerState* Pl
 	//This is a blueprint assignable delegate for initializing any properties related to the current game.
 	//Use this instead of BeginPlay for initialization in relation to the HUD/Overlay.
 	OnWidgetInitialized.Broadcast();
+	WidgetInitialized = true;
 }
 
 void AarpgHUD::DisplayCards(FCardProperties FirstCardProperties, FCardProperties SecondCardProperties,

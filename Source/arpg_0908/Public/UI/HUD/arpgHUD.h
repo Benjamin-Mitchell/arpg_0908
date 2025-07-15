@@ -38,6 +38,9 @@ public:
 
 	void UpdateNextLevelCountdown(int RemainingSeconds);
 
+	UFUNCTION(BlueprintCallable, Category="Initialization")
+	bool GetIsWidgetAlreadyInitialized() const;
+
 	UPROPERTY(BlueprintAssignable, Category="Initialization")
 	FOnWidgetInitialized OnWidgetInitialized;
 
@@ -53,4 +56,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+
+	bool WidgetInitialized = false;
 };
