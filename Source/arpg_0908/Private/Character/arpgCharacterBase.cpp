@@ -207,9 +207,22 @@ void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 }
 
 void AarpgCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
+{	
 	bIsStunned = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;
+}
+
+void AarpgCharacterBase::StunImmunityTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	if (NewCount > 0)
+	{
+		FGameplayTagContainer Container;
+		Container.AddTag(FArpgGameplayTags::Get().Debuff_Stun);
+		AbilitySystemComponent->RemoveActiveEffectsWithTags(Container);
+		
+		//Don't manually call it, we should clear the spec.
+		//StunTagChanged(FArpgGameplayTags::Get().Debuff_Stun, 0);	
+	}
 }
 
 void AarpgCharacterBase::Onrep_Stunned()
@@ -294,12 +307,14 @@ void AarpgCharacterBase::BeginPlay()
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->AddLooseGameplayTags(ObjectTypeTags);
+		AbilitySystemComponent->AddLooseGameplayTags(PermanentTags);
 	}
 	else
 	{
 		GetOnASCRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* InASC)
 			{
 				AbilitySystemComponent->AddLooseGameplayTags(ObjectTypeTags);
+				AbilitySystemComponent->AddLooseGameplayTags(PermanentTags);
 			}
 		);
 		

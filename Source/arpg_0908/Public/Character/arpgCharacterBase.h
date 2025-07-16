@@ -88,7 +88,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnCustomSpawned();
-
 	
 	///Ability Callable functions for specific functionality.
 	//SnappingDuration is an optional parameter. Leave negative for unlimited snapping duration (must be cancelled manually by the server)
@@ -157,8 +156,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName TraceEndSocketName;
 
-	UPROPERTY(EditAnywhere, Category = "ObjectType")
+	UPROPERTY(EditAnywhere, Category = "InitTags")
 	FGameplayTagContainer ObjectTypeTags;
+	
+	UPROPERTY(EditAnywhere, Category = "InitTags")
+	FGameplayTagContainer PermanentTags;
 	
 	bool bDead = false;
 	
@@ -171,6 +173,7 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 	virtual void InitAbilityActorInfo();
+
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
@@ -218,6 +221,8 @@ protected:
 	float BaseWalkSpeed = 250.f;
 	
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	virtual void StunImmunityTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UArpgTemporaryTextComponent> SpeechTextComponentClass;

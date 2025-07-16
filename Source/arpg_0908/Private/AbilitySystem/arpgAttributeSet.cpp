@@ -121,16 +121,26 @@ void UarpgAttributeSet::Debuff(const FEffectProperties& EffectProps)
 	UTargetTagsGameplayEffectComponent& Component = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
 	TagContainer.AddTag(DebuffTag);
 
+	bool ValidToAddDebuff = true;
+
 	if (DebuffTag.MatchesTagExact(GameplayTags.Debuff_Stun))
 	{
-		TagContainer.AddTag(GameplayTags.Player_Block_InputPressed);
-		TagContainer.AddTag(GameplayTags.Player_Block_InputHeld);
-		TagContainer.AddTag(GameplayTags.Player_Block_InputReleased);
-		TagContainer.AddTag(GameplayTags.Player_Block_Rotation);
+		if (EffectProps.TargetASC->HasMatchingGameplayTag(FArpgGameplayTags::Get().Immunity_Stun))
+		{
+			ValidToAddDebuff = false;
+		}
+		else
+		{
+			//TODO: Should this be handled in the player character instead?
+			TagContainer.AddTag(GameplayTags.Player_Block_InputPressed);
+			TagContainer.AddTag(GameplayTags.Player_Block_InputHeld);
+			TagContainer.AddTag(GameplayTags.Player_Block_InputReleased);
+			TagContainer.AddTag(GameplayTags.Player_Block_Rotation);
+		}
 	}
-		
-	
-	Component.SetAndApplyTargetTagChanges(TagContainer);
+
+	if (ValidToAddDebuff)
+		Component.SetAndApplyTargetTagChanges(TagContainer);
 
 	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
 	Effect->StackLimitCount = 1;
@@ -175,17 +185,26 @@ void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 		}
 		else
 		{
-			const FVector& KnockbackForce =UArpgAbilitySystemLibrary::GetKnockbackForce(EffectProps.EffectContextHandle); 
-			if (!KnockbackForce.IsNearlyZero(1.f))
+			if (!EffectProps.TargetASC->HasMatchingGameplayTag(FArpgGameplayTags::Get().Immunity_Knockback))
 			{
-				EffectProps.TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
-				EffectProps.TargetCharacter->LaunchCharacter(KnockbackForce, false, false);
+				const FVector& KnockbackForce =UArpgAbilitySystemLibrary::GetKnockbackForce(EffectProps.EffectContextHandle); 
+				if (!KnockbackForce.IsNearlyZero(1.f))
+				{
+					EffectProps.TargetCharacter->GetCharacterMovement()->StopMovementImmediately();
+					EffectProps.TargetCharacter->LaunchCharacter(KnockbackForce, false, false);
+				}
 			}
-			
-			//Activate any abilities with the "effects_hitReact" tag on the target
-			FGameplayTagContainer TagContainer;
-			TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);
-			EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+
+			//NOTE: we can also just _not_assign_ a HitReact ability to make a character immune to hitReacts.
+			//However, in the future I want to add 'conditional' hit reacts, where characters may be temporarily immune to hitReact,
+			//or may require a sufficiently large amount of damage to be dealt to trigger it.
+			if (!EffectProps.TargetASC->HasMatchingGameplayTag(FArpgGameplayTags::Get().Immunity_HitReact))
+			{
+				//Activate any abilities with the "effects_hitReact" tag on the target
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FArpgGameplayTags::Get().Effects_HitReact);
+				EffectProps.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 
 			

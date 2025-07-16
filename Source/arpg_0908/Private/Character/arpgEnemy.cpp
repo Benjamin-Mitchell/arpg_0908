@@ -171,6 +171,7 @@ void AarpgEnemy::InitAbilityActorInfo()
 
 	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgEnemy::StunTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Immunity_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgEnemy::StunImmunityTagChanged);
 	
 	if(HasAuthority())
 	{
@@ -196,7 +197,7 @@ void AarpgEnemy::InitializeDefaultAttributes() const
 }
 
 void AarpgEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
+{	
 	Super::StunTagChanged(CallbackTag, NewCount);
 	
 	if(ArpgAIController && ArpgAIController->GetBlackboardComponent())

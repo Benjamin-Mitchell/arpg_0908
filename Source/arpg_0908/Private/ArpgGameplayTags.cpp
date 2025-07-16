@@ -109,7 +109,12 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_Attack_DamageTraceEnd = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.DamageTraceEnd"));
 	GameplayTags.Montage_Attack_CustomOrDebug = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.CustomOrDebug"));
 
+	GameplayTags.Immunity_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.Stun"));
+	GameplayTags.Immunity_Knockback = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.Knockback"));
+	GameplayTags.Immunity_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.HitReact"));
+	
 
+	
 	GameplayTags.Montage_Offset_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.1"));
 	GameplayTags.Montage_Offset_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.2"));
 	GameplayTags.Montage_Offset_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Offset.3"));

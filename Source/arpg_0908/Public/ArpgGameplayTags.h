@@ -117,6 +117,11 @@ public:
 	FGameplayTag Effects_HookPull;
 	FGameplayTag Effects_DodgeRoll;
 
+	//Pawn Immunities
+	FGameplayTag Immunity_Stun;
+	FGameplayTag Immunity_Knockback;
+	FGameplayTag Immunity_HitReact; //TODO: conditional hitreacts only on big hits?
+
 	FGameplayTag Player_Block_InputPressed;
 	FGameplayTag Player_Block_InputHeld;
 	FGameplayTag Player_Block_InputReleased;
