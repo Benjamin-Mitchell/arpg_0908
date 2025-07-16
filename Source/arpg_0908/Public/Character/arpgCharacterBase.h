@@ -116,9 +116,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spawn")
-	TSubclassOf<UGameplayAbility> SpawnAnimationAbility;
 
 	//All of the head logic is unique to the playable characters. Enemies should just create a mesh and use it however they please in blueprints.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")

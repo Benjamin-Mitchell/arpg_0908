@@ -30,6 +30,10 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	//check(InitializedAlready == false);
+	//Remote players are initialized a second time by the engine unfortunately.
+	if (InitializedAlready) return;
+	
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	
 	//Init ability actor info for the server
@@ -38,6 +42,7 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 	HandlePlayerHighlight();
 
 	AddCharacterAbilities(StartupAbilities);
+	InitializedAlready = true;
 }
 
 void AarpgCharacter::OnRep_PlayerState()

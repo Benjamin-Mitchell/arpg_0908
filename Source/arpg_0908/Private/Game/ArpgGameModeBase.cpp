@@ -214,7 +214,7 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 
 		//Register delegates to report back when possession is complete.
 		for (AarpgPlayerController* PlayerController : PlayerControllers)
-		{			
+		{
 			PlayerController->OnPossesDelegate.AddLambda(
 			[this, PlayerController]()
 				{
