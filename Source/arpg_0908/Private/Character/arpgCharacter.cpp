@@ -6,9 +6,12 @@
 #include "AbilitySystemComponent.h"
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
+#include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Actor/HeadData.h"
+#include "Actor/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Materials/MaterialExpressionOperator.h"
 #include "Player/arpgPlayerController.h"
 #include "UI/HUD/arpgHUD.h"
 
@@ -98,6 +101,57 @@ void AarpgCharacter::SetHead(AarpgHeadActor* NewHeadActor)
 	CurrentHeadActorClass = HeadData.HeadReference;
 }
 
+//This should only be called on the server!
+void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor)
+{
+	int WeaponIndex = WeaponDatabase->GetWeaponIndex(NewWeaponActor);
+	FVector WeaponWorldLocation = NewWeaponActor->GetActorLocation();
+	FVector FloorWorldLocation = UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(this, WeaponWorldLocation, 5.0f);
+
+	
+	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
+	AArpgWeaponActor* NewWeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
+
+
+		
+	if (CurrentWeaponActorClass != nullptr)
+	{
+		//Remove old head abilities, if any
+		AArpgWeaponActor* OldWeaponActorRef = CurrentWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
+		RemoveCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+		
+		//Now we replace the old one with the new one, before it is deleted.
+		FRotator Rotation = (GetActorLocation() - WeaponWorldLocation).Rotation();
+		Rotation.Pitch = 0.f;
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		FVector NewSpawnLocation = WeaponWorldLocation;
+
+		//If the floor is closer than half our capsule height
+		float NewWeaponCapsuleHalfHeight = NewWeaponActorRef->GetCapsuleHalfHeight();
+		if (abs(FloorWorldLocation.Z - WeaponWorldLocation.Z) < NewWeaponCapsuleHalfHeight)
+		{
+			NewSpawnLocation.Z = FloorWorldLocation.Z + NewWeaponCapsuleHalfHeight;
+		}
+	
+		AArpgWeaponActor* NewWeapon = GetWorld()->SpawnActor<AArpgWeaponActor>(
+				CurrentWeaponActorClass,
+				NewSpawnLocation,
+				Rotation,
+				SpawnParams);
+	}
+	
+	AddCharacterAbilities(NewWeaponActorRef->GrantedAbilities);
+
+	MulticastSetWeaponMesh(WeaponIndex);
+	
+	CurrentWeaponActorClass = WeaponData.WeaponReference;
+}
+
 void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
 {
 	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
@@ -105,6 +159,18 @@ void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
 	
 	BaseHeadMesh->SetSkeletalMesh(HeadActorRef->HeadMeshRef);
 	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
+}
+
+void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex)
+{
+	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
+	AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
+	
+	Weapon->SetSkeletalMesh(WeaponActorRef->WeaponMeshRef);
+
+	//We don't currently do custom attachments here since they are attached by default already.
+	//We may need to do work here in the future if we want to accomodate dual-wielding or two-handed weapons.
+	//Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 }
 
 void AarpgCharacter::Onrep_Stunned()

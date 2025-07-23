@@ -6,6 +6,8 @@
 #include "Character/arpgCharacterBase.h"
 #include "arpgCharacter.generated.h"
 
+class UWeaponData;
+class AArpgWeaponActor;
 class UCameraComponent;
 class AarpgHeadActor;
 class UHeadData;
@@ -28,6 +30,7 @@ public:
 	virtual int32 GetPlayerLevel() override;
 
 	void SetHead(AarpgHeadActor* HeadActor);
+	void SetWeapon(AArpgWeaponActor* WeaponActor);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meme stuff")
 	TArray<UAnimMontage*> DanceMontages;
@@ -53,6 +56,9 @@ protected:
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastSetHeadMesh(int headIndex);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastSetWeaponMesh(int WeaponIndex);
 
 	virtual void Onrep_Stunned() override;
 
@@ -65,8 +71,12 @@ private:
 
 	void HandlePlayerHighlight();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
-	TObjectPtr<UHeadData> HeadDatabase;	
+	UPROPERTY(EditDefaultsOnly, Category = "EquippableData")
+	TObjectPtr<UHeadData> HeadDatabase;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EquippableData")
+	TObjectPtr<UWeaponData> WeaponDatabase;
 
 	TSubclassOf<AarpgHeadActor> CurrentHeadActorClass;
+	TSubclassOf<AArpgWeaponActor> CurrentWeaponActorClass;
 };

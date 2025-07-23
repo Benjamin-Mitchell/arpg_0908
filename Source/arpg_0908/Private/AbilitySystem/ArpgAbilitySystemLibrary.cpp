@@ -409,20 +409,21 @@ FGameplayEffectContextHandle UArpgAbilitySystemLibrary::ApplyDamageEffect(const 
 	
 }
 
-FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength, bool DrawDebug)
+FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float ZRayStartOffset, const float RayLength, bool DrawDebug)
 {
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
 		//This, by default, will not trigger overlaps on pawns.
-		ECollisionChannel CollisionChannel = ECollisionChannel::ECC_Visibility;
+		ECollisionChannel CollisionChannel = ECollisionChannel::ECC_WorldStatic;
 		FHitResult Hit;
 		
 		FVector DownVector = FVector(0.0, 0.0, -1.0);
 		FVector EndLocation = InLocation + DownVector * RayLength;
+		FVector StartLocation = InLocation + FVector(0.0, 0.0, ZRayStartOffset);
 
-		if (DrawDebug) DrawDebugLine(World, InLocation, EndLocation, FColor::Red, false, 1, 0, 1);
+		if (DrawDebug) DrawDebugLine(World, StartLocation, EndLocation, FColor::Red, false, 1, 0, 1);
 
-		if (World->LineTraceSingleByChannel(Hit, InLocation, EndLocation, CollisionChannel))
+		if (World->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, CollisionChannel))
 		{
 			if(DrawDebug) DrawDebugSphere(World, Hit.Location, 100.0f, 12, FColor::Red, false, 1.0f);
 			return Hit.Location;

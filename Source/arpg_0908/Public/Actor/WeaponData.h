@@ -3,34 +3,34 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "arpgHeadActor.h"
+#include "ArpgWeaponActor.h"
 #include "Abilities/GameplayAbility.h"
 #include "Engine/DataAsset.h"
-#include "HeadData.generated.h"
+#include "WeaponData.generated.h"
 
 
 USTRUCT(BlueprintType)
-struct FHeadInfo
+struct FWeaponInfo
 {
 	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly, Category="Test")
-	TSubclassOf<AarpgHeadActor> HeadReference;
+	TSubclassOf<AArpgWeaponActor> WeaponReference;
 };
 /**
  * 
  */
 UCLASS()
-class ARPG_0908_API UHeadData : public UDataAsset
+class ARPG_0908_API UWeaponData : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Heads")
-	TArray<FHeadInfo> Heads;
+	TArray<FWeaponInfo> Weapons;
 
-	FHeadInfo GetHeadInfo(int Index);
-	
-	int GetHeadIndex(AarpgHeadActor* HeadActor);
+	FWeaponInfo GetWeaponInfo(int Index);
+
+	int GetWeaponIndex(AArpgWeaponActor* WeaponActor);
 };

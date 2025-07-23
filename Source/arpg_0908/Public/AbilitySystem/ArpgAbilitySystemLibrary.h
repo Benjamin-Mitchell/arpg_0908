@@ -103,7 +103,7 @@ public:
 	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& Params);
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|DamageEffect")
-	static FVector GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float RayLength = 500.0f, bool DrawDebug = false);
+	static FVector GetFloorPositionBelowLocation(const UObject* WorldContextObject, const FVector& InLocation, const float ZRayStartOffset = 0.0f, const float RayLength = 500.0f, bool DrawDebug = false);
 
 	UFUNCTION(BlueprintPure, Category = "Ability|Prediction", meta = (DisplayName = "Get Ability Prediction Key"))
 	static int32 GetAbilityPredictionKey(const FGameplayAbilityActivationInfo& ActivationInfo);
