@@ -3635,6 +3635,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Online/SocketSubsystemSteamIP/SocketSubsystemSteamIP.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Portal/LauncherChunkInstaller/LauncherChunkInstaller.uplugin",
 			"Type": "UFS"
 		},
@@ -3776,6 +3780,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Runtime/Steam/SteamShared/SteamShared.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/Steam/SteamSockets/SteamSockets.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -4004,11 +4012,13 @@
 		"SignificanceManager",
 		"SkeletalMeshModelingTools",
 		"SkeletalReduction",
+		"SocketSubsystemSteamIP",
 		"SoundFields",
 		"SpeedTreeImporter",
 		"StateTree",
 		"StaticMeshEditorModeling",
 		"SteamShared",
+		"SteamSockets",
 		"SubversionSourceControl",
 		"Synthesis",
 		"Takes",
