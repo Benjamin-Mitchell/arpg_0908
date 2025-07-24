@@ -54,7 +54,7 @@ void AarpgEnemy::PossessedBy(AController* NewController)
 
 	ArpgAIController = Cast<AArpgAIController>(NewController);
 	ArpgAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
-	ArpgAIController->RunBehaviorTree(BehaviorTree);
+	
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
@@ -202,6 +202,11 @@ void AarpgEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 	
 	if(ArpgAIController && ArpgAIController->GetBlackboardComponent())
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
+}
+
+void AarpgEnemy::StartBlackboard()
+{
+	ArpgAIController->RunBehaviorTree(BehaviorTree);
 }
 
 void AarpgEnemy::SetBlackboardInAir(bool bInAir)

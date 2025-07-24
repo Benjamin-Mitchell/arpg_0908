@@ -20,6 +20,13 @@ class UCharacterClassInfo;
 struct FCardDecisions;
 
 
+UENUM()
+enum class EPlayerSpawnBehaviour : uint8
+{
+	SpawnOnArrival,
+
+	SpawnSynchronouslyAfterAllConnected
+};
 
 /**
  * 
@@ -64,6 +71,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AarpgPlayerController*> SpawnPlayersManually();
+	
+	UFUNCTION(BlueprintCallable)
+	void SpawnIndividualPlayerManually(AController* InNewPlayer);
 
 	
 	UFUNCTION(BlueprintCallable)
@@ -76,6 +86,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	int NumDebugPlayers = 2;
+
+	UPROPERTY(EditDefaultsOnly)
+	EPlayerSpawnBehaviour SpawnBehaviour = EPlayerSpawnBehaviour::SpawnSynchronouslyAfterAllConnected;
 private:
 
 	void TriggerCustomSpawns();

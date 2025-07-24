@@ -10,26 +10,26 @@
 	"Version": 
 	{
 		"MajorVersion": 5,
-		"MinorVersion": 5,
-		"PatchVersion": 4,
-		"Changelist": 40574608,
-		"CompatibleChangelist": 37670630,
+		"MinorVersion": 6,
+		"PatchVersion": 0,
+		"Changelist": 43139311,
+		"CompatibleChangelist": 0,
 		"IsLicenseeVersion": 0,
 		"IsPromotedBuild": 0,
-		"BranchName": "++UE5+Release-5.5",
-		"BuildId": "37670630"
+		"BranchName": "++UE5+Release-5.6",
+		"BuildId": "43139311"
 	},
 	"BuildProducts": [
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/D3D12Core.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/x64/D3D12Core.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/d3d12SDKLayers.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/DML/DirectML.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/DML/x64/DirectML.dll",
 			"Type": "DynamicLibrary"
 		},
 		{
@@ -41,126 +41,34 @@
 			"Type": "SymbolFile"
 		},
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_atomic-mt-x64.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/tbb12.dll",
 			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_chrono-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_filesystem-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_iostreams-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_program_options-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_python311-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_regex-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_system-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_thread-mt-x64.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/tbb.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/tbb.pdb",
-			"Type": "SymbolFile"
 		},
 		{
 			"Path": "$(ProjectDir)/Binaries/Win64/tbbmalloc.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/tbbmalloc.pdb",
-			"Type": "SymbolFile"
-		},
-		{
-			"Path": "$(EngineDir)/Binaries/Win64/EOSSDK-Win64-Shipping.dll",
 			"Type": "DynamicLibrary"
 		}
 	],
 	"RuntimeDependencies": [
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/D3D12Core.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/x64/D3D12Core.dll",
 			"Type": "NonUFS"
 		},
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/d3d12SDKLayers.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/D3D12/x64/d3d12SDKLayers.dll",
 			"Type": "NonUFS"
 		},
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/DML/DirectML.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/DML/x64/DirectML.dll",
 			"Type": "NonUFS"
 		},
 		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_atomic-mt-x64.dll",
+			"Path": "$(ProjectDir)/Binaries/Win64/tbb12.dll",
 			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_chrono-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_filesystem-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_iostreams-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_program_options-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_python311-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_regex-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_system-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/boost_thread-mt-x64.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/tbb.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/tbb.pdb",
-			"Type": "DebugNonUFS"
 		},
 		{
 			"Path": "$(ProjectDir)/Binaries/Win64/tbbmalloc.dll",
 			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(ProjectDir)/Binaries/Win64/tbbmalloc.pdb",
-			"Type": "DebugNonUFS"
 		},
 		{
 			"Path": "$(ProjectDir)/Plugins/AdvancedSessions/AdvancedSessions.uplugin",
@@ -208,10 +116,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Binaries/ThirdParty/Windows/XAudio2_9/x64/xaudio2_9redist.dll",
-			"Type": "NonUFS"
-		},
-		{
-			"Path": "$(EngineDir)/Binaries/Win64/EOSSDK-Win64-Shipping.dll",
 			"Type": "NonUFS"
 		},
 		{
@@ -407,7 +311,15 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Common/ColorSpectrum_20x.png",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Common/ColorWheel.png",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Common/ColorWheel_20x.png",
 			"Type": "UFS"
 		},
 		{
@@ -868,6 +780,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Common/X.PNG",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Common/menu.svg",
 			"Type": "UFS"
 		},
 		{
@@ -1899,6 +1815,18 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/ColorThemesOff_20.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/ColorThemes_16.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/ColorThemes_20.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/Console.svg",
 			"Type": "UFS"
 		},
@@ -1935,11 +1863,23 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/EditToolbar.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/EyeDropper.svg",
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/EyeDropper_20.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/Favorite.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/FavoriteOutline.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2043,6 +1983,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/SelectAll_16.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/SessionFrontend.svg",
 			"Type": "UFS"
 		},
@@ -2055,7 +1999,15 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/TagSimple_16.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/Test.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/TokenTextBox_16.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2096,6 +2048,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/Visualizer.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/add-circle.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2167,6 +2123,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/check-circle-solid.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/check-circle.svg",
 			"Type": "UFS"
 		},
@@ -2228,6 +2188,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/color-grading-selector.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/color-grading-spinbox-selector-v.png",
 			"Type": "UFS"
 		},
 		{
@@ -2327,6 +2291,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/help-solid.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/help.svg",
 			"Type": "UFS"
 		},
@@ -2340,6 +2308,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/import_20.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/info-circle-solid.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2387,11 +2359,19 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/preview-default.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/pyriamid.svg",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Common/refresh.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Common/reimport.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2535,6 +2515,14 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/CoreWidgets/Window/enter_fullscreen.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/CoreWidgets/Window/exit_fullscreen.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/CoreWidgets/Window/maximize.svg",
 			"Type": "UFS"
 		},
@@ -2584,6 +2572,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/AutoScrollRight_20.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/BudgetSettings.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2683,6 +2675,30 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTagSet_AssetClasses.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTagSet_Assets.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTagSet_Systems.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTag_Asset_12.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTag_Class_12.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTag_System_12.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/MemTags.svg",
 			"Type": "UFS"
 		},
@@ -2727,6 +2743,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/RoundedBullet.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/Session.svg",
 			"Type": "UFS"
 		},
@@ -2764,6 +2784,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/Tasks_20.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/TimeMarkerSettings.svg",
 			"Type": "UFS"
 		},
 		{
@@ -2820,6 +2844,14 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/TraceTools/TraceStop.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/UObject.svg",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/Insights/UObject_12.svg",
 			"Type": "UFS"
 		},
 		{
@@ -3043,6 +3075,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Starship/SourceControl/SCC_Shelved.svg",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Starship/SourceControl/SourceControl.svg",
 			"Type": "UFS"
 		},
@@ -3151,6 +3187,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Animation/AnimatorKit/AnimatorKit.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Animation/ControlRigModules/ControlRigModules.uplugin",
 			"Type": "UFS"
 		},
@@ -3171,15 +3211,19 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Animation/LiveLink/LiveLink.uplugin",
-			"Type": "UFS"
-		},
-		{
 			"Path": "$(EngineDir)/Plugins/Animation/MotionWarping/MotionWarping.uplugin",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Animation/RigLogic/RigLogic.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Animation/SkeletalMeshModelingTools/SkeletalMeshModelingTools.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Animation/TweeningUtils/TweeningUtils.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3215,19 +3259,11 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Developer/Concert/ConcertMain/ConcertMain.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Developer/Concert/ConcertSync/ConcertSyncClient/ConcertSyncClient.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Developer/Concert/ConcertSync/ConcertSyncCore/ConcertSyncCore.uplugin",
-			"Type": "UFS"
-		},
-		{
 			"Path": "$(EngineDir)/Plugins/Developer/DumpGPUServices/DumpGPUServices.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Developer/NamingTokens/NamingTokens.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3263,11 +3299,19 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Editor/CurveEditorTools/CurveEditorTools.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Editor/DataValidation/DataValidation.uplugin",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Editor/EditorScriptingUtilities/EditorScriptingUtilities.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/EngineAssetDefinitions/EngineAssetDefinitions.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3280,6 +3324,14 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Editor/GeometryMode/GeometryMode.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/MeshLODToolset/MeshLODToolset.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/ModelingToolsEditorMode/ModelingToolsEditorMode.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3303,11 +3355,19 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Editor/StaticMeshEditorModeling/StaticMeshEditorModeling.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Editor/UMGWidgetPreview/UMGWidgetPreview.uplugin",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Editor/UVEditor/UVEditor.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Editor/WaveformEditor/WaveformEditor.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3328,10 +3388,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Enterprise/VariantManager/VariantManager.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Experimental/Animation/SkeletalMeshModelingTools/SkeletalMeshModelingTools.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3367,11 +3423,15 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Experimental/Compositing/HoldoutComposite/HoldoutComposite.uplugin",
+			"Path": "$(EngineDir)/Plugins/Experimental/Compositing/CompositeCore/CompositeCore.uplugin",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Experimental/Dataflow/Dataflow.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/EditorDataStorageFeatures/EditorDataStorageFeatures.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3391,11 +3451,23 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/GeometryDataflow/GeometryDataflow.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/GeometryFlow/GeometryFlow.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/GizmoEdMode/GizmoEdMode.uplugin",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Experimental/GizmoFramework/GizmoFramework.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/LevelSequenceNavigatorBridge/LevelSequenceNavigatorBridge.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3407,11 +3479,11 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Experimental/MetaHuman/MetaHumanSDK/MetaHumanSDK.uplugin",
+			"Path": "$(EngineDir)/Plugins/Experimental/NFORDenoise/NFORDenoise.uplugin",
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Experimental/NFORDenoise/NFORDenoise.uplugin",
+			"Path": "$(EngineDir)/Plugins/Experimental/PhysicsControl/PhysicsControl.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3427,11 +3499,19 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Experimental/StudioTelemetry/StudioTelemetry.uplugin",
+			"Path": "$(EngineDir)/Plugins/Experimental/RuntimeTelemetry/RuntimeTelemetry.uplugin",
 			"Type": "UFS"
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Experimental/ToolPresets/ToolPresets.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/FX/Cascade/Cascade.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/FX/NiagaraFluids/NiagaraFluids.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3460,10 +3540,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Interchange/Runtime/Interchange.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Marketplace/TatoolsT174acd901e29V2/ThreepeatAnimTools.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3503,6 +3579,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/MetaHuman/MetaHumanSDK/MetaHumanSDK.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/MovieScene/ActorSequence/ActorSequence.uplugin",
 			"Type": "UFS"
 		},
@@ -3528,10 +3608,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/NNE/NNERuntimeORT/NNERuntimeORT.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Online/EOSShared/EOSShared.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3607,10 +3683,6 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Runtime/CommonUI/CommonUI.uplugin",
-			"Type": "UFS"
-		},
-		{
 			"Path": "$(EngineDir)/Plugins/Runtime/ComputeFramework/ComputeFramework.uplugin",
 			"Type": "UFS"
 		},
@@ -3620,10 +3692,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Runtime/DataRegistry/DataRegistry.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Runtime/Database/SQLiteCore/SQLiteCore.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3683,6 +3751,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Runtime/PropertyBindingUtils/PropertyBindingUtils.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Runtime/ResonanceAudio/ResonanceAudio.uplugin",
 			"Type": "UFS"
 		},
@@ -3708,10 +3780,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Runtime/Synthesis/Synthesis.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Runtime/USDCore/USDCore.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -3743,6 +3811,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/VirtualProduction/CameraCalibrationCore/CameraCalibrationCore.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/VirtualProduction/Takes/Takes.uplugin",
 			"Type": "UFS"
 		},
@@ -3768,6 +3840,7 @@
 		"AnimationData",
 		"AnimationModifierLibrary",
 		"AnimationSharing",
+		"AnimatorKit",
 		"AppleImageUtils",
 		"AppleMoviePlayer",
 		"ArchVisCharacter",
@@ -3784,11 +3857,14 @@
 		"Bridge",
 		"CLionSourceCodeAccess",
 		"CableComponent",
+		"CameraCalibrationCore",
 		"CameraShakePreviewer",
+		"Cascade",
 		"ChangelistReview",
 		"ChaosCaching",
 		"ChaosCloth",
 		"ChaosEditor",
+		"ChaosInsights",
 		"ChaosNiagara",
 		"ChaosSolverPlugin",
 		"ChaosUserDataPT",
@@ -3798,11 +3874,8 @@
 		"CmdLinkServer",
 		"CodeLiteSourceCodeAccess",
 		"ColorGrading",
-		"CommonUI",
+		"CompositeCore",
 		"ComputeFramework",
-		"ConcertMain",
-		"ConcertSyncClient",
-		"ConcertSyncCore",
 		"ContentBrowserAssetDataSource",
 		"ContentBrowserClassDataSource",
 		"ControlRig",
@@ -3817,8 +3890,8 @@
 		"DatasmithContent",
 		"DeformerGraph",
 		"DumpGPUServices",
-		"EOSShared",
 		"EditorDataStorage",
+		"EditorDataStorageFeatures",
 		"EditorDebugTools",
 		"EditorPerformance",
 		"EditorScriptingUtilities",
@@ -3839,6 +3912,8 @@
 		"GameplayTagsEditor",
 		"GeometryCache",
 		"GeometryCollectionPlugin",
+		"GeometryDataflow",
+		"GeometryFlow",
 		"GeometryMode",
 		"GeometryProcessing",
 		"GitSourceControl",
@@ -3847,7 +3922,6 @@
 		"GoogleCloudMessaging",
 		"GooglePAD",
 		"HairStrands",
-		"HoldoutComposite",
 		"IKRig",
 		"IOSDeviceProfileSelector",
 		"ImgMedia",
@@ -3856,19 +3930,22 @@
 		"InterchangeAssets",
 		"InterchangeEditor",
 		"InterchangeTests",
+		"IoStoreInsights",
 		"KDevelopSourceCodeAccess",
 		"LauncherChunkInstaller",
 		"LevelSequenceEditor",
+		"LevelSequenceNavigatorBridge",
 		"LightMixer",
 		"LinuxDeviceProfileSelector",
-		"LiveLink",
 		"LocalizableMessage",
 		"LocationServicesBPLibrary",
 		"MacGraphicsSwitching",
+		"MassInsights",
 		"MaterialAnalyzer",
 		"MediaCompositing",
 		"MediaPlate",
 		"MediaPlayerEditor",
+		"MeshLODToolset",
 		"MeshModelingToolset",
 		"MeshModelingToolsetExp",
 		"MeshPainting",
@@ -3876,13 +3953,16 @@
 		"Metasound",
 		"MobileLauncherProfileWizard",
 		"MobilePatchingUtils",
+		"ModelingToolsEditorMode",
 		"MotionWarping",
 		"MsQuic",
 		"N10XSourceCodeAccess",
 		"NFORDenoise",
 		"NNEDenoiser",
 		"NNERuntimeORT",
+		"NamingTokens",
 		"Niagara",
+		"NiagaraFluids",
 		"NiagaraSimCaching",
 		"NullSourceCodeAccess",
 		"ObjectMixer",
@@ -3895,6 +3975,7 @@
 		"OodleNetwork",
 		"Paper2D",
 		"PerforceSourceControl",
+		"PhysicsControl",
 		"PixWinPlugin",
 		"PlanarCut",
 		"PlasticSourceControl",
@@ -3903,17 +3984,21 @@
 		"PluginUtils",
 		"PortableObjectFileDataSource",
 		"ProceduralMeshComponent",
+		"ProjectLauncher",
 		"PropertyAccessEditor",
 		"PropertyAccessNode",
+		"PropertyBindingUtils",
 		"ProxyLODPlugin",
 		"PythonScriptPlugin",
 		"RenderDocPlugin",
 		"RenderGraphInsights",
 		"ResonanceAudio",
+		"RiderLink",
 		"RiderSourceCodeAccess",
 		"RigLogic",
 		"RigVM",
-		"SQLiteCore",
+		"RuntimeTelemetry",
+		"SequenceNavigator",
 		"SequencerAnimTools",
 		"SequencerScripting",
 		"SignificanceManager",
@@ -3922,20 +4007,19 @@
 		"SoundFields",
 		"SpeedTreeImporter",
 		"StateTree",
+		"StaticMeshEditorModeling",
 		"SteamShared",
-		"StudioTelemetry",
 		"SubversionSourceControl",
 		"Synthesis",
 		"Takes",
 		"TcpMessaging",
 		"TemplateSequence",
 		"TextureFormatOodle",
-		"ThreepeatAnimTools",
 		"ToolPresets",
 		"TraceUtilities",
+		"TweeningUtils",
 		"UMGWidgetPreview",
 		"UObjectPlugin",
-		"USDCore",
 		"UVEditor",
 		"UbaController",
 		"UdpMessaging",
@@ -3944,6 +4028,7 @@
 		"VisualStudioCodeSourceCodeAccess",
 		"VisualStudioSourceCodeAccess",
 		"WaveTable",
+		"WaveformEditor",
 		"WebMMedia",
 		"WebMMoviePlayer",
 		"WindowsDeviceProfileSelector",

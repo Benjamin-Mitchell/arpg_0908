@@ -175,7 +175,8 @@ void UarpgAbilitySystemComponent::RemoveCharacterAbilities(const TArray<TSubclas
 	}
 
 	//Call any delegates that are waiting for owned ability update (even removal)
-	AbilitiesChanged.Broadcast(this); //TODO: rename this?
+	AbilitiesChanged.Broadcast(this);
+	
 	//And clear the intermediate ToDelete specs.
 	DeletedAbilitySpecs.Empty();
 }

@@ -55,6 +55,12 @@ void UArpgGameInstance::NotifyLevelSelectionConfirmed(int CardIndex)
 	
 	CurrentStage++;
 }
+
+void UArpgGameInstance::SetBeenThroughMainMenu()
+{
+	HasBeenThroughMainMenu = true;
+}
+
 void UArpgGameInstance::Init()
 {
 	Super::Init();

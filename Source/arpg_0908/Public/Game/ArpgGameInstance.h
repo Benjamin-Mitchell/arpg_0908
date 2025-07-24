@@ -71,6 +71,11 @@ public:
 	void NotifyLevelSelectionConfirmed(int CardIndex);
 
 	bool HasBeenThroughIntroMap = false;
+
+	bool HasBeenThroughMainMenu = false;
+
+	UFUNCTION(BlueprintCallable, Category = "GameStart")
+	void SetBeenThroughMainMenu();
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;

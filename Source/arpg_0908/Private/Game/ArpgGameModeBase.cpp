@@ -153,45 +153,48 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 
 	UArpgGameInstance *ArpgGameInstance = Cast<UArpgGameInstance>(GetGameInstance());
 
-	bool ReadyToStart = ArpgGameInstance->AreAllPlayersConnected(GetNumPlayers());
-
-	if (ReadyToStart)
-	{
-		LevelBegin();
-		return;
-	}
 
 	//Special handling for if we are playing a level directly
 #if WITH_EDITOR
 
-	if (GetNumPlayers() > NumDebugPlayers)
+	//Basically if we are starting a level randomly from editor, use this logic.
+	if (!ArpgGameInstance->HasBeenThroughMainMenu)
 	{
-		UE_LOG(LogArpg, Error, TEXT("GetNumPlayers() is GREATER than NumDebugPlayers. This will cause issues."));
+		if (GetNumPlayers() > NumDebugPlayers)
+		{
+			UE_LOG(LogArpg, Error, TEXT("GetNumPlayers() is GREATER than NumDebugPlayers. This will cause issues."));
+		}
+		//If we haven't through the introMap, and we have the expected number of players (for debug instances of the game in editor)
+		if (!ArpgGameInstance->HasBeenThroughIntroMap && GetNumPlayers() == NumDebugPlayers)
+		{	
+			LevelBegin();
+		}
+
+		return;
 	}
-	//If we haven't through the introMap, and this is the first player to connect 
-	if (!ArpgGameInstance->HasBeenThroughIntroMap && GetNumPlayers() == NumDebugPlayers)
-	{
-		//Then we can start a timer to trigger the game start logic manually.
-		//We use a counter to allow time for all clients to join in Editor.
-		//GetWorld()->GetTimerManager().ClearTimer(EditorGameStartTimerHandle);
-
-		// Set a timer for when countdown ends
-		// GetWorld()->GetTimerManager().SetTimer(
-		// 	CountdownTimerHandle,
-		// 	this,
-		// 	&AArpgGameModeBase::LevelBegin,
-		// 	1.0,
-		// 	false // Don't loop
-		// );
-		
-		LevelBegin();
-	}
-
-
-		
 #endif
 
+	//If we are not using Editor OR
+	//are using Editor but went through the Main Menu,
+	//follow normal procedure:
 	
+	switch (SpawnBehaviour)
+	{
+	case EPlayerSpawnBehaviour::SpawnOnArrival:
+		SpawnIndividualPlayerManually(NewPlayer);
+		break;
+	case EPlayerSpawnBehaviour::SpawnSynchronouslyAfterAllConnected:
+		
+		bool ReadyToStart = ArpgGameInstance->AreAllPlayersConnected(GetNumPlayers());
+
+		if (ReadyToStart)
+		{
+			LevelBegin();
+			return;
+		}
+		
+		break;
+	}
 }
 
 TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
@@ -244,6 +247,25 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 	}
 
 	return PlayerControllers;
+}
+
+void AArpgGameModeBase::SpawnIndividualPlayerManually(AController* InNewPlayer)
+{
+	if (UArpgGameInstance* ArpgGameInstance = Cast<UArpgGameInstance>(GetGameInstance()))
+	{
+		PlayerControllers.Add(Cast<AarpgPlayerController>(InNewPlayer));
+				
+		AActor* PlayerStartActor = FindPlayerStart(InNewPlayer);
+		FTransform SpawnTransform = PlayerStartActor->GetActorTransform();
+		APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterClassToSpawn, SpawnTransform);
+				
+		InNewPlayer->Possess(SpawnedCharacter);
+		
+		if (AarpgCharacterBase* CharacterBase = Cast<AarpgCharacterBase>(InNewPlayer->GetCharacter()))
+		{
+			CharacterBase->OnCustomSpawned();
+		}
+	}
 }
 
 void AArpgGameModeBase::TriggerCustomSpawns()
