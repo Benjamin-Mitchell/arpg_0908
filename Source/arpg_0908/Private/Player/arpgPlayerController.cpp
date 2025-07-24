@@ -80,7 +80,7 @@ void AarpgPlayerController::ClientSetCameraTransitionToFrozen_Implementation(FVe
 void AarpgPlayerController::AcknowledgePossession(class APawn* P)
 {
 	Super::AcknowledgePossession(P);
-	RevertToNormalCamera(CameraBlendtimeOnPossess);
+	//RevertToNormalCamera(CameraBlendtimeOnPossess);
 
 	ServerReportPossessionComplete();
 }
