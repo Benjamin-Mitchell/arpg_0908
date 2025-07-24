@@ -21,7 +21,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	{
 		if (ArpgASC->bStartupAbilitiesGiven)
 		{
-			OnInitializeStartupAbilities(ArpgASC);
+			UpdateOwnedAbilities(ArpgASC);
 		}
 	}
 
@@ -63,11 +63,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	{
 		if (ArpgASC->bStartupAbilitiesGiven)
 		{
-			OnInitializeStartupAbilities(ArpgASC);	
+			UpdateOwnedAbilities(ArpgASC);	
 		}
 		else
 		{
-			ArpgASC->AbilitiesGiven.AddUObject(this, &UOverlayWidgetController::OnInitializeStartupAbilities);
+			ArpgASC->AbilitiesChanged.AddUObject(this, &UOverlayWidgetController::UpdateOwnedAbilities);
 		}
 		
 
@@ -89,17 +89,18 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	}
 }
 
-void UOverlayWidgetController::OnInitializeStartupAbilities(UarpgAbilitySystemComponent* ArpgAbilitySystemComponent)
+void UOverlayWidgetController::UpdateOwnedAbilities(UarpgAbilitySystemComponent* ArpgAbilitySystemComponent)
 {
 	if (!ArpgAbilitySystemComponent->bStartupAbilitiesGiven) return;
 
 	//This is quite cool. We create a lambda function that constructs some ability info from an input spec and ASC.
 	//We then bound it to "For Each Ability", so that each ability spec executes this function.
 	FForEachAbility BroadcastDelegate;
-	BroadcastDelegate.BindLambda([this, ArpgAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
+	BroadcastDelegate.BindLambda([this, ArpgAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec, bool MarkedForDeletion)
 	{
 		FArpgAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(ArpgAbilitySystemComponent->GetAbilityTagFromSpec(AbilitySpec));
 		Info.InputTag = ArpgAbilitySystemComponent->GetInputTagFromSpec(AbilitySpec);
+		Info.IsFlaggedForDeletion =  MarkedForDeletion;
 		//Internally, this delegate broadcasts another delegate that widget components can bind to!
 		AbilityInfoDelegate.Broadcast(Info);
 	});

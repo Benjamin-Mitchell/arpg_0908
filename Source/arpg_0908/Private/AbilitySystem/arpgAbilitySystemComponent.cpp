@@ -13,6 +13,8 @@ void UarpgAbilitySystemComponent::AbilityActorInfoSet()
 
 void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities, bool ActivateImmediately)
 {
+	//This is only called on the server, so server logic for OwnedAbilities is handled here and in RemoveCharacterAbilities, but in OnRep_ActivateAbilities for client.
+	
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : Abilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
@@ -31,24 +33,33 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 
 		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
 		
-		OwnedAbilities.Add(FirstTag, Handle);
+		OwnedAbilities.Add(FirstTag, FOwnedAbilityHandle(AbilitySpec, Handle));
 		
 	}
 	
 	bStartupAbilitiesGiven = true;
-	AbilitiesGiven.Broadcast(this);
+	AbilitiesChanged.Broadcast(this);
 }
 
 void UarpgAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
 {
 	//Lock changes to the activatable list
 	FScopedAbilityListLock ActiveScopeLock(*this);
-	
-	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+
+	for (FGameplayAbilitySpec DeletedSpec : DeletedAbilitySpecs)
 	{
-		if (!Delegate.ExecuteIfBound(AbilitySpec))
+		if (!Delegate.ExecuteIfBound(DeletedSpec, true))
 		{
-			UE_LOG(LogArpg, Error, TEXT("Failed to execute delegate in %hs"), __FUNCTION__);
+			UE_LOG(LogArpg, Error, TEXT("Failed to execute delegate on Deleted Spec in %hs"), __FUNCTION__);
+		}
+	}
+
+	TArray<FGameplayAbilitySpec> ActivatableSpecs = GetActivatableAbilities();
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableSpecs)
+	{
+		if (!Delegate.ExecuteIfBound(AbilitySpec, false))
+		{
+			UE_LOG(LogArpg, Error, TEXT("Failed to execute delegate on Active Spec in %hs"), __FUNCTION__);
 		}
 	}
 }
@@ -85,31 +96,88 @@ FGameplayTag UarpgAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 	return FGameplayTag();
 }
 
+
 void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
 {
+	//This is only called on the client, so client logic for OwnedAbilities is handled here, but in Add/RemoveCharacterAbilities for server.
+
+	
 	Super::OnRep_ActivateAbilities();
 
 	//This will run on the clients, where bStartupAbilitiesGiven will still be false. (Will be true on server)
 	if (!bStartupAbilitiesGiven)
 	{
 		bStartupAbilitiesGiven = true;
-		AbilitiesGiven.Broadcast(this);
 	}
+
+	//first, go through owned abilities. If any need to be removed, flag for deletion.
+	for (TTuple<FGameplayTag, FOwnedAbilityHandle>& Pair : OwnedAbilities)
+	{
+		bool StillOwned = false;
+		for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+		{
+			if (Spec.Ability.Get()->AbilityTags.First() == Pair.Key)
+			{
+				StillOwned = true;
+			}
+		}
+
+		if (!StillOwned)
+			DeletedAbilitySpecs.Add(Pair.Value.Spec);		
+	}
+
+	//inefficient but fine
+	OwnedAbilities.Empty();
+	
+	//Next update Owned abilities with any new ones.
+	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+	{
+		FGameplayAbilitySpecHandle Handle = Spec.Handle;
+		
+		OwnedAbilities.Add(Spec.Ability.Get()->AbilityTags.First(), FOwnedAbilityHandle(Spec, Handle));
+	}
+	
+	AbilitiesChanged.Broadcast(this);
+
+	DeletedAbilitySpecs.Empty();
 }
 
 void UarpgAbilitySystemComponent::RemoveCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities)
 {
+	//This is only called on the server, so server logic for OwnedAbilities is handled here and in AddCharacterAbilities, but in OnRep_ActivateAbilities for client.
+	//First flag these for removal.
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : Abilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 
 		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
-		FGameplayAbilitySpecHandle Handle = OwnedAbilities.FindChecked(FirstTag);
+
+		for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+		{
+			if (Spec.Ability.Get()->AbilityTags.First() == FirstTag)
+			{
+				DeletedAbilitySpecs.Add(Spec);
+			}
+		}
+	}
+
+	//Now actually clear them from the ASC.
+	for (const TSubclassOf<UGameplayAbility> AbilityClass : Abilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+
+		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
+		FGameplayAbilitySpecHandle Handle = OwnedAbilities.FindChecked(FirstTag).Handle;
+
 		ClearAbility(Handle);
 
 		OwnedAbilities.Remove(FirstTag);
-		//GiveAbilityAndActivateOnce(AbilitySpec);
 	}
+
+	//Call any delegates that are waiting for owned ability update (even removal)
+	AbilitiesChanged.Broadcast(this); //TODO: rename this?
+	//And clear the intermediate ToDelete specs.
+	DeletedAbilitySpecs.Empty();
 }
 
 void UarpgAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)

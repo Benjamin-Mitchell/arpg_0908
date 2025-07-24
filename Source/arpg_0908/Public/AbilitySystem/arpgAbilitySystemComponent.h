@@ -8,12 +8,21 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /*Asset Tags*/)
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FAbilitiesGiven, UarpgAbilitySystemComponent* )
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAbilityChange, UarpgAbilitySystemComponent* )
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /*Ablity Tag*/)
-DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&)
+DECLARE_DELEGATE_TwoParams(FForEachAbility, const FGameplayAbilitySpec&, bool /*MarkedForDeletion*/)
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityActivateFailed, const FGameplayTag&, FailedInputTag);
 
+USTRUCT()
+struct FOwnedAbilityHandle
+{
+	GENERATED_BODY()
+
+	FGameplayAbilitySpec Spec;
+	FGameplayAbilitySpecHandle Handle;
+
+};
 /**
  * 
  */
@@ -25,7 +34,7 @@ public:
 	void AbilityActorInfoSet();
 
 	FEffectAssetTags EffectAssetTags;
-	FAbilitiesGiven AbilitiesGiven;
+	FOnAbilityChange AbilitiesChanged;
 	FDeactivatePassiveAbility DeactivatePassiveAbility;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
@@ -44,6 +53,7 @@ public:
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
 protected:
 
 	UFUNCTION(Client, Reliable)
@@ -54,5 +64,6 @@ protected:
 private:
 
 	bool bReleasedPress = false;
-	TMap<FGameplayTag,  FGameplayAbilitySpecHandle> OwnedAbilities;
+	TMap<FGameplayTag,  FOwnedAbilityHandle> OwnedAbilities;
+	TArray<FGameplayAbilitySpec> DeletedAbilitySpecs;
 };

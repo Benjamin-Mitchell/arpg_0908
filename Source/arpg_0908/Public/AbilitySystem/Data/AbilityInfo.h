@@ -27,6 +27,9 @@ struct FArpgAbilityInfo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<const UMaterialInterface> BackgroundMaterial = nullptr;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool IsFlaggedForDeletion = false;
+	
 };
 /**
  * 
