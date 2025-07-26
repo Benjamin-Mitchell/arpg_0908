@@ -51,6 +51,7 @@ void UWaitCooldownChange::CooldownTagChanged(const FGameplayTag InCooldownTag, i
 	}
 }
 
+//This is called multiple times per cast, 4 on the client. Should we prevent the broadcast happening multiple times? 
 void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* TargetASC,
 	const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
@@ -59,6 +60,7 @@ void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* TargetASC
 
 	FGameplayTagContainer GrantedTags;
 	SpecApplied.GetAllGrantedTags(AssetTags);
+
 
 	if (AssetTags.HasTagExact(CooldownTag) || GrantedTags.HasTagExact(CooldownTag))
 	{

@@ -100,8 +100,6 @@ FGameplayTag UarpgAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	//This is only called on the client, so client logic for OwnedAbilities is handled here, but in Add/RemoveCharacterAbilities for server.
-
-	
 	Super::OnRep_ActivateAbilities();
 
 	//This will run on the clients, where bStartupAbilitiesGiven will still be false. (Will be true on server)
@@ -110,6 +108,8 @@ void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
 		bStartupAbilitiesGiven = true;
 	}
 
+	//For some reason this is called too often, it is actually called when clients activate abilities... So we have some extra checks to handle this. 
+	bool HadARemoval = false;
 	//first, go through owned abilities. If any need to be removed, flag for deletion.
 	for (TTuple<FGameplayTag, FOwnedAbilityHandle>& Pair : OwnedAbilities)
 	{
@@ -123,21 +123,28 @@ void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
 		}
 
 		if (!StillOwned)
+		{
 			DeletedAbilitySpecs.Add(Pair.Value.Spec);		
+			HadARemoval = true;
+		}
 	}
-
-	//inefficient but fine
-	OwnedAbilities.Empty();
 	
-	//Next update Owned abilities with any new ones.
-	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+	//We should only actually update our listeners if something changed. (Because this replicate function is called really often)
+	if (HadARemoval || ActivatableAbilities.Items.Num() != OwnedAbilities.Num())
 	{
-		FGameplayAbilitySpecHandle Handle = Spec.Handle;
+		//inefficient but fine
+		OwnedAbilities.Empty();
 		
-		OwnedAbilities.Add(Spec.Ability.Get()->AbilityTags.First(), FOwnedAbilityHandle(Spec, Handle));
+		//Next update Owned abilities with any new ones.
+		for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+		{
+			FGameplayAbilitySpecHandle Handle = Spec.Handle;
+			
+			OwnedAbilities.Add(Spec.Ability.Get()->AbilityTags.First(), FOwnedAbilityHandle(Spec, Handle));
+		}
+
+		AbilitiesChanged.Broadcast(this);
 	}
-	
-	AbilitiesChanged.Broadcast(this);
 
 	DeletedAbilitySpecs.Empty();
 }
