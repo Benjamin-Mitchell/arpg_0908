@@ -146,7 +146,6 @@ void AArpgGameModeBase::LevelBegin()
 	LevelBeginBP();
 }
 
-
 void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 {
 	Super::OnPostLogin(NewPlayer);
@@ -158,14 +157,14 @@ void AArpgGameModeBase::OnPostLogin(AController* NewPlayer)
 #if WITH_EDITOR
 
 	//Basically if we are starting a level randomly from editor, use this logic.
-	if (!ArpgGameInstance->HasBeenThroughMainMenu)
+	if (!ArpgGameInstance->HasBeenThroughMainMenu && !ArpgGameInstance->HasBeenThroughIntroMap)
 	{
 		if (GetNumPlayers() > NumDebugPlayers)
 		{
 			UE_LOG(LogArpg, Error, TEXT("GetNumPlayers() is GREATER than NumDebugPlayers. This will cause issues."));
 		}
 		//If we haven't through the introMap, and we have the expected number of players (for debug instances of the game in editor)
-		if (!ArpgGameInstance->HasBeenThroughIntroMap && GetNumPlayers() == NumDebugPlayers)
+		if (GetNumPlayers() == NumDebugPlayers)
 		{	
 			LevelBegin();
 		}
@@ -209,9 +208,12 @@ TArray<AarpgPlayerController*> AArpgGameModeBase::SpawnPlayersManually()
 				
 				AActor* PlayerStartActor = FindPlayerStart(PlayerController);
 				FTransform SpawnTransform = PlayerStartActor->GetActorTransform();
-				APawn* SpawnedCharacter = GetWorld()->SpawnActor<APawn>(CharacterClassToSpawn, SpawnTransform);
+				AarpgCharacter* SpawnedCharacter = GetWorld()->SpawnActor<AarpgCharacter>(CharacterClassToSpawn, SpawnTransform);
 				
 				PlayerController->Possess(SpawnedCharacter);
+
+				//This must be called from the server, so we do it from the game mode when we possess.
+				SpawnedCharacter->GrantEquippedAbilitiesOnSpawn();
 			}
 		}
 

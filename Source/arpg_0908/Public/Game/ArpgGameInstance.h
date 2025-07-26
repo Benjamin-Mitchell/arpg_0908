@@ -35,6 +35,42 @@ struct FCardDecisions
 	int ThirdCardChoiceIndex;
 };
 
+USTRUCT()
+struct FPersistentPlayerData
+{
+	GENERATED_BODY()
+	
+	int EquippedWeaponIndex = -1;
+
+	int EquippedHeadIndex = -1;
+};
+
+// Custom hasher for FUniqueNetIdPtr
+struct FUniqueNetIdPtrHasher
+{
+	uint32 operator()(const FUniqueNetIdPtr& NetId) const
+	{
+		if (NetId.IsValid())
+		{
+			return GetTypeHash(NetId->ToString()); // Hash the string representation
+		}
+		return 0;
+	}
+};
+
+// Custom equality comparator
+struct FUniqueNetIdPtrEqual
+{
+	bool operator()(const FUniqueNetIdPtr& A, const FUniqueNetIdPtr& B) const
+	{
+		if (A.IsValid() && B.IsValid())
+		{
+			return *A == *B; // Compare the actual IDs
+		}
+		return false;
+	}
+};
+
 /**
  * The Game Instance class is effectively a singleton and is used to manage persistent data amd game map loads. 
  * First, the Game Instance waits until the main menu is passed and a lobby is loaded.
@@ -76,6 +112,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameStart")
 	void SetBeenThroughMainMenu();
+
+	void SetPlayerEquippedWeapon(FUniqueNetIdPtr InID, int EquippedWeaponID);
+	int GetPlayerEquippedWeapon(FUniqueNetIdPtr InID);
+	
+	void SetPlayerEquippedHead(FUniqueNetIdPtr InID, int EquippedHeadID);
+	int GetPlayerEquippedHead(FUniqueNetIdPtr InID);
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -93,5 +135,8 @@ private:
 	FCardDecisions MakeCardDecisions();
 
 	void LoadMapWithCallback(const FString& MapName);
+
+	//TMap<FUniqueNetIdPtr, FPersistentPlayerData, FUniqueNetIdPtrHasher, FUniqueNetIdPtrEqual> PersistentPlayerDatas;
+	TMap<FString, FPersistentPlayerData> PersistentPlayerDatas;
 	
 };

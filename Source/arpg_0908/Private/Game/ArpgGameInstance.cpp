@@ -61,6 +61,56 @@ void UArpgGameInstance::SetBeenThroughMainMenu()
 	HasBeenThroughMainMenu = true;
 }
 
+void UArpgGameInstance::SetPlayerEquippedWeapon(FUniqueNetIdPtr InID, int EquippedWeaponID)
+{
+	if (FPersistentPlayerData* CurrentPlayerData = PersistentPlayerDatas.Find(InID->ToString()))
+	{
+		CurrentPlayerData->EquippedWeaponIndex = EquippedWeaponID;
+	}
+	else
+	{
+		FPersistentPlayerData* NewData = &PersistentPlayerDatas.Add(InID->ToString(), FPersistentPlayerData());
+		NewData->EquippedWeaponIndex = EquippedWeaponID;
+	}
+}
+
+int UArpgGameInstance::GetPlayerEquippedWeapon(FUniqueNetIdPtr InID)
+{
+	if (FPersistentPlayerData* CurrentPlayerData = PersistentPlayerDatas.Find(InID->ToString()))
+	{
+		return CurrentPlayerData->EquippedWeaponIndex;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
+void UArpgGameInstance::SetPlayerEquippedHead(FUniqueNetIdPtr InID, int EquippedHeadID)
+{
+	if (FPersistentPlayerData* CurrentPlayerData = PersistentPlayerDatas.Find(InID->ToString()))
+	{
+		CurrentPlayerData->EquippedHeadIndex = EquippedHeadID;
+	}
+	else
+	{
+		FPersistentPlayerData* NewData = &PersistentPlayerDatas.Add(InID->ToString(), FPersistentPlayerData());
+		NewData->EquippedHeadIndex = EquippedHeadID;
+	}
+}
+
+int UArpgGameInstance::GetPlayerEquippedHead(FUniqueNetIdPtr InID)
+{
+	if (FPersistentPlayerData* CurrentPlayerData = PersistentPlayerDatas.Find(InID->ToString()))
+	{
+		return CurrentPlayerData->EquippedHeadIndex;
+	}
+	else
+	{
+		return -1;
+	}
+}
+
 void UArpgGameInstance::Init()
 {
 	Super::Init();

@@ -19,7 +19,7 @@ class ARPG_0908_API AarpgPlayerState : public APlayerState, public IAbilitySyste
 public:
 	AarpgPlayerState();
 
-		virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	//	Begin Ability System Interface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	//	End Ability System Interface
@@ -27,6 +27,13 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; };
+
+	void SetEquippedWeapon(int WeaponIndex);
+	int GetEquippedWeaponIndex() const;
+
+	void SetEquippedHead(int HeadIndex);
+	int GetEquippedHeadIndex() const;
+	
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -35,6 +42,12 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 
 private:
+
+	UPROPERTY(Replicated)
+	int EquippedWeaponIndex = -1;
+	
+	UPROPERTY(Replicated)
+	int EquippedHeadIndex = -1;
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;

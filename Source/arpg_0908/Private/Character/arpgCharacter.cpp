@@ -57,6 +57,45 @@ void AarpgCharacter::OnRep_PlayerState()
 	HandlePlayerHighlight();
 }
 
+//Must only be called on the server
+void AarpgCharacter::GrantEquippedAbilitiesOnSpawn()
+{
+	AarpgPlayerState* ArpgPlayerState = GetPlayerState<AarpgPlayerState>();
+	
+	int EquippedWeaponIndex = ArpgPlayerState->GetEquippedWeaponIndex();
+	if (EquippedWeaponIndex >= 0)
+	{
+		const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(EquippedWeaponIndex);
+		AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
+		AddCharacterAbilities(WeaponActorRef->GrantedAbilities);
+		MulticastSetWeaponMesh(EquippedWeaponIndex);
+	}
+	
+	int EquippedHeadIndex = ArpgPlayerState->GetEquippedHeadIndex();
+	if (EquippedHeadIndex >= 0)
+	{
+		const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(EquippedHeadIndex);
+		AarpgHeadActor* HeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();	
+		AddCharacterAbilities(HeadActorRef->GrantedAbilities);
+		MulticastSetHeadMesh(EquippedHeadIndex);
+	}
+}
+
+// void AarpgCharacter::BeginPlay()
+// {
+// 	Super::BeginPlay();
+//
+// 	AarpgPlayerState* ArpgPlayerState = GetPlayerState<AarpgPlayerState>();
+//
+// 	
+// 	if (ArpgPlayerState != nullptr)
+// 	{
+// 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Character Begin Play. Weapon Index: %d"), ArpgPlayerState->GetEquippedWeaponIndex()));
+// 		SetWeaponMesh(ArpgPlayerState->GetEquippedWeaponIndex());
+// 		SetHeadMesh(ArpgPlayerState->GetEquippedHeadIndex());
+// 	}
+// }
+
 int32 AarpgCharacter::GetPlayerLevel()
 {
 	const AarpgPlayerState* arpgPlayerState = GetPlayerState<AarpgPlayerState>();
@@ -97,6 +136,12 @@ void AarpgCharacter::SetHead(AarpgHeadActor* NewHeadActor)
 	AddCharacterAbilities(NewHeadActorRef->GrantedAbilities);
 
 	MulticastSetHeadMesh(HeadIndex);
+	
+	AarpgPlayerState* ArpgPlayerState = Cast<AarpgPlayerState>(GetPlayerState());
+	if (ArpgPlayerState != nullptr)
+	{
+		ArpgPlayerState->SetEquippedHead(HeadIndex);
+	}
 	
 	CurrentHeadActorClass = HeadData.HeadReference;
 }
@@ -149,20 +194,19 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor)
 
 	MulticastSetWeaponMesh(WeaponIndex);
 	
+	AarpgPlayerState* ArpgPlayerState = Cast<AarpgPlayerState>(GetPlayerState());
+	if (ArpgPlayerState != nullptr)
+	{
+		ArpgPlayerState->SetEquippedWeapon(WeaponIndex);
+	}
+	
 	CurrentWeaponActorClass = WeaponData.WeaponReference;
 }
 
-void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
+void AarpgCharacter::SetWeaponMesh(int WeaponIndex)
 {
-	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
-	AarpgHeadActor* HeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();
-	
-	BaseHeadMesh->SetSkeletalMesh(HeadActorRef->HeadMeshRef);
-	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
-}
-
-void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex)
-{
+	if (WeaponIndex < 0)
+		return;
 	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
 	AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
 	
@@ -171,6 +215,29 @@ void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex)
 	//We don't currently do custom attachments here since they are attached by default already.
 	//We may need to do work here in the future if we want to accomodate dual-wielding or two-handed weapons.
 	//Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
+}
+
+void AarpgCharacter::SetHeadMesh(int HeadIndex)
+{
+	if (HeadIndex < 0)
+		return;
+	
+	const FHeadInfo HeadData = HeadDatabase->GetHeadInfo(HeadIndex);
+	AarpgHeadActor* HeadActorRef = HeadData.HeadReference->GetDefaultObject<AarpgHeadActor>();
+	
+	BaseHeadMesh->SetSkeletalMesh(HeadActorRef->HeadMeshRef);
+	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
+}
+
+void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
+{
+	SetHeadMesh(HeadIndex);
+}
+
+void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex)
+{
+	SetWeaponMesh(WeaponIndex);
+
 }
 
 void AarpgCharacter::Onrep_Stunned()
@@ -241,6 +308,7 @@ void AarpgCharacter::InitAbilityActorInfo()
 
 	InitializeDefaultAttributes();
 }
+
 
 void AarpgCharacter::HandlePlayerHighlight()
 {
