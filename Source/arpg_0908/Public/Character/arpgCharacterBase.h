@@ -26,7 +26,6 @@ public:
 	AarpgCharacterBase();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
 	//Combat Interface overrides
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag MontageTag) override;

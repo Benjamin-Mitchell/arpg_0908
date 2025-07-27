@@ -14,6 +14,9 @@ class ARPG_0908_API USpeechStringDataSet : public UDataAsset
 {
 	GENERATED_BODY()
 public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Speech")
+	TArray<FString> PlayerSpawnSpeechStrings;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Speech")
 	TArray<FString> SpeechStrings;
