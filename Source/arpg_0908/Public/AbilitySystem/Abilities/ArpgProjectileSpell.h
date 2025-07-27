@@ -30,9 +30,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile", meta = (AutoCreateRefTerm = "InWithTags,InPassThroughTags,InAvoidActors"))
 	void FireProjectile(const FVector& ProjectileTargetLocation, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
-	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage);
+	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage,
+	UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory"))  FGameplayTag MontageSocketLocationTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
-	void FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag SpawnLocationTag, const FVector& ProjectileTargetLocation);
+	void FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag MontageSocketLocationTag, const FVector& ProjectileTargetLocation);
 
 };

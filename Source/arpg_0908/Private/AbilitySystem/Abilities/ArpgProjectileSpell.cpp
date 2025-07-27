@@ -19,7 +19,7 @@ void UArpgProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 }
 
 void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocation, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
-	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage)
+	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage, FGameplayTag MontageSocketLocationTag)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if(!bIsServer) return;
@@ -29,7 +29,8 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 	{
 		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(
 			GetAvatarActorFromActorInfo(),
-			FArpgGameplayTags::Get().Montage_Attack_Weapon);
+			MontageSocketLocationTag);
+		
 		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
 		Rotation.Pitch = 0.f; //ensure the projectile moves parallel to the floor, at the height of the firing point.
 
@@ -54,12 +55,11 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 		//Replicated
 		Projectile->SetCollisionTags(InWithTags, InPassThroughTags, InAvoidActors);
 
-
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }
 
-void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag SpawnLocationTag, const FVector& ProjectileTargetLocation)
+void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag MontageSocketLocationTag, const FVector& ProjectileTargetLocation)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if(!bIsServer)
@@ -73,7 +73,7 @@ void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="
 	{
 		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(
 			GetAvatarActorFromActorInfo(),
-			SpawnLocationTag);
+			MontageSocketLocationTag);
 		
 		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
  
