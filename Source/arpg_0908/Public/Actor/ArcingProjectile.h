@@ -12,10 +12,10 @@ struct FArcingProjectileInitData
 	GENERATED_BODY()
     
 	UPROPERTY()
-	FVector ArcTargetLocation;
+	FVector ArcTargetLocation = FVector::ZeroVector;
     
 	UPROPERTY()
-	float ProjectileSpeed;
+	float ProjectileSpeed = 550.f;
 };
 /**
  * 

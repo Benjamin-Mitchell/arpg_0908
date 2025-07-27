@@ -35,7 +35,7 @@ void AArpgProjectile::SetCollisionTags(const FGameplayTagContainer& InWithTags, 
 		WithTags = InWithTags;
 	if (!InPassThroughTags.IsEmpty())
 		PassThroughTags = InPassThroughTags;
-	if (AvoidActors.Num() > 0)
+	if (InAvoidActors.Num() > 0)
 		AvoidActors = InAvoidActors;
 }
 

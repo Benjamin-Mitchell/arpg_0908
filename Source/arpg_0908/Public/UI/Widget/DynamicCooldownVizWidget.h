@@ -17,7 +17,7 @@ struct FAbilityCooldownInfo
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	float RemainingCooldown;
+	float RemainingCooldown = 0.0f;
 
 	UPROPERTY(BlueprintReadOnly)
 	FSlateBrush IconBrush;

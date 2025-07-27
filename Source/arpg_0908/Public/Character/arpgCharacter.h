@@ -34,7 +34,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meme stuff")
 	TArray<UAnimMontage*> DanceMontages;
+
+	void GrantEquippedAbilitiesOnSpawn();
 protected:
+
+	//virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int LocalMeshBaseHighlightVal = 0;
@@ -69,7 +73,11 @@ private:
 	bool InitializedAlready = false;
 	virtual void InitAbilityActorInfo() override;
 
+	void SetWeaponMesh(int WeaponIndex);
+	void SetHeadMesh(int HeadIndex);
+
 	void HandlePlayerHighlight();
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "EquippableData")
 	TObjectPtr<UHeadData> HeadDatabase;
@@ -79,4 +87,6 @@ private:
 
 	TSubclassOf<AarpgHeadActor> CurrentHeadActorClass;
 	TSubclassOf<AArpgWeaponActor> CurrentWeaponActorClass;
+
+	
 };

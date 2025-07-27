@@ -23,16 +23,52 @@ struct FCardDecisions
 	//bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
 
 	UPROPERTY()	//MUST BE UPROPERTIES FOR SERIALIZATION
-	int CurrentStage;
+	int CurrentStage = 0;
 	
 	UPROPERTY()
-	int FirstCardChoiceIndex;
+	int FirstCardChoiceIndex = -1;
 
 	UPROPERTY()
-	int SecondCardChoiceIndex;
+	int SecondCardChoiceIndex = -1;
 	
 	UPROPERTY()
-	int ThirdCardChoiceIndex;
+	int ThirdCardChoiceIndex = -1;
+};
+
+USTRUCT()
+struct FPersistentPlayerData
+{
+	GENERATED_BODY()
+	
+	int EquippedWeaponIndex = -1;
+
+	int EquippedHeadIndex = -1;
+};
+
+// Custom hasher for FUniqueNetIdPtr
+struct FUniqueNetIdPtrHasher
+{
+	uint32 operator()(const FUniqueNetIdPtr& NetId) const
+	{
+		if (NetId.IsValid())
+		{
+			return GetTypeHash(NetId->ToString()); // Hash the string representation
+		}
+		return 0;
+	}
+};
+
+// Custom equality comparator
+struct FUniqueNetIdPtrEqual
+{
+	bool operator()(const FUniqueNetIdPtr& A, const FUniqueNetIdPtr& B) const
+	{
+		if (A.IsValid() && B.IsValid())
+		{
+			return *A == *B; // Compare the actual IDs
+		}
+		return false;
+	}
 };
 
 /**
@@ -76,6 +112,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameStart")
 	void SetBeenThroughMainMenu();
+
+	void SetPlayerEquippedWeapon(FUniqueNetIdPtr InID, int EquippedWeaponID);
+	int GetPlayerEquippedWeapon(FUniqueNetIdPtr InID);
+	
+	void SetPlayerEquippedHead(FUniqueNetIdPtr InID, int EquippedHeadID);
+	int GetPlayerEquippedHead(FUniqueNetIdPtr InID);
 protected:
 	virtual void Init() override;
 	virtual void Shutdown() override;
@@ -93,5 +135,8 @@ private:
 	FCardDecisions MakeCardDecisions();
 
 	void LoadMapWithCallback(const FString& MapName);
+
+	//TMap<FUniqueNetIdPtr, FPersistentPlayerData, FUniqueNetIdPtrHasher, FUniqueNetIdPtrEqual> PersistentPlayerDatas;
+	TMap<FString, FPersistentPlayerData> PersistentPlayerDatas;
 	
 };
