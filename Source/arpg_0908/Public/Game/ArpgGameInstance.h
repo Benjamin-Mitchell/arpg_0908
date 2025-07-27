@@ -23,16 +23,16 @@ struct FCardDecisions
 	//bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
 
 	UPROPERTY()	//MUST BE UPROPERTIES FOR SERIALIZATION
-	int CurrentStage;
+	int CurrentStage = 0;
 	
 	UPROPERTY()
-	int FirstCardChoiceIndex;
+	int FirstCardChoiceIndex = -1;
 
 	UPROPERTY()
-	int SecondCardChoiceIndex;
+	int SecondCardChoiceIndex = -1;
 	
 	UPROPERTY()
-	int ThirdCardChoiceIndex;
+	int ThirdCardChoiceIndex = -1;
 };
 
 USTRUCT()
