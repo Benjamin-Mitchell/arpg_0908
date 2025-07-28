@@ -6,7 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "CardProgressData.generated.h"
 
-class AarpgEnemy;
+class AarpgAIControlledCharacter;
 
 USTRUCT(BlueprintType)
 struct FCardProperties
@@ -17,7 +17,7 @@ struct FCardProperties
 	FString LevelName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Card Properties")
-	TArray<TSubclassOf<AarpgEnemy>> EnemiesToSpawn;
+	TArray<TSubclassOf<AarpgAIControlledCharacter>> EnemiesToSpawn;
 };
 
 USTRUCT(BlueprintType)

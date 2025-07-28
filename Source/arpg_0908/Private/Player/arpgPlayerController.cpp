@@ -13,8 +13,9 @@
 #include "LevelSequencePlayer.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "Character/ArpgAIControlledCharacter.h"
 #include "Character/arpgCharacter.h"
-#include "Character/arpgEnemy.h"
+#include "Character/ArpgAIControlledCharacter.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Game/ArpgGameState.h"
 #include "Input/arpgInputComponent.h"
@@ -219,7 +220,7 @@ void AarpgPlayerController::SetTarget(AActor* NewTarget)
 		if (TabTargetActor != nullptr)
 		{
 			//Disable VFX
-			if (AarpgEnemy* Enemy = Cast<AarpgEnemy>(TabTargetActor))
+			if (AarpgAIControlledCharacter* Enemy = Cast<AarpgAIControlledCharacter>(TabTargetActor))
 			{
 				//trigger event for on enemy target
 				Enemy->OnTargettedByPlayer.Broadcast(false);
@@ -232,7 +233,7 @@ void AarpgPlayerController::SetTarget(AActor* NewTarget)
 	else
 	{
 		//Disable VFX on old one
-		if (AarpgEnemy* Enemy = Cast<AarpgEnemy>(TabTargetActor))
+		if (AarpgAIControlledCharacter* Enemy = Cast<AarpgAIControlledCharacter>(TabTargetActor))
 		{
 			//trigger event for on enemy target
 			Enemy->OnTargettedByPlayer.Broadcast(false);
@@ -242,7 +243,7 @@ void AarpgPlayerController::SetTarget(AActor* NewTarget)
 		SetTargetingEnabled(true);
 
 		//Enable VFX
-		if (AarpgEnemy* Enemy = Cast<AarpgEnemy>(TabTargetActor))
+		if (AarpgAIControlledCharacter* Enemy = Cast<AarpgAIControlledCharacter>(TabTargetActor))
 		{
 			//trigger event for on enemy target
 			Enemy->OnTargettedByPlayer.Broadcast(true);

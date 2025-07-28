@@ -8,7 +8,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/EnemyInterface.h"
-#include "arpgEnemy.generated.h"
+#include "ArpgAIControlledCharacter.generated.h"
 
 class UWidgetComponent;
 class UGameplayAbility;
@@ -23,12 +23,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargettedSignature, bool, NewValu
  * 
  */
 UCLASS()
-class ARPG_0908_API AarpgEnemy : public AarpgCharacterBase, public IHighlightInterface, public IEnemyInterface
+class ARPG_0908_API AarpgAIControlledCharacter : public AarpgCharacterBase, public IHighlightInterface, public IEnemyInterface
 {
 	GENERATED_BODY()
 
 public:
-	AarpgEnemy();
+	AarpgAIControlledCharacter();
 
 	virtual void PossessedBy(AController* NewController) override;
 

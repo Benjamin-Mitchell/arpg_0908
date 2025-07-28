@@ -1,7 +1,7 @@
 // Copyright Tinzie Games
 
 
-#include "Character/arpgEnemy.h"
+#include "Character/ArpgAIControlledCharacter.h"
 
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/arpgAttributeSet.h"
@@ -14,7 +14,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-AarpgEnemy::AarpgEnemy()
+AarpgAIControlledCharacter::AarpgAIControlledCharacter()
 {
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 
@@ -41,7 +41,7 @@ AarpgEnemy::AarpgEnemy()
     TargettedIcon ->SetupAttachment(GetMesh(), FName("UpperChestSocket"));
 }
 
-void AarpgEnemy::PossessedBy(AController* NewController)
+void AarpgAIControlledCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
@@ -60,27 +60,27 @@ void AarpgEnemy::PossessedBy(AController* NewController)
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
-void AarpgEnemy::HighlightActor()
+void AarpgAIControlledCharacter::HighlightActor()
 {
 	GetMesh()->SetCustomDepthStencilValue(250);
 	Weapon->SetCustomDepthStencilValue(250);
 }
-void AarpgEnemy::UnHighlightActor()
+void AarpgAIControlledCharacter::UnHighlightActor()
 {
 	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
 	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
 }
 
-void AarpgEnemy::Interact(AarpgPlayerController* InteractingPlayer)
+void AarpgAIControlledCharacter::Interact(AarpgPlayerController* InteractingPlayer)
 {
 }
 
-int32 AarpgEnemy::GetPlayerLevel()
+int32 AarpgAIControlledCharacter::GetPlayerLevel()
 {
 	return Level;
 }
 
-void AarpgEnemy::Die(const FVector& DeathImpulse)
+void AarpgAIControlledCharacter::Die(const FVector& DeathImpulse)
 {
 	SetLifeSpan(LifeSpan);
 
@@ -90,18 +90,18 @@ void AarpgEnemy::Die(const FVector& DeathImpulse)
 	Super::Die(DeathImpulse);
 }
 
-void AarpgEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+void AarpgAIControlledCharacter::SetCombatTarget_Implementation(AActor* InCombatTarget)
 {
 	CombatTarget = InCombatTarget;
 }
 
-AActor* AarpgEnemy::GetCombatTarget_Implementation() const
+AActor* AarpgAIControlledCharacter::GetCombatTarget_Implementation() const
 {
 	return CombatTarget;
 }
 
 
-void AarpgEnemy::BeginPlay()
+void AarpgAIControlledCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -148,7 +148,7 @@ void AarpgEnemy::BeginPlay()
 		
 		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Effects_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
 			this,
-			&AarpgEnemy::HitReactTagChanged
+			&AarpgAIControlledCharacter::HitReactTagChanged
 		);
 
 		OnHealthChanged.Broadcast(ArpgAS->GetHealth());
@@ -156,7 +156,7 @@ void AarpgEnemy::BeginPlay()
 	}
 }
 
-void AarpgEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+void AarpgAIControlledCharacter::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
@@ -165,13 +165,13 @@ void AarpgEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
 }
 
-void AarpgEnemy::InitAbilityActorInfo()
+void AarpgAIControlledCharacter::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
-	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgEnemy::StunTagChanged);
-	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Immunity_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgEnemy::StunImmunityTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgAIControlledCharacter::StunTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Immunity_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgAIControlledCharacter::StunImmunityTagChanged);
 	
 	if(HasAuthority())
 	{
@@ -181,7 +181,7 @@ void AarpgEnemy::InitAbilityActorInfo()
 	GetOnASCRegisteredDelegate().Broadcast(AbilitySystemComponent);
 }
 
-void AarpgEnemy::InitializeDefaultAttributes() const
+void AarpgAIControlledCharacter::InitializeDefaultAttributes() const
 {
 	//To be honest, probably remove this whole character class system nonsense later, its just used for the course mobs.
 	if (CharacterClass != ECharacterClass::NONE)
@@ -196,7 +196,7 @@ void AarpgEnemy::InitializeDefaultAttributes() const
 	
 }
 
-void AarpgEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+void AarpgAIControlledCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {	
 	Super::StunTagChanged(CallbackTag, NewCount);
 	
@@ -204,17 +204,17 @@ void AarpgEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
 }
 
-void AarpgEnemy::StartBlackboard()
+void AarpgAIControlledCharacter::StartBlackboard()
 {
 	ArpgAIController->RunBehaviorTree(BehaviorTree);
 }
 
-void AarpgEnemy::SetBlackboardInAir(bool bInAir)
+void AarpgAIControlledCharacter::SetBlackboardInAir(bool bInAir)
 {
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("InAir"), bInAir);
 }
 
-void AarpgEnemy::SetBlackboardCustomBool(FName BoolName, bool Val)
+void AarpgAIControlledCharacter::SetBlackboardCustomBool(FName BoolName, bool Val)
 {
 	if (HasAuthority())
 	{
@@ -222,7 +222,7 @@ void AarpgEnemy::SetBlackboardCustomBool(FName BoolName, bool Val)
 	}
 }
 
-void AarpgEnemy::SetBlackboardCustomObject(FName KeyName, UObject* Obj)
+void AarpgAIControlledCharacter::SetBlackboardCustomObject(FName KeyName, UObject* Obj)
 {
 	if (HasAuthority())
 	{
