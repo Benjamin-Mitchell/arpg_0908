@@ -28,6 +28,9 @@ public:
 	UPROPERTY(Category=Decorator, EditAnywhere)
 	FValueOrBBKey_Float CoolDownTime;
 	
+	UPROPERTY(Category=Decorator, EditAnywhere)
+	bool InitializeOnCooldown;
+	
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 	virtual void OnNodeDeactivation(FBehaviorTreeSearchData& SearchData, EBTNodeResult::Type NodeResult) override;
 

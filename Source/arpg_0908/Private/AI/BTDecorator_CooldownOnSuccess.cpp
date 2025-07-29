@@ -8,6 +8,7 @@ UBTDecorator_CooldownOnSuccess::UBTDecorator_CooldownOnSuccess()
 	NodeName = "Cooldown On Success";
 	INIT_DECORATOR_NODE_NOTIFY_FLAGS();
 	CoolDownTime = 5.0f;
+	InitializeOnCooldown = false;
 	
 	// aborting child nodes doesn't makes sense, cooldown starts after leaving this branch
 	bAllowAbortChildNodes = false;
@@ -38,7 +39,11 @@ void UBTDecorator_CooldownOnSuccess::InitializeMemory(UBehaviorTreeComponent& Ow
 	FBTCooldownDecoratorMemory* DecoratorMemory = InitializeNodeMemory<FBTCooldownDecoratorMemory>(NodeMemory, InitType);
 	if (InitType == EBTMemoryInit::Initialize)
 	{
-		DecoratorMemory->LastUseTimestamp = TNumericLimits<double>::Lowest();
+		if (InitializeOnCooldown)
+			DecoratorMemory->LastUseTimestamp = OwnerComp.GetWorld()->GetTimeSeconds();
+		else
+			DecoratorMemory->LastUseTimestamp = TNumericLimits<double>::Lowest();
+				
 	}
 
 	DecoratorMemory->bRequestedRestart = false;
