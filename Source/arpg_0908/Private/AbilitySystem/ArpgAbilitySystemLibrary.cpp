@@ -9,6 +9,7 @@
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/Abilities/ArpgDamageGameplayAbility.h"
 #include "arpg_0908/ArpgLogChannels.h"
+#include "Character/ArpgAIControlledCharacter.h"
 #include "Character/arpgCharacterBase.h"
 #include "Game/ArpgGameModeBase.h"
 #include "Interaction/CombatInterface.h"
@@ -467,4 +468,22 @@ void UArpgAbilitySystemLibrary::CancelAbilitiesByTag(UAbilitySystemComponent* Ab
 	}
 
 	AbilitySystemComponent->CancelAbilities(&Tags, &WithoutTags);
+}
+
+AarpgAIControlledCharacter* UArpgAbilitySystemLibrary::SpawnAIControlledActorAndStartBlackboard(const UObject* WorldContextObject, TSubclassOf<AarpgAIControlledCharacter> CharacterToSpawn, FTransform SpawnTransform)
+{
+	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		FActorSpawnParameters SpawnParameters;
+		AarpgAIControlledCharacter* SpawnedCharacter = World->SpawnActor<AarpgAIControlledCharacter>(
+			CharacterToSpawn,
+			SpawnTransform);
+
+		SpawnedCharacter->SpawnDefaultController();
+		SpawnedCharacter->StartBlackboard();
+
+		return SpawnedCharacter;
+	}
+
+	return nullptr;
 }

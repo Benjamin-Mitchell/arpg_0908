@@ -167,7 +167,8 @@ void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 {
 	const float LocalIncomingDamage = GetIncomingDamage();
 	SetIncomingDamage(0.f); //we always reset meta attributes before next use
-	if(LocalIncomingDamage > 0.f)
+
+	//if(LocalIncomingDamage > 0.f)	//We allow incoming Damage to be negative, so we can handle healing with the same logic, just use a negative damage number for healing.
 	{
 		const float NewHealth = GetHealth() - LocalIncomingDamage;
 		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));

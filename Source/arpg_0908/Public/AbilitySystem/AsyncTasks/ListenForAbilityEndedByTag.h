@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameplayAbilityCaughtByTag);
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType, meta = (ExposedAsyncProxy = "AsyncTask"))
 class ARPG_0908_API UListenForAbilityEndedByTag : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()

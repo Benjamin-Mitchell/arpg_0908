@@ -65,7 +65,10 @@ public:
 
 
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
-	TObjectPtr<AActor> CombatTarget;	
+	TObjectPtr<AActor> CombatTarget;
+
+	UFUNCTION(BlueprintCallable)
+	void StartBlackboard();
 
 protected:
 	virtual void BeginPlay() override;
@@ -82,9 +85,6 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
-
-	UFUNCTION(BlueprintCallable)
-	void StartBlackboard();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int32 Level = 1;

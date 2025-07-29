@@ -32,7 +32,10 @@ UListenForAbilityEndedByTag* UListenForAbilityEndedByTag::ListenForAbilityEndedB
 	UListenForAbilityEndedByTag* Task = NewObject<UListenForAbilityEndedByTag>();
 	ActiveAbility->OnAbilityEnded.AddDynamic(Task, &UListenForAbilityEndedByTag::OnAbilityEndCallback);
 	Task->AbilityListeningTo = ActiveAbility;
-	
+
+	if (ActiveAbility->GetEndedAlready())
+		return nullptr;
+		
 	return Task;
 }
 

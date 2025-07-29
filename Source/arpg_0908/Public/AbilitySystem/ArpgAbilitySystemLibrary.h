@@ -8,6 +8,7 @@
 #include "Data/CharacterClassInfo.h"
 #include "ArpgAbilitySystemLibrary.generated.h"
 
+class AarpgAIControlledCharacter;
 struct FGameplayAbilityTargetDataHandle;
 struct FGameplayAbilityTargetData_CueInfo;
 class UAbilitySystemComponent;
@@ -113,4 +114,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Ability|AbilityUtility", meta = (DisplayName = "Cancel Abilities By Tag"))
 	static void CancelAbilitiesByTag(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTagContainer& Tags, const FGameplayTagContainer& WithoutTags);
+
+	UFUNCTION(BlueprintCallable, Category="ArpgAbilitySystemLibrary|GameplayMechanics")
+	static AarpgAIControlledCharacter* SpawnAIControlledActorAndStartBlackboard(const UObject* WorldContextObject, TSubclassOf<AarpgAIControlledCharacter> CharacterToSpawn, FTransform SpawnTransform);
 };

@@ -29,6 +29,9 @@ UListenForGameplayAbilityEnded* UListenForGameplayAbilityEnded::ListenForGamepla
 	ActiveAbility->OnAbilityEnded.AddDynamic(Task, &UListenForGameplayAbilityEnded::OnAbilityEndCallback);
 	Task->AbilityListeningTo = ActiveAbility;
 	
+	if (ActiveAbility->GetEndedAlready())
+		return nullptr;
+	
 	return Task;
 }
 
