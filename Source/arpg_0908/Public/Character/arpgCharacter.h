@@ -36,6 +36,8 @@ public:
 	TArray<UAnimMontage*> DanceMontages;
 
 	void GrantEquippedAbilitiesOnSpawn();
+
+	void AddInputScroll(float InScroll);
 protected:
 
 	//virtual void BeginPlay() override;
@@ -67,6 +69,9 @@ protected:
 	virtual void Onrep_Stunned() override;
 
 	virtual void Onrep_Burned() override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ReceiveScrollInput(float InScroll);
 private:
 
 	

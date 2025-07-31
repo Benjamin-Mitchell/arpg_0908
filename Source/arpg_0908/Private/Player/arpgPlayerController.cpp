@@ -375,6 +375,9 @@ void AarpgPlayerController::SetupInputComponent()
 	//Execute the Move Function whenever a Move button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(moveAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Move);
 
+	//Execute the Move Function whenever a Move button is pressed in the Input Action.
+	ArpgInputComponent->BindAction(ScrollAction, ETriggerEvent::Triggered, this, &AarpgPlayerController::Scroll);
+
 	//Execute the Interact Function if the interact button is pressed in the Input Action.
 	ArpgInputComponent->BindAction(interactAction, ETriggerEvent::Started, this, &AarpgPlayerController::Interact);
 
@@ -412,6 +415,18 @@ void AarpgPlayerController::Move(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X, false);
 	}
 }
+
+void AarpgPlayerController::Scroll(const struct FInputActionValue& InputActionValue)
+{
+	const float InputAxisFloat = InputActionValue.Get<float>();
+
+	if (AarpgCharacter* ControlledPawn = GetPawn<AarpgCharacter>())
+	{
+		ControlledPawn->AddInputScroll(InputAxisFloat);
+	}
+}
+
+
 void AarpgPlayerController::Interact(const struct FInputActionValue& InputActionValue)
 {
 	if(ThisActorHighlighted != nullptr)

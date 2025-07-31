@@ -76,6 +76,9 @@ private:
 	TObjectPtr<UInputAction> moveAction;
 
 	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> ScrollAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> interactAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -90,6 +93,7 @@ private:
 	void ServerInteract(AActor* Interacted);
 	
 	void Move(const struct FInputActionValue& InputActionValue);
+	void Scroll(const struct FInputActionValue& InputActionValue);
 	void Interact(const struct FInputActionValue& InputActionValue);
 
 	UFUNCTION(Server, Reliable)

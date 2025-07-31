@@ -81,6 +81,11 @@ void AarpgCharacter::GrantEquippedAbilitiesOnSpawn()
 	}
 }
 
+void AarpgCharacter::AddInputScroll(float InScroll)
+{
+	ReceiveScrollInput(InScroll);	
+}
+
 // void AarpgCharacter::BeginPlay()
 // {
 // 	Super::BeginPlay();
