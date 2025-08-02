@@ -5138,6 +5138,18 @@
 			"Type": "RequiredResource"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/Animation/SkeletalMeshMorphTargetEditingTools/Binaries/Win64/UnrealEditor-SkeletalMeshMorphTargetEditingTools.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/Animation/SkeletalMeshMorphTargetEditingTools/Binaries/Win64/UnrealEditor-SkeletalMeshMorphTargetEditingTools.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Experimental/Animation/SkeletalMeshMorphTargetEditingTools/Binaries/Win64/UnrealEditor.modules",
+			"Type": "RequiredResource"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/AutomationUtils/Binaries/Win64/UnrealEditor-AutomationUtils.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -31876,6 +31888,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Experimental/Animation/SkeletalMeshMorphTargetEditingTools/SkeletalMeshMorphTargetEditingTools.uplugin",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Experimental/AutomationUtils/AutomationUtils.uplugin",
 			"Type": "UFS"
 		},
@@ -32574,6 +32590,7 @@
 		"SequencerScripting",
 		"SignificanceManager",
 		"SkeletalMeshModelingTools",
+		"SkeletalMeshMorphTargetEditingTools",
 		"SkeletalReduction",
 		"SocketSubsystemSteamIP",
 		"SoundFields",

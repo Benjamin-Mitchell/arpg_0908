@@ -7,9 +7,10 @@
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
+#include "AbilitySystem/Abilities/arpgGameplayAbility.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Actor/HeadData.h"
-#include "Actor/WeaponData.h"
+#include "Actor/Collectable/Weapons/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Materials/MaterialExpressionOperator.h"
 #include "Player/arpgPlayerController.h"
@@ -45,6 +46,7 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 	HandlePlayerHighlight();
 
 	AddCharacterAbilities(StartupAbilities);
+	
 	InitializedAlready = true;
 }
 
@@ -152,7 +154,7 @@ void AarpgCharacter::SetHead(AarpgHeadActor* NewHeadActor)
 }
 
 //This should only be called on the server!
-void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor)
+void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeaponComponent* TempWeaponComponent, bool IsTemporary)
 {
 	int WeaponIndex = WeaponDatabase->GetWeaponIndex(NewWeaponActor);
 	FVector WeaponWorldLocation = NewWeaponActor->GetActorLocation();
@@ -162,56 +164,87 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor)
 	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
 	AArpgWeaponActor* NewWeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
 
-
-		
+	if (IsTemporary)
+	{
+		//This is a pure delegate.
+		//TempWeaponComponent.ConditionMet = FOnTempWeaponConditionMet::CreateUObject(this, &AarpgCharacter::TemporaryWeaponExpired);
+		CurrentTempWeaponComponent = TempWeaponComponent;
+		CurrentTempWeaponComponent->ConditionMet.BindUObject(this, &AarpgCharacter::TemporaryWeaponExpired);
+			
+		TempEquippedWeaponActorClass = WeaponData.WeaponReference;
+	}
+	
+	
 	if (CurrentWeaponActorClass != nullptr)
 	{
 		//Remove old head abilities, if any
 		AArpgWeaponActor* OldWeaponActorRef = CurrentWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
-		RemoveCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
-		
-		//Now we replace the old one with the new one, before it is deleted.
-		FRotator Rotation = (GetActorLocation() - WeaponWorldLocation).Rotation();
-		Rotation.Pitch = 0.f;
 
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = this;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		
-		FVector NewSpawnLocation = WeaponWorldLocation;
-
-		//If the floor is closer than half our capsule height
-		float NewWeaponCapsuleHalfHeight = NewWeaponActorRef->GetCapsuleHalfHeight();
-		if (abs(FloorWorldLocation.Z - WeaponWorldLocation.Z) < NewWeaponCapsuleHalfHeight)
+		if (IsTemporary)
 		{
-			NewSpawnLocation.Z = FloorWorldLocation.Z + NewWeaponCapsuleHalfHeight;
+			//TODO: Disable instead of removing? (Leave a grey-UI-version)
+			//DisableCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+			RemoveCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
 		}
+		else
+		{
+			RemoveCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+			
+			//Now we replace the old one with the new one, before it is deleted.
+			FRotator Rotation = (GetActorLocation() - WeaponWorldLocation).Rotation();
+			Rotation.Pitch = 0.f;
+
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = this;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	
-		AArpgWeaponActor* NewWeapon = GetWorld()->SpawnActor<AArpgWeaponActor>(
-				CurrentWeaponActorClass,
-				NewSpawnLocation,
-				Rotation,
-				SpawnParams);
+			FVector NewSpawnLocation = WeaponWorldLocation;
+
+			//If the floor is closer than half our capsule height
+			float NewWeaponCapsuleHalfHeight = NewWeaponActorRef->GetCapsuleHalfHeight();
+			if (abs(FloorWorldLocation.Z - WeaponWorldLocation.Z) < NewWeaponCapsuleHalfHeight)
+			{
+				NewSpawnLocation.Z = FloorWorldLocation.Z + NewWeaponCapsuleHalfHeight;
+			}
+
+			AArpgWeaponActor* NewWeapon = GetWorld()->SpawnActor<AArpgWeaponActor>(
+					CurrentWeaponActorClass,
+					NewSpawnLocation,
+					Rotation,
+					SpawnParams);	
+
+			
+		}	
 	}
+
+	if (!IsTemporary)
+	{
+		CurrentWeaponActorClass = WeaponData.WeaponReference;
+
+		//This saves the equipped weapon. We don't save temporary weapons.
+		AarpgPlayerState* ArpgPlayerState = Cast<AarpgPlayerState>(GetPlayerState());
+		if (ArpgPlayerState != nullptr)
+		{
+			ArpgPlayerState->SetEquippedWeapon(WeaponIndex);
+		}
+	}
+	
 	
 	AddCharacterAbilities(NewWeaponActorRef->GrantedAbilities);
 
 	MulticastSetWeaponMesh(WeaponIndex);
 	
-	AarpgPlayerState* ArpgPlayerState = Cast<AarpgPlayerState>(GetPlayerState());
-	if (ArpgPlayerState != nullptr)
-	{
-		ArpgPlayerState->SetEquippedWeapon(WeaponIndex);
-	}
-	
-	CurrentWeaponActorClass = WeaponData.WeaponReference;
 }
 
 void AarpgCharacter::SetWeaponMesh(int WeaponIndex)
 {
 	if (WeaponIndex < 0)
+	{
+		Weapon->SetSkeletalMesh(nullptr);
 		return;
+	}
+	
 	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
 	AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
 	
@@ -282,6 +315,56 @@ void AarpgCharacter::Onrep_Burned()
 	}
 }
 
+void AarpgCharacter::AbilitySuccessfullyCast(UGameplayAbility* ActivatedAbility)
+{
+	if (CurrentTempWeaponComponent != nullptr)
+	{
+		FGameplayTagQuery GameplayTagQuery = FGameplayTagQuery::MakeQuery_MatchAllTags(ActivatedAbility->AbilityTags);
+		
+		AArpgWeaponActor* TempWeaponActorRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
+		for (TSubclassOf<UGameplayAbility> Ability : TempWeaponActorRef->GrantedAbilities)
+		{
+			FGameplayTagContainer AbilityTags = Ability->GetDefaultObject<UGameplayAbility>()->AbilityTags; 
+			if (AbilityTags.MatchesQuery(GameplayTagQuery))
+			{
+				//Passes if this is the _final_ use of this temporary weapon.
+				if (CurrentTempWeaponComponent->RecordAbilityUsage())
+				{
+					//Now we just want to add a callback that will remove the temporary weapon after this activation is complete.
+					UarpgGameplayAbility* ActiveArpgAbility = Cast<UarpgGameplayAbility>(ActivatedAbility);
+					ActiveArpgAbility->OnAbilityEnded.AddDynamic(this, &AarpgCharacter::TemporaryWeaponExpired);	
+				}
+			}
+		}
+	}
+}
+
+void AarpgCharacter::TemporaryWeaponExpired()
+{
+	//Remove Temporary Abilities
+	AArpgWeaponActor* EquippedWeaponRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
+	RemoveCharacterAbilities(EquippedWeaponRef->GrantedAbilities);
+
+	//Re-add previous permanent weapon, if there was any.
+	if (IsValid(CurrentWeaponActorClass))
+	{
+		AArpgWeaponActor* OldWeaponActorRef = CurrentWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
+		AddCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+		
+		int WeaponIndex = WeaponDatabase->GetWeaponIndex(OldWeaponActorRef);
+		MulticastSetWeaponMesh(WeaponIndex);
+	}
+	else
+	{
+		//Nullify
+		MulticastSetWeaponMesh(-1);
+	}
+
+
+	//This is where we remove that loose pointer. There shouldn't be a case where this is null.
+	delete CurrentTempWeaponComponent;
+}
+
 void AarpgCharacter::InitAbilityActorInfo()
 {
 	AarpgPlayerState* arpgPlayerState = GetPlayerState<AarpgPlayerState>();
@@ -292,8 +375,14 @@ void AarpgCharacter::InitAbilityActorInfo()
 	Cast<UarpgAbilitySystemComponent>(arpgPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
 	
 	AbilitySystemComponent = arpgPlayerState->GetAbilitySystemComponent();
+
+	//TODO: Why don't we just store a UarpgAbilitySystemComponent instead of a standard AbilitySystemComponent?
+	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);
+	ArpgASC->AbilityActivatedCallbacks.AddUObject(this, &AarpgCharacter::AbilitySuccessfullyCast);
+	
 	AttributeSet = arpgPlayerState->GetAttributeSet();
 
+	
 	GetOnASCRegisteredDelegate().Broadcast(AbilitySystemComponent);
 
 	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgCharacter::StunTagChanged);

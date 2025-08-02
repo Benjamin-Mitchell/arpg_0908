@@ -165,6 +165,7 @@ protected:
 	
 	bool bInPlay = false;
 
+	//TODO: Why don't we just store a UarpgAbilitySystemComponent instead of a standard AbilitySystemComponent?
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 

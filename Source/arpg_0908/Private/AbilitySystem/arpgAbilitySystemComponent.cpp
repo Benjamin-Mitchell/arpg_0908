@@ -192,6 +192,9 @@ void UarpgAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 {
 	if(!InputTag.IsValid()) return;
 
+	//Lock changes to the activatable list
+	FScopedAbilityListLock ActiveScopeLock(*this);
+
 	for(FGameplayAbilitySpec& AbilitySpec: GetActivatableAbilities())
 	{
 		if(AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
@@ -206,12 +209,14 @@ void UarpgAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 						AbilityActivateFailed.Broadcast(InputTag);
 					}
 				}
+
 				bReleasedPress = false;
 			}
 		}
 	}
 }
 
+//Abilities are NOT activated here, they're activated in InputTagHeld.
 void UarpgAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 	if(!InputTag.IsValid()) return;
@@ -224,22 +229,16 @@ void UarpgAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
 			AbilitySpecInputPressed(AbilitySpec);
 			if (AbilitySpec.IsActive())
 			{
-				//A
+				//This is a GAS assistant function. The point of it is to fire delegate "WaitInputPressed" in abilities.
 				TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
 				const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last() -> GetCurrentActivationInfoRef();
 				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, ActivationInfo.GetActivationPredictionKey());
-				
-				//B
-				// UGameplayAbility* PrimaryInstance = AbilitySpec.GetPrimaryInstance();
-				// if (PrimaryInstance)
-				// {
-				// 	InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, PrimaryInstance->GetCurrentActivationInfo().GetActivationPredictionKey());	
-				// }
 			}
 		}
 	}
 }
 
+//Abilities are NOT activated here, they're activated in InputTagHeld.
 void UarpgAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
 {
 	if(!InputTag.IsValid()) return;
@@ -252,19 +251,10 @@ void UarpgAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 			AbilitySpecInputReleased(AbilitySpec);
 			if (AbilitySpec.IsActive())
 			{
-				//A
+				//This is a GAS assistant function. The point of it is to fire delegate "WaitInputReleased" in abilities.
 				TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
 				const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last() -> GetCurrentActivationInfoRef();
-				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, ActivationInfo.GetActivationPredictionKey());
-				
-				//B
-				// UGameplayAbility* PrimaryInstance = AbilitySpec.GetPrimaryInstance();
-				// if (PrimaryInstance)
-				// {
-				// 	InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, PrimaryInstance->GetCurrentActivationInfo().GetActivationPredictionKey());
-				// 	
-				// }
-				
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, ActivationInfo.GetActivationPredictionKey());		
 			}
 		}
 	}

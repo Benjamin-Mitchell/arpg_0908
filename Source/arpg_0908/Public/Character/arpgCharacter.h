@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actor/Collectable/Weapons/TemporaryWeaponComponent.h"
 #include "Character/arpgCharacterBase.h"
 #include "arpgCharacter.generated.h"
 
@@ -30,7 +31,7 @@ public:
 	virtual int32 GetPlayerLevel() override;
 
 	void SetHead(AarpgHeadActor* HeadActor);
-	void SetWeapon(AArpgWeaponActor* WeaponActor);
+	void SetWeapon(AArpgWeaponActor* WeaponActor, TemporaryWeaponComponent* TempWeaponComponent, bool IsTemporary = false);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Meme stuff")
 	TArray<UAnimMontage*> DanceMontages;
@@ -74,6 +75,11 @@ protected:
 	void ReceiveScrollInput(float InScroll);
 private:
 
+	TemporaryWeaponComponent* CurrentTempWeaponComponent;
+	void AbilitySuccessfullyCast(UGameplayAbility* ActivatedAbility);
+
+	UFUNCTION()
+	void TemporaryWeaponExpired();
 	
 	bool InitializedAlready = false;
 	virtual void InitAbilityActorInfo() override;
@@ -92,6 +98,8 @@ private:
 
 	TSubclassOf<AarpgHeadActor> CurrentHeadActorClass;
 	TSubclassOf<AArpgWeaponActor> CurrentWeaponActorClass;
+	TSubclassOf<AArpgWeaponActor> TempEquippedWeaponActorClass;
 
+	//void DisableCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
 	
 };
