@@ -197,7 +197,7 @@ void UarpgAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 
 	for(FGameplayAbilitySpec& AbilitySpec: GetActivatableAbilities())
 	{
-		if(AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		if(AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag) && !HasMatchingGameplayTag(FArpgGameplayTags::Get().InputToDisableTagMap[InputTag]))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
 			if(!AbilitySpec.IsActive())
