@@ -155,9 +155,9 @@ void UarpgAttributeSet::Debuff(const FEffectProperties& EffectProps)
 
 	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, EffectContext, 1.f))
 	{
-		FArpgGameplayEffectContext* AuraContext = static_cast<FArpgGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		FArpgGameplayEffectContext* ArpgContext = static_cast<FArpgGameplayEffectContext*>(MutableSpec->GetContext().Get());
 		TSharedPtr<FGameplayTag> DebuffTagShared = MakeShareable(new FGameplayTag(DebuffTag));
-		AuraContext->SetDebuffTag(DebuffTagShared);
+		ArpgContext->SetDebuffTag(DebuffTagShared);
 
 		EffectProps.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
 	}

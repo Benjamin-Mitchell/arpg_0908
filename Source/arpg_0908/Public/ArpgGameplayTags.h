@@ -91,6 +91,18 @@ public:
 	FGameplayTag Cooldown_Utility_Ability1;
 	FGameplayTag Cooldown_Utility_Ability2;
 
+
+	TMap<FGameplayTag, FGameplayTag> InputToDisableTagMap;
+	//Disable Tags -- Currently only weapon abilities are actually disable-able via temporary Weapons.
+	FGameplayTag Disable_Weapon_BasicAttack;
+	FGameplayTag Disable_Weapon_SecondaryAttack;
+	
+	FGameplayTag Disable_Head_Ability1;
+	FGameplayTag Disable_Head_Ability2;
+	FGameplayTag Disable_Head_Ability3;
+	FGameplayTag Disable_Utility_Ability1;
+	FGameplayTag Disable_Utility_Ability2;
+
 	//Montage Tags
 	FGameplayTag Montage_Attack_Weapon;
 	FGameplayTag Montage_Attack_RightHand;

@@ -14,6 +14,18 @@ void UarpgGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	OnAbilityEnded.Broadcast();
-	EndedAlready = true;
+	if (!EndedAlready)
+	{
+		OnAbilityEnded.Broadcast();
+		EndedAlready = true;
+	}
+}
+
+void UarpgGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	EndedAlready = false;
 }

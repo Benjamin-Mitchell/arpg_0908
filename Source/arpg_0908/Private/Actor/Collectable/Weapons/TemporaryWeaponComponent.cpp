@@ -34,8 +34,8 @@ void TemporaryWeaponComponent::RecordWeaponTick(float DeltaTime)
 {
 	CurrentPeriod += DeltaTime;
 
-	if (CurrentPeriod >= TotalPeriod && ExpirationCondition == EExpirationCondition::AfterPeriod)
-		ConditionMet.Execute();
+	// if (CurrentPeriod >= TotalPeriod && ExpirationCondition == EExpirationCondition::AfterPeriod)
+	// 	ConditionMet.Execute();
 }
 
 void TemporaryWeaponComponent::SetTotalUses(int InTotalUses)

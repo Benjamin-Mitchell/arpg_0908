@@ -81,14 +81,28 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	//Cooldown tags
 	GameplayTags.Cooldown_Weapon_BasicAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Weapon.BasicAttack"));
 	GameplayTags.Cooldown_Weapon_SecondaryAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Weapon.Secondary"));
-	
 	GameplayTags.Cooldown_Head_Ability1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Head.Ability1"));
 	GameplayTags.Cooldown_Head_Ability2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Head.Ability2"));
 	GameplayTags.Cooldown_Head_Ability3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Head.Ability3"));
-
 	GameplayTags.Cooldown_Utility_Ability1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Utility.Ability1"));
 	GameplayTags.Cooldown_Utility_Ability2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Utility.Ability2"));
+
+	//Disable tags
+	GameplayTags.Disable_Weapon_BasicAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Weapon.BasicAttack"));
+	GameplayTags.Disable_Weapon_SecondaryAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Weapon.Secondary"));
+	GameplayTags.Disable_Head_Ability1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Head.Ability1"));
+	GameplayTags.Disable_Head_Ability2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Head.Ability2"));
+	GameplayTags.Disable_Head_Ability3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Head.Ability3"));
+	GameplayTags.Disable_Utility_Ability1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Utility.Ability1"));
+	GameplayTags.Disable_Utility_Ability2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Disable.Utility.Ability2"));
 	
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_LMB, GameplayTags.Disable_Weapon_BasicAttack);
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_RMB, GameplayTags.Disable_Weapon_SecondaryAttack);
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_1, GameplayTags.Disable_Head_Ability1);
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_2, GameplayTags.Disable_Head_Ability2);
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_3, GameplayTags.Disable_Head_Ability3);
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_4, GameplayTags.Disable_Utility_Ability1);
+	GameplayTags.InputToDisableTagMap.Add(GameplayTags.InputTag_5, GameplayTags.Disable_Utility_Ability2);
 
 	//Effect tags
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effects.HitReact"));

@@ -7,6 +7,7 @@
 #include "Character/arpgCharacterBase.h"
 #include "arpgCharacter.generated.h"
 
+struct FActiveGameplayEffectHandle;
 class UWeaponData;
 class AArpgWeaponActor;
 class UCameraComponent;
@@ -80,6 +81,8 @@ private:
 
 	UFUNCTION()
 	void TemporaryWeaponExpired();
+
+	TArray<FActiveGameplayEffectHandle> ActiveDisableGameplayEffects;
 	
 	bool InitializedAlready = false;
 	virtual void InitAbilityActorInfo() override;
@@ -99,7 +102,6 @@ private:
 	TSubclassOf<AarpgHeadActor> CurrentHeadActorClass;
 	TSubclassOf<AArpgWeaponActor> CurrentWeaponActorClass;
 	TSubclassOf<AArpgWeaponActor> TempEquippedWeaponActorClass;
-
-	//void DisableCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>> &Abilities);
 	
+	TArray<TSubclassOf<UGameplayAbility>> TemporarilyRemovedAbilities;
 };

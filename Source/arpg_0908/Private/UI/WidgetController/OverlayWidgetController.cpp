@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/OverlayWidgetController.h"
 
+#include "ArpgGameplayTags.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/arpgAttributeSet.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
@@ -86,7 +87,21 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 				}
 			}
 		);
+
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Weapon_BasicAttack, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Weapon_SecondaryAttack, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Head_Ability1, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Head_Ability2, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Head_Ability3, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Utility_Ability1, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
+		AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Disable_Utility_Ability2, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UOverlayWidgetController::DisableReceived);
 	}
+}
+
+void UOverlayWidgetController::DisableReceived(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	
+	AbilityDisabledDelegate.Broadcast(CallbackTag, (NewCount > 0));
 }
 
 void UOverlayWidgetController::UpdateOwnedAbilities(UarpgAbilitySystemComponent* ArpgAbilitySystemComponent)

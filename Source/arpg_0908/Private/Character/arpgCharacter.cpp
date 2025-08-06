@@ -4,14 +4,18 @@
 #include "Character/arpgCharacter.h"
 #include "Player/arpgPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "ArpgAbilityTypes.h"
 #include "ArpgGameplayTags.h"
+#include "InputBehavior.h"
 #include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "AbilitySystem/ArpgAbilitySystemLibrary.h"
 #include "AbilitySystem/Abilities/arpgGameplayAbility.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "AbilitySystem/Utility/ArpgDynamicGameplayEffect.h"
 #include "Actor/HeadData.h"
 #include "Actor/Collectable/Weapons/WeaponData.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Materials/MaterialExpressionOperator.h"
 #include "Player/arpgPlayerController.h"
 #include "UI/HUD/arpgHUD.h"
@@ -166,11 +170,9 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 
 	if (IsTemporary)
 	{
-		//This is a pure delegate.
-		//TempWeaponComponent.ConditionMet = FOnTempWeaponConditionMet::CreateUObject(this, &AarpgCharacter::TemporaryWeaponExpired);
+		//TODO: Can this override another TempWeaponComponent pointer which is then leaked?
+		//TODO: Clear old temporary weapon here if we still have one equipped
 		CurrentTempWeaponComponent = TempWeaponComponent;
-		CurrentTempWeaponComponent->ConditionMet.BindUObject(this, &AarpgCharacter::TemporaryWeaponExpired);
-			
 		TempEquippedWeaponActorClass = WeaponData.WeaponReference;
 	}
 	
@@ -182,9 +184,78 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 
 		if (IsTemporary)
 		{
-			//TODO: Disable instead of removing? (Leave a grey-UI-version)
-			//DisableCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
-			RemoveCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+			UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent);
+			AArpgWeaponActor* TempWeaponActorRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
+			TemporarilyRemovedAbilities.Empty();
+
+
+			//Here we are looping through the abilities from the old weapon, and comparing their input tags to the abilities added by the temporary weapon.
+			//If there are matches, we remove the current weapon's ability and add the old one.
+			//If there are ability slots that don't match, we disable those with the appropriate Disable tag.
+			for (TSubclassOf<UGameplayAbility> CurrentAbility : OldWeaponActorRef->GrantedAbilities)
+			{
+				TArray<FGameplayAbilitySpec*> CurrentMatchingAbilitySpecs;
+				ArpgASC->GetActivatableGameplayAbilitySpecsByAllMatchingTags(CurrentAbility->GetDefaultObject<UGameplayAbility>()->AbilityTags, CurrentMatchingAbilitySpecs);
+
+				//This is really only designed to support cases where there is a single ability with matching tag.
+				FGameplayTag CurrentInputTag;
+				for (FGameplayAbilitySpec* CurrentMatchingAbilitySpec : CurrentMatchingAbilitySpecs)
+				{
+					CurrentInputTag = UarpgAbilitySystemComponent::GetInputTagFromSpec(*CurrentMatchingAbilitySpec);
+					if (CurrentInputTag.IsValid())
+						break;
+				}
+				
+				bool Found = false;
+				for (TSubclassOf<UGameplayAbility> TempAbility : TempWeaponActorRef->GrantedAbilities)
+				{
+					//Directly taking the startupInputTag may be a problem if we allow some remapping functionality later? Although we shouldn't change the tags...
+					UGameplayAbility* TempAbilityPtr = TempAbility->GetDefaultObject<UGameplayAbility>();
+					UarpgGameplayAbility* ArpgAbility = Cast<UarpgGameplayAbility>(TempAbilityPtr);
+					FGameplayTag TempInputTag = ArpgAbility->StartupInputTag;
+
+					if (CurrentInputTag.MatchesTag(TempInputTag))
+					{
+						Found = true;
+					}
+				}
+
+				if (Found)
+					TemporarilyRemovedAbilities.Add(CurrentAbility);
+				else
+				{
+					FGameplayTag DisableTag = FArpgGameplayTags::Get().InputToDisableTagMap[CurrentInputTag];
+					
+					//Unfortunately this doesn't actually trigger the delegate events for some reason.
+					//AbilitySystemComponent->AddReplicatedLooseGameplayTag(DisableTag);
+
+					//So we have to dynamically create a gameplay Effect to add this
+					FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+					ContextHandle.AddSourceObject(this);
+					
+					UGameplayEffect* DisableEffect = NewObject<UArpgDynamicGameplayEffect>(GetTransientPackage(), FName(TEXT("DisableEffect")));
+					
+					DisableEffect->DurationPolicy = EGameplayEffectDurationType::Infinite;
+
+					DisableEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+					DisableEffect->StackLimitCount = 1;
+					
+					FInheritedTagContainer TagContainer = FInheritedTagContainer();
+					TagContainer.AddTag(DisableTag);
+
+					UTargetTagsGameplayEffectComponent& Component = DisableEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+					Component.SetAndApplyTargetTagChanges(TagContainer);					
+
+					ContextHandle.AddSourceObject(this);
+					FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(DisableEffect, ContextHandle, 1.f);
+					FArpgGameplayEffectContext* ArpgContext = static_cast<FArpgGameplayEffectContext*>(MutableSpec->GetContext().Get());
+					
+					ActiveDisableGameplayEffects.Add(AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*MutableSpec));
+				}
+			}
+			
+			//RemoveCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+			RemoveCharacterAbilities(TemporarilyRemovedAbilities);
 		}
 		else
 		{
@@ -344,12 +415,23 @@ void AarpgCharacter::TemporaryWeaponExpired()
 	//Remove Temporary Abilities
 	AArpgWeaponActor* EquippedWeaponRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
 	RemoveCharacterAbilities(EquippedWeaponRef->GrantedAbilities);
-
+	
+	//Remove all the disability GEs
+	for (FActiveGameplayEffectHandle ActiveDisable : ActiveDisableGameplayEffects)
+	{
+		AbilitySystemComponent->RemoveActiveGameplayEffect(ActiveDisable);
+	}
+	
 	//Re-add previous permanent weapon, if there was any.
 	if (IsValid(CurrentWeaponActorClass))
 	{
 		AArpgWeaponActor* OldWeaponActorRef = CurrentWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
-		AddCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+	
+		//AddCharacterAbilities(OldWeaponActorRef->GrantedAbilities);
+		AddCharacterAbilities(TemporarilyRemovedAbilities);
+	
+		//TODO: Remove Disable Tags...
+		
 		
 		int WeaponIndex = WeaponDatabase->GetWeaponIndex(OldWeaponActorRef);
 		MulticastSetWeaponMesh(WeaponIndex);
@@ -359,8 +441,8 @@ void AarpgCharacter::TemporaryWeaponExpired()
 		//Nullify
 		MulticastSetWeaponMesh(-1);
 	}
-
-
+	
+	
 	//This is where we remove that loose pointer. There shouldn't be a case where this is null.
 	delete CurrentTempWeaponComponent;
 }

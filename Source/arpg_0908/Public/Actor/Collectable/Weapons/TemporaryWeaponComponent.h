@@ -28,8 +28,6 @@ public:
 	void SetTotalUses(int InTotalUses);
 	void SetTotalPeriod(float InTotalPeriod);
 	void SetExpirationCondition(EExpirationCondition Cond);
-
-	FOnTempWeaponConditionMet ConditionMet;
 private:
 	
 

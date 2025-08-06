@@ -35,6 +35,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float,
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignaturee, const FArpgAbilityInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAbilityDisabledSignature, const FGameplayTag, Tag, const bool, Enabled);
 
 
 /**
@@ -68,6 +69,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
 	FAbilityInfoSignaturee AbilityInfoDelegate;
+	
+	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
+	FAbilityDisabledSignature AbilityDisabledDelegate;
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
@@ -80,7 +84,11 @@ protected:
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
 
 	void UpdateOwnedAbilities(UarpgAbilitySystemComponent* ArpgAbilitySystemComponent);
+
+	UFUNCTION()
+	void DisableReceived(const FGameplayTag CallbackTag, int32 NewCount);
 };
+
 
 template <typename T>
 T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag)
