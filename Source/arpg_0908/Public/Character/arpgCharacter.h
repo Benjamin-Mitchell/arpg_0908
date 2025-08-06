@@ -66,7 +66,7 @@ protected:
 	virtual void MulticastSetHeadMesh(int headIndex);
 	
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastSetWeaponMesh(int WeaponIndex);
+	virtual void MulticastSetWeaponMesh(int WeaponIndex, int BackWeaponIndex);
 
 	virtual void Onrep_Stunned() override;
 
@@ -87,7 +87,7 @@ private:
 	bool InitializedAlready = false;
 	virtual void InitAbilityActorInfo() override;
 
-	void SetWeaponMesh(int WeaponIndex);
+	void SetWeaponMesh(int WeaponIndex, int BackWeaponIndex);
 	void SetHeadMesh(int HeadIndex);
 
 	void HandlePlayerHighlight();

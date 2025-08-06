@@ -123,6 +123,9 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<USkeletalMeshComponent> StoredWeapon;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USceneComponent> GrabLocationComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")

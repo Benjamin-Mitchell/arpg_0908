@@ -30,7 +30,12 @@ AarpgCharacterBase::AarpgCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Weapon->SetRenderCustomDepth(true);	
+	Weapon->SetRenderCustomDepth(true);
+
+	StoredWeapon = CreateDefaultSubobject<USkeletalMeshComponent>("StoredWeapon");
+	StoredWeapon->SetupAttachment(GetMesh(), FName("WeaponStoreSocket"));
+	StoredWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	StoredWeapon->SetRenderCustomDepth(true);	
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -77,6 +82,7 @@ UAnimMontage* AarpgCharacterBase::GetHitReactMontage_Implementation()
 void AarpgCharacterBase::Die(const FVector& DeathImpulse)
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	StoredWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 	MulticastHandleDeath(DeathImpulse);
 }
 
@@ -188,6 +194,11 @@ void AarpgCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	Weapon->AddImpulse(DeathImpulse * 0.1f, NAME_None, true);
+
+	StoredWeapon->SetSimulatePhysics(true);
+	StoredWeapon->SetEnableGravity(true);
+	StoredWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	StoredWeapon->AddImpulse(DeathImpulse * 0.1f, NAME_None, true);
 
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetSimulatePhysics(true);
@@ -466,6 +477,8 @@ void AarpgCharacterBase::Dissolve()
 	{
 		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
 		Weapon->SetMaterial(0, DynamicMatInst);
+		StoredWeapon->SetMaterial(0, DynamicMatInst);
+		
 
 		StartWeaponDissolveTimeline(DynamicMatInst);
 	}

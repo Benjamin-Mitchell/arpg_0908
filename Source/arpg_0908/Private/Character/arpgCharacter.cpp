@@ -74,7 +74,7 @@ void AarpgCharacter::GrantEquippedAbilitiesOnSpawn()
 		const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(EquippedWeaponIndex);
 		AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
 		AddCharacterAbilities(WeaponActorRef->GrantedAbilities);
-		MulticastSetWeaponMesh(EquippedWeaponIndex);
+		MulticastSetWeaponMesh(EquippedWeaponIndex, -1);
 	}
 	
 	int EquippedHeadIndex = ArpgPlayerState->GetEquippedHeadIndex();
@@ -91,21 +91,6 @@ void AarpgCharacter::AddInputScroll(float InScroll)
 {
 	ReceiveScrollInput(InScroll);	
 }
-
-// void AarpgCharacter::BeginPlay()
-// {
-// 	Super::BeginPlay();
-//
-// 	AarpgPlayerState* ArpgPlayerState = GetPlayerState<AarpgPlayerState>();
-//
-// 	
-// 	if (ArpgPlayerState != nullptr)
-// 	{
-// 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Character Begin Play. Weapon Index: %d"), ArpgPlayerState->GetEquippedWeaponIndex()));
-// 		SetWeaponMesh(ArpgPlayerState->GetEquippedWeaponIndex());
-// 		SetHeadMesh(ArpgPlayerState->GetEquippedHeadIndex());
-// 	}
-// }
 
 int32 AarpgCharacter::GetPlayerLevel()
 {
@@ -168,6 +153,8 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
 	AArpgWeaponActor* NewWeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
 
+	int BackWeaponIndex = -1;
+
 	if (IsTemporary)
 	{
 		//TODO: Can this override another TempWeaponComponent pointer which is then leaked?
@@ -182,11 +169,15 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 		//Remove old head abilities, if any
 		AArpgWeaponActor* OldWeaponActorRef = CurrentWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
 
+
 		if (IsTemporary)
 		{
 			UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent);
 			AArpgWeaponActor* TempWeaponActorRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
 			TemporarilyRemovedAbilities.Empty();
+
+			BackWeaponIndex = WeaponDatabase->GetWeaponIndex(OldWeaponActorRef);
+			
 
 
 			//Here we are looping through the abilities from the old weapon, and comparing their input tags to the abilities added by the temporary weapon.
@@ -301,25 +292,43 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 		}
 	}
 	
+	MulticastSetWeaponMesh(WeaponIndex, BackWeaponIndex);
 	
 	AddCharacterAbilities(NewWeaponActorRef->GrantedAbilities);
 
-	MulticastSetWeaponMesh(WeaponIndex);
 	
 }
 
-void AarpgCharacter::SetWeaponMesh(int WeaponIndex)
+void AarpgCharacter::SetWeaponMesh(int WeaponIndex, int BackWeaponIndex)
 {
 	if (WeaponIndex < 0)
 	{
 		Weapon->SetSkeletalMesh(nullptr);
-		return;
+	}
+	else
+	{
+		const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
+		AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
+		
+		Weapon->SetSkeletalMesh(WeaponActorRef->WeaponMeshRef);
 	}
 	
-	const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(WeaponIndex);
-	AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
 	
-	Weapon->SetSkeletalMesh(WeaponActorRef->WeaponMeshRef);
+	if (BackWeaponIndex < 0)
+	{
+		StoredWeapon->SetSkeletalMesh(nullptr);
+	}
+	else
+	{
+		const FWeaponInfo WeaponData = WeaponDatabase->GetWeaponInfo(BackWeaponIndex);
+		AArpgWeaponActor* WeaponActorRef = WeaponData.WeaponReference->GetDefaultObject<AArpgWeaponActor>();
+		
+		StoredWeapon->SetSkeletalMesh(WeaponActorRef->WeaponMeshRef);
+	}
+
+	
+
+	
 
 	//We don't currently do custom attachments here since they are attached by default already.
 	//We may need to do work here in the future if we want to accomodate dual-wielding or two-handed weapons.
@@ -343,9 +352,9 @@ void AarpgCharacter::MulticastSetHeadMesh_Implementation(int HeadIndex)
 	SetHeadMesh(HeadIndex);
 }
 
-void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex)
+void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex, int BackWeaponIndex)
 {
-	SetWeaponMesh(WeaponIndex);
+	SetWeaponMesh(WeaponIndex, BackWeaponIndex);
 
 }
 
@@ -434,12 +443,12 @@ void AarpgCharacter::TemporaryWeaponExpired()
 		
 		
 		int WeaponIndex = WeaponDatabase->GetWeaponIndex(OldWeaponActorRef);
-		MulticastSetWeaponMesh(WeaponIndex);
+		MulticastSetWeaponMesh(WeaponIndex, -1);
 	}
 	else
 	{
 		//Nullify
-		MulticastSetWeaponMesh(-1);
+		MulticastSetWeaponMesh(-1, -1);
 	}
 	
 	
