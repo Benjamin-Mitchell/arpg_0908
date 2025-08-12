@@ -470,7 +470,7 @@ void UArpgAbilitySystemLibrary::CancelAbilitiesByTag(UAbilitySystemComponent* Ab
 	AbilitySystemComponent->CancelAbilities(&Tags, &WithoutTags);
 }
 
-AarpgAIControlledCharacter* UArpgAbilitySystemLibrary::SpawnAIControlledActorAndStartBlackboard(const UObject* WorldContextObject, TSubclassOf<AarpgAIControlledCharacter> CharacterToSpawn, FTransform SpawnTransform)
+AarpgAIControlledCharacter* UArpgAbilitySystemLibrary::SpawnAIControlledActor(const UObject* WorldContextObject, TSubclassOf<AarpgAIControlledCharacter> CharacterToSpawn, FTransform SpawnTransform, bool StartBlackboard, bool TriggerSpawnAbility)
 {
 	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
@@ -480,7 +480,12 @@ AarpgAIControlledCharacter* UArpgAbilitySystemLibrary::SpawnAIControlledActorAnd
 			SpawnTransform);
 
 		SpawnedCharacter->SpawnDefaultController();
-		SpawnedCharacter->StartBlackboard();
+
+		if (StartBlackboard)
+			SpawnedCharacter->StartBlackboard();
+
+		if (TriggerSpawnAbility)
+			SpawnedCharacter->GiveAndActivateSpawnAbility();
 
 		return SpawnedCharacter;
 	}

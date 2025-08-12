@@ -209,6 +209,13 @@ void AarpgAIControlledCharacter::StartBlackboard()
 	ArpgAIController->RunBehaviorTree(BehaviorTree);
 }
 
+void AarpgAIControlledCharacter::GiveAndActivateSpawnAbility()
+{
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(SpawnAbility, 1);
+
+	AbilitySystemComponent->GiveAbilityAndActivateOnce(AbilitySpec);
+}
+
 void AarpgAIControlledCharacter::SetBlackboardInAir(bool bInAir)
 {
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("InAir"), bInAir);

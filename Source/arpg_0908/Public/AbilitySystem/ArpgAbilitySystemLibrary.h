@@ -116,5 +116,5 @@ public:
 	static void CancelAbilitiesByTag(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTagContainer& Tags, const FGameplayTagContainer& WithoutTags);
 
 	UFUNCTION(BlueprintCallable, Category="ArpgAbilitySystemLibrary|GameplayMechanics")
-	static AarpgAIControlledCharacter* SpawnAIControlledActorAndStartBlackboard(const UObject* WorldContextObject, TSubclassOf<AarpgAIControlledCharacter> CharacterToSpawn, FTransform SpawnTransform);
+	static AarpgAIControlledCharacter* SpawnAIControlledActor(const UObject* WorldContextObject, TSubclassOf<AarpgAIControlledCharacter> CharacterToSpawn, FTransform SpawnTransform, bool StartBlackboard = false, bool TriggerSpawnAbility = false);
 };

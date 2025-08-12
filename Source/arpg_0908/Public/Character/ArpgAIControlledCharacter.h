@@ -70,6 +70,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartBlackboard();
 
+	UFUNCTION(BlueprintCallable)
+	void GiveAndActivateSpawnAbility();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
+	UAnimMontage* SpawnAnimation;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -115,4 +121,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> EnemyUtilityAbilities;
+
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TSubclassOf<UGameplayAbility> SpawnAbility;
 };

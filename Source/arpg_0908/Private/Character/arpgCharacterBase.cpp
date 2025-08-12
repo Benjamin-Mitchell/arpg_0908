@@ -31,11 +31,13 @@ AarpgCharacterBase::AarpgCharacterBase()
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Weapon->SetRenderCustomDepth(true);
+	Weapon->SetIsReplicated(true);
 
 	StoredWeapon = CreateDefaultSubobject<USkeletalMeshComponent>("StoredWeapon");
 	StoredWeapon->SetupAttachment(GetMesh(), FName("WeaponStoreSocket"));
 	StoredWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	StoredWeapon->SetRenderCustomDepth(true);	
+	Weapon->SetIsReplicated(true);
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -44,6 +46,7 @@ AarpgCharacterBase::AarpgCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetIsReplicated(true);
 
 	
 	
@@ -51,6 +54,7 @@ AarpgCharacterBase::AarpgCharacterBase()
 	BaseHeadMesh->SetupAttachment(GetMesh(), FName("HeadSocket"));
 	BaseHeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	BaseHeadMesh->SetRenderCustomDepth(true);
+	BaseHeadMesh->SetIsReplicated(true);
 
 	
 }
