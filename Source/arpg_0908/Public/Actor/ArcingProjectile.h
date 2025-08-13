@@ -33,6 +33,9 @@ public:
 	// Replicated initialization data
 	UPROPERTY(ReplicatedUsing=OnRep_InitializationData)
 	FArcingProjectileInitData InitData;
+
+	//Arcing Projectile Currently only supports Fire-On-Spawn.
+	//virtual void Fire() override;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -48,6 +51,8 @@ private:
 	float Distance = 0;
 	float TimeToTarget = 0;
 	FVector SourceLocation;
+
+	bool Initialized = false;
 	
 	void Initialize();
 };

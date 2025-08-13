@@ -35,6 +35,9 @@ public:
 
 	void SetCollisionTags(const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
 	const TArray<AActor*> &InAvoidActors);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Fire(); //Call this only if bFireImmediatelyOnSpawn is false.
 protected:
 	virtual void BeginPlay() override;
 	void OnHit();
@@ -55,8 +58,11 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 15.f;
-	
-	
+
+	//This is functionality to not immediately enable the ProjectileMovementComponent (or other movement) on spawn.
+	//"Fire" must be called at a later point. Mostly used for controlled-spawn sequences.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Properties")
+	bool bFireImmediatelyOnSpawn = true; 
 	
 	bool bHit = false;
 

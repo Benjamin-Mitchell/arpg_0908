@@ -39,10 +39,15 @@ void AArpgProjectile::SetCollisionTags(const FGameplayTagContainer& InWithTags, 
 		AvoidActors = InAvoidActors;
 }
 
+void AArpgProjectile::Fire()
+{
+}
+
 void AArpgProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	SetLifeSpan(LifeSpan);
+	if (LifeSpan > 0.0f)
+		SetLifeSpan(LifeSpan);
 	
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AArpgProjectile::OnSphereOverlap);
 	
@@ -142,8 +147,8 @@ bool AArpgProjectile::IsValidOverlap(AActor* OtherActor, bool& OutOtherActorHasA
 	if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 	{
 		OutOtherActorHasASC = true;
-		//If we don't have all the WithTags, fail overlap. (NOTE: if there are no With Tags, it will always pass overlap)
-		if (!TargetASC->HasAllMatchingGameplayTags(WithTags))
+		//If we don't have any of the WithTags, fail overlap. (NOTE: if there are no With Tags, it will always pass overlap)
+		if (!TargetASC->HasAnyMatchingGameplayTags(WithTags))
 			return false;
 
 		//If we have any of the PassThroughTags, we fail.

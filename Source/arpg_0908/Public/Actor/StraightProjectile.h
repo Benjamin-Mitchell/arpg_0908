@@ -18,4 +18,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	UFUNCTION(BlueprintCallable)
+	void SetHoming(USceneComponent* HomingTarget, bool IsHoming = true);
+	
+	virtual void Fire() override;
 };

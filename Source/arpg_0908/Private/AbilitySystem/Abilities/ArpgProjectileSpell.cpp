@@ -18,11 +18,11 @@ void UArpgProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);	
 }
 
-void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocation, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
+AArpgProjectile* UArpgProjectileSpell::SpawnProjectile(const FVector& ProjectileFacingLocation, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
 	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage, FGameplayTag MontageSocketLocationTag)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
-	if(!bIsServer) return;
+	if(!bIsServer) return nullptr;
 
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 	if(CombatInterface)
@@ -31,7 +31,7 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 			GetAvatarActorFromActorInfo(),
 			MontageSocketLocationTag);
 		
-		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+		FRotator Rotation = (ProjectileFacingLocation - SocketLocation).Rotation();
 		Rotation.Pitch = 0.f; //ensure the projectile moves parallel to the floor, at the height of the firing point.
 
 		FTransform SpawnTransform;
@@ -56,7 +56,10 @@ void UArpgProjectileSpell::FireProjectile(const FVector& ProjectileTargetLocatio
 		Projectile->SetCollisionTags(InWithTags, InPassThroughTags, InAvoidActors);
 
 		Projectile->FinishSpawning(SpawnTransform);
+
+		return Projectile;
 	}
+	return nullptr;
 }
 
 void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory")) FGameplayTag MontageSocketLocationTag, const FVector& ProjectileTargetLocation)
