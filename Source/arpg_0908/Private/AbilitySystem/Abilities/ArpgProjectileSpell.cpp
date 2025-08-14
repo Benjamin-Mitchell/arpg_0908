@@ -98,9 +98,6 @@ void UArpgProjectileSpell::FireArcingProjectile(UPARAM(meta=(GameplayTagFilter="
 		InitData.ProjectileSpeed = ProjectileSpeed;
 		
 		ArcingProjectile->InitData = InitData;
-		
-		//TODO: this should be in the actor blueprint, not here (it will only do anything on the server anyway)
-		ArcingProjectile->CollisionEnabled = ProjectilesShouldCollide;
 
 		//These only take effect on the server.
 		ArcingProjectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults(nullptr);

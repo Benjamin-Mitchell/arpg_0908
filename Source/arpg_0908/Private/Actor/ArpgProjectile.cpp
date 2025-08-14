@@ -52,19 +52,6 @@ void AArpgProjectile::BeginPlay()
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AArpgProjectile::OnSphereOverlap);
 	
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
-	
-	if (CollisionEnabled)
-	{
-		Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-		Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-		Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
-		Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-	}
-	else
-	{
-		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
 }
 
 void AArpgProjectile::OnHit()
@@ -76,6 +63,23 @@ void AArpgProjectile::OnHit()
 	}
 	if (ImpactSound) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), GetActorRotation());
 	if (ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), GetActorRotation());
+}
+
+void AArpgProjectile::RegisterOnHit(bool OtherActorHasASC, AActor* OtherActor)
+{
+	if(!bHit) OnHit();
+
+	if(HasAuthority())
+	{
+		//We assume all valid targets have an ASC, otherwise its blocking geometry.
+		if (OtherActorHasASC)
+			CustomOnDestroyLogic(OtherActor);
+		Destroy();
+	}
+	else
+	{
+		bHit = true;
+	}
 }
 
 void AArpgProjectile::Destroyed()
@@ -127,19 +131,7 @@ void AArpgProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 	bool OtherActorHasASC = true;
 	if (!IsValidOverlap(OtherActor, OtherActorHasASC)) return;
 
-	if(!bHit) OnHit();
-
-	if(HasAuthority())
-	{
-		//We assume all valid targets have an ASC, otherwise its blocking geometry.
-		if (OtherActorHasASC)
-			CustomOnDestroyLogic(OtherActor);
-		Destroy();
-	}
-	else
-	{
-		bHit = true;
-	}
+	RegisterOnHit(OtherActorHasASC, OtherActor);
 }
 
 bool AArpgProjectile::IsValidOverlap(AActor* OtherActor, bool& OutOtherActorHasASC)

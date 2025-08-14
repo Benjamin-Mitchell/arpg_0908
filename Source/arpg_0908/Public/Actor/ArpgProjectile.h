@@ -19,14 +19,10 @@ class ARPG_0908_API AArpgProjectile : public AActor
 public:	
 	AArpgProjectile();
 
-
-
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FDamageEffectParams DamageEffectParams;
 
 	float ProjectileSpeed = 550.f;
-
-	bool CollisionEnabled = true;
 
 	UFUNCTION(BlueprintCallable, Category = "HookProjectile")
 	FTransform GetSpawnTransform() {return SpawnTransform;};
@@ -41,6 +37,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void OnHit();
+	void RegisterOnHit(bool OtherActorHasASC, AActor* OtherActor);
 	virtual void Destroyed() override;
 
 	UFUNCTION(BlueprintImplementableEvent)

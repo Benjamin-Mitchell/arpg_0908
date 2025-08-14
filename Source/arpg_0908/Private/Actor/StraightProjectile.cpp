@@ -8,7 +8,7 @@
 
 AStraightProjectile::AStraightProjectile()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovement->InitialSpeed = ProjectileSpeed;
@@ -20,6 +20,32 @@ AStraightProjectile::AStraightProjectile()
 
 	if (!bFireImmediatelyOnSpawn)
 		ProjectileMovement->Deactivate();
+}
+
+void AStraightProjectile::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (ProjectileMovement->bIsHomingProjectile && ProjectileMovement->HomingTargetComponent.IsValid())
+	{
+		const FVector ToTarget = ProjectileMovement->HomingTargetComponent->GetComponentLocation() - GetActorLocation();
+		const float Distance = ToTarget.Size();
+
+		// Clamp and invert the scale so acceleration is higher when close
+		const float Alpha = 1.0f - FMath::Clamp((Distance - HomingLerpMinDistance) / (HomingLerpMaxDistance - HomingLerpMinDistance), 0.f, 1.f);
+
+		ProjectileMovement->HomingAccelerationMagnitude = FMath::Lerp(MinHomingAcceleration, MaxHomingAcceleration, Alpha);
+		
+		if (bDestroyOnReachHomingTargetExact)
+		{
+			float Dist = (ProjectileMovement->HomingTargetComponent->GetComponentLocation() - GetActorLocation()).Length();
+			if (Dist < DistanceFromTargetToDestroy)
+			{
+				RegisterOnHit(true, ProjectileMovement->HomingTargetComponent->GetAttachmentRootActor());
+			}
+		}	
+	}
+	
 }
 
 void AStraightProjectile::SetHoming(USceneComponent* HomingTarget, bool IsHoming)
