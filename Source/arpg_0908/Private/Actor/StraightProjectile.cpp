@@ -28,14 +28,6 @@ void AStraightProjectile::Tick(float DeltaSeconds)
 
 	if (ProjectileMovement->bIsHomingProjectile && ProjectileMovement->HomingTargetComponent.IsValid())
 	{
-		const FVector ToTarget = ProjectileMovement->HomingTargetComponent->GetComponentLocation() - GetActorLocation();
-		const float Distance = ToTarget.Size();
-
-		// Clamp and invert the scale so acceleration is higher when close
-		const float Alpha = 1.0f - FMath::Clamp((Distance - HomingLerpMinDistance) / (HomingLerpMaxDistance - HomingLerpMinDistance), 0.f, 1.f);
-
-		ProjectileMovement->HomingAccelerationMagnitude = FMath::Lerp(MinHomingAcceleration, MaxHomingAcceleration, Alpha);
-		
 		if (bDestroyOnReachHomingTargetExact)
 		{
 			float Dist = (ProjectileMovement->HomingTargetComponent->GetComponentLocation() - GetActorLocation()).Length();

@@ -29,7 +29,7 @@ protected:
 	bool ProjectilesShouldCollide = true;
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile", meta = (AutoCreateRefTerm = "InWithTags,InPassThroughTags,InAvoidActors"))
-	AArpgProjectile* SpawnProjectile(const FVector& ProjectileFacingLocation, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
+	AArpgProjectile* SpawnProjectile(const FVector& ProjectileFacingLocation, bool ZeroPitch, const FGameplayTagContainer& InWithTags, const FGameplayTagContainer& InPassThroughTags,
 	const TArray<AActor*> &InAvoidActors, const bool InProjectileDealsDamage,
 	UPARAM(meta=(GameplayTagFilter="GameplayEventTagsCategory"))  FGameplayTag MontageSocketLocationTag);
 
