@@ -172,7 +172,6 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 
 		if (IsTemporary)
 		{
-			UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent);
 			AArpgWeaponActor* TempWeaponActorRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
 			TemporarilyRemovedAbilities.Empty();
 
@@ -186,7 +185,7 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 			for (TSubclassOf<UGameplayAbility> CurrentAbility : OldWeaponActorRef->GrantedAbilities)
 			{
 				TArray<FGameplayAbilitySpec*> CurrentMatchingAbilitySpecs;
-				ArpgASC->GetActivatableGameplayAbilitySpecsByAllMatchingTags(CurrentAbility->GetDefaultObject<UGameplayAbility>()->AbilityTags, CurrentMatchingAbilitySpecs);
+				AbilitySystemComponent->GetActivatableGameplayAbilitySpecsByAllMatchingTags(CurrentAbility->GetDefaultObject<UGameplayAbility>()->AbilityTags, CurrentMatchingAbilitySpecs);
 
 				//This is really only designed to support cases where there is a single ability with matching tag.
 				FGameplayTag CurrentInputTag;
@@ -360,7 +359,7 @@ void AarpgCharacter::MulticastSetWeaponMesh_Implementation(int WeaponIndex, int 
 
 void AarpgCharacter::Onrep_Stunned()
 {
-	if (UarpgAbilitySystemComponent* ArpgASC = Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent))
+	if (IsValid(AbilitySystemComponent))
 	{
 		const FArpgGameplayTags& GameplayTags = FArpgGameplayTags::Get();
 		
@@ -372,12 +371,12 @@ void AarpgCharacter::Onrep_Stunned()
 
 		if (bIsStunned)
 		{
-			ArpgASC->AddLooseGameplayTags(BlockedTags);
+			AbilitySystemComponent->AddLooseGameplayTags(BlockedTags);
 			StunNiagaraComponent->Activate();
 		}
 		else
 		{
-			ArpgASC->RemoveLooseGameplayTags(BlockedTags);
+			AbilitySystemComponent->RemoveLooseGameplayTags(BlockedTags);
 			StunNiagaraComponent->Deactivate();
 		}
 	}
@@ -463,9 +462,8 @@ void AarpgCharacter::InitAbilityActorInfo()
 
 	arpgPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(arpgPlayerState, this);
 
-	Cast<UarpgAbilitySystemComponent>(arpgPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
-	
-	AbilitySystemComponent = arpgPlayerState->GetAbilitySystemComponent();
+	AbilitySystemComponent = Cast<UarpgAbilitySystemComponent>(arpgPlayerState->GetAbilitySystemComponent()); 
+	AbilitySystemComponent->AbilityActorInfoSet();
 
 	//TODO: Why don't we just store a UarpgAbilitySystemComponent instead of a standard AbilitySystemComponent?
 	UarpgAbilitySystemComponent* ArpgASC = CastChecked<UarpgAbilitySystemComponent>(AbilitySystemComponent);

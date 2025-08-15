@@ -5,11 +5,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "Actor/ArpgProjectile.h"
+#include "Actor/Projectiles/ArpgProjectile.h"
 #include "Interaction/CombatInterface.h"
-#include "ArpgGameplayTags.h"
-#include "Projects.h"
-#include "Actor/ArcingProjectile.h"
+#include "Actor/Projectiles/ArcingProjectile.h"
 
 void UArpgProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,

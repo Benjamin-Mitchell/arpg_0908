@@ -37,9 +37,6 @@ class ARPG_0908_API AArpgGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
-	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
-
 	UPROPERTY(EditAnywhere, Category="Character Class Defaults")
 	TSubclassOf<AarpgCharacter> CharacterClassToSpawn;
 	//Currently storing this on the character to keep it simple for repeated access.

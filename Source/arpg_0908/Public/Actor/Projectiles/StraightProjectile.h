@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/ArpgProjectile.h"
+#include "Actor/Projectiles/ArpgProjectile.h"
 #include "StraightProjectile.generated.h"
 
 /**
@@ -16,6 +16,7 @@ class ARPG_0908_API AStraightProjectile : public AArpgProjectile
 public:
 	AStraightProjectile();
 
+	//Adding an important comment
 	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Homing")

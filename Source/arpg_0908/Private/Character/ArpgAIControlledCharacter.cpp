@@ -56,8 +56,6 @@ void AarpgAIControlledCharacter::PossessedBy(AController* NewController)
 	ArpgAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
-
-	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
 void AarpgAIControlledCharacter::HighlightActor()
@@ -110,15 +108,7 @@ void AarpgAIControlledCharacter::BeginPlay()
 
 	if(HasAuthority())
 	{
-		//To be honest, probably remove this whole character class system nonsense later, its just used for the course mobs.
-		if (CharacterClass != ECharacterClass::NONE)
-		{
-			UArpgAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
-		}
-		else
-		{
-			UArpgAbilitySystemLibrary::GiveEnemyAbilities(this, AbilitySystemComponent, StartupAbilities,  EnemyUtilityAbilities);
-		}
+		UArpgAbilitySystemLibrary::GiveEnemyAbilities(this, AbilitySystemComponent, StartupAbilities,  EnemyUtilityAbilities);
 	}
 
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -169,7 +159,7 @@ void AarpgAIControlledCharacter::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
-	Cast<UarpgAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+	AbilitySystemComponent->AbilityActorInfoSet();
 	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgAIControlledCharacter::StunTagChanged);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FArpgGameplayTags::Get().Immunity_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AarpgAIControlledCharacter::StunImmunityTagChanged);
 	
@@ -183,17 +173,8 @@ void AarpgAIControlledCharacter::InitAbilityActorInfo()
 
 void AarpgAIControlledCharacter::InitializeDefaultAttributes() const
 {
-	//To be honest, probably remove this whole character class system nonsense later, its just used for the course mobs.
-	if (CharacterClass != ECharacterClass::NONE)
-	{
-		UArpgAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
-	}
-	else
-	{
-		//Just initialize them with a specific list per enemy, this makes more sense anyway.
-		Super::InitializeDefaultAttributes();
-	}
-	
+	//Just initialize them with a specific list per enemy, this makes more sense anyway.
+	Super::InitializeDefaultAttributes();
 }
 
 void AarpgAIControlledCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)

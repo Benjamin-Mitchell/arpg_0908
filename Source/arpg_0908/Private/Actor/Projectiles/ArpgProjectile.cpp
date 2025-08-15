@@ -1,7 +1,7 @@
 // Copyright Tinzie Games
 
 
-#include "Actor/ArpgProjectile.h"
+#include "Actor/Projectiles/ArpgProjectile.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"

@@ -1,7 +1,7 @@
 // Copyright Tinzie Games
 
 
-#include "Actor/StraightProjectile.h"
+#include "Actor/Projectiles/StraightProjectile.h"
 
 #include "Projects.h"
 #include "GameFramework/ProjectileMovementComponent.h"

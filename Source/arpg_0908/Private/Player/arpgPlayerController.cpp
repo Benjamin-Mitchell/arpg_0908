@@ -259,7 +259,7 @@ AActor* AarpgPlayerController::FindNearestTarget(const TArray<AActor*> &ActorsTo
 	if (FoundActors.Num() > 0)
 	{
 		AActor* ClosestActor = nullptr;
-		float ClosestDistance;
+		float ClosestDistance = TNumericLimits<float>::Max();;
 		for(AActor* NearbyActor : FoundActors)
 		{
 			//We can currently only target enemies

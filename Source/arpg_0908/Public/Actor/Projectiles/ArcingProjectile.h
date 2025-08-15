@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actor/ArpgProjectile.h"
+#include "Actor/Projectiles/ArpgProjectile.h"
 #include "ArcingProjectile.generated.h"
 
 USTRUCT(BlueprintType)

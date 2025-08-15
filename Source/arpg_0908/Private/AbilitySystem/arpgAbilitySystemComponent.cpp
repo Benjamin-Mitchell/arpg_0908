@@ -21,7 +21,7 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		
 		if(const UarpgGameplayAbility* arpgAbility = Cast<UarpgGameplayAbility>(AbilitySpec.Ability))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(arpgAbility->StartupInputTag);
+			AbilitySpec.GetDynamicSpecSourceTags().AddTag(arpgAbility->StartupInputTag);
 		}
 
 		FGameplayAbilitySpecHandle Handle = AbilitySpec.Handle;
@@ -31,7 +31,7 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		else
 			GiveAbility(AbilitySpec);
 
-		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
+		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->GetAssetTags().First();
 		
 		OwnedAbilities.Add(FirstTag, FOwnedAbilityHandle(AbilitySpec, Handle));
 		
@@ -68,7 +68,7 @@ FGameplayTag UarpgAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayA
 {
 	if (AbilitySpec.Ability)
 	{
-		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->GetAssetTags())
 		{
 			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities"))))
 			{
@@ -116,7 +116,7 @@ void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
 		bool StillOwned = false;
 		for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
 		{
-			if (Spec.Ability.Get()->AbilityTags.First() == Pair.Key)
+			if (Spec.Ability.Get()->GetAssetTags().First() == Pair.Key)
 			{
 				StillOwned = true;
 			}
@@ -140,7 +140,7 @@ void UarpgAbilitySystemComponent::OnRep_ActivateAbilities()
 		{
 			FGameplayAbilitySpecHandle Handle = Spec.Handle;
 			
-			OwnedAbilities.Add(Spec.Ability.Get()->AbilityTags.First(), FOwnedAbilityHandle(Spec, Handle));
+			OwnedAbilities.Add(Spec.Ability.Get()->GetAssetTags().First(), FOwnedAbilityHandle(Spec, Handle));
 		}
 
 		AbilitiesChanged.Broadcast(this);
@@ -157,11 +157,11 @@ void UarpgAbilitySystemComponent::RemoveCharacterAbilities(const TArray<TSubclas
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 
-		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
+		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->GetAssetTags().First();
 
 		for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
 		{
-			if (Spec.Ability.Get()->AbilityTags.First() == FirstTag)
+			if (Spec.Ability.Get()->GetAssetTags().First() == FirstTag)
 			{
 				DeletedAbilitySpecs.Add(Spec);
 			}
@@ -173,7 +173,7 @@ void UarpgAbilitySystemComponent::RemoveCharacterAbilities(const TArray<TSubclas
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 
-		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->AbilityTags.First();
+		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->GetAssetTags().First();
 		FGameplayAbilitySpecHandle Handle = OwnedAbilities.FindChecked(FirstTag).Handle;
 
 		ClearAbility(Handle);
@@ -197,7 +197,7 @@ void UarpgAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
 
 	for(FGameplayAbilitySpec& AbilitySpec: GetActivatableAbilities())
 	{
-		if(AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag) && !HasMatchingGameplayTag(FArpgGameplayTags::Get().InputToDisableTagMap[InputTag]))
+		if(AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag) && !HasMatchingGameplayTag(FArpgGameplayTags::Get().InputToDisableTagMap[InputTag]))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
 			if(!AbilitySpec.IsActive())

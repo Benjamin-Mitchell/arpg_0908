@@ -125,6 +125,16 @@ AActor* AarpgCharacterBase::GetPassiveAbilityTarget_Implementation() const
 	return PassiveAbilityTarget;
 }
 
+FGameplayTagContainer AarpgCharacterBase::GetGenericFriendlyTags_Implementation()
+{
+	return FriendlyObjectTypeTags;
+}
+
+FGameplayTagContainer AarpgCharacterBase::GetGenericOpponentTags_Implementation()
+{
+	return OpponentObjectTypeTags;
+}
+
 void AarpgCharacterBase::ServerSetClientBeginSnapToTargetSocket(AarpgCharacterBase* Target, const FName SocketName, const float SnappingDuration)
 {
 	MulticastBeginSnapToTargetSocket(Target, SocketName, SnappingDuration);

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "AbilitySystem/arpgAbilitySystemComponent.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "arpgCharacterBase.generated.h"
@@ -40,6 +41,8 @@ public:
 	virtual bool IsInPlay_Implementation() const override;
 	virtual void SetPassiveAbilityTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetPassiveAbilityTarget_Implementation() const override;
+	virtual FGameplayTagContainer GetGenericFriendlyTags_Implementation() override;
+	virtual FGameplayTagContainer GetGenericOpponentTags_Implementation() override;
 
 	FOnASCRegistered OnASCRegistered;
 	FOnDeathSignature OnDeath;
@@ -163,6 +166,12 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "InitTags")
 	FGameplayTagContainer PermanentTags;
+
+	UPROPERTY(EditAnywhere, Category = "InitTags")
+	FGameplayTagContainer FriendlyObjectTypeTags;
+
+	UPROPERTY(EditAnywhere, Category = "InitTags")
+	FGameplayTagContainer OpponentObjectTypeTags;
 	
 	bool bDead = false;
 	
@@ -170,7 +179,7 @@ protected:
 
 	//TODO: Why don't we just store a UarpgAbilitySystemComponent instead of a standard AbilitySystemComponent?
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UarpgAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;

@@ -90,4 +90,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	AActor* GetPassiveAbilityTarget() const;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FGameplayTagContainer GetGenericFriendlyTags();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FGameplayTagContainer  GetGenericOpponentTags();
 };

@@ -1,7 +1,7 @@
 // Copyright Tinzie Games
 
 
-#include "Actor/ArcingProjectile.h"
+#include "Actor/Projectiles/ArcingProjectile.h"
 
 #include "Net/UnrealNetwork.h"
 
