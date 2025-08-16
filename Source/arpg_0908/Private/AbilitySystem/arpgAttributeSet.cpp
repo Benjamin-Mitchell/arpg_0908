@@ -254,17 +254,34 @@ void UarpgAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 void UarpgAttributeSet::ShowFloatingText(const FEffectProperties& EffectProps, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
-	if(EffectProps.SourceCharacter != EffectProps.TargetCharacter)
+	bool ValidForText = true;
+
+	//First we check, if they're both valid _and_ both the same, not valid.
+	if(IsValid(EffectProps.SourceCharacter) && IsValid(EffectProps.TargetCharacter))
 	{
-		if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.SourceCharacter->Controller))
+		if(EffectProps.SourceCharacter == EffectProps.TargetCharacter)
+			ValidForText = false;
+	}
+	
+	if(ValidForText)
+	{
+		//Then we check each of the character's validity.
+		//Characters can be invalidated (deleted) after firing an ability that does damage (e.g. a projectile or AoE that remains after death)
+		if (IsValid(EffectProps.SourceCharacter))
 		{
-			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
-			return;
+			if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.SourceCharacter->Controller))
+			{
+				PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
+				return;
+			}
 		}
-		
-		if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.TargetCharacter->Controller))
+
+		if (IsValid(EffectProps.TargetCharacter))
 		{
-			PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
+			if(AarpgPlayerController* PlayerController = Cast<AarpgPlayerController>(EffectProps.TargetCharacter->Controller))
+			{
+				PlayerController->ShowDamageNumber(Damage, EffectProps.TargetCharacter, bBlockedHit, bCriticalHit);
+			}
 		}
 				
 	}

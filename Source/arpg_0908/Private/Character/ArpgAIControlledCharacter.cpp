@@ -56,6 +56,13 @@ void AarpgAIControlledCharacter::PossessedBy(AController* NewController)
 	ArpgAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+
+	if (TempDurationLifeSpan > 0.0f)
+	{
+		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("TempDurationOver"), false);
+
+		GetWorld()->GetTimerManager().SetTimer(TempDurationTimerHandle, this, &AarpgAIControlledCharacter::TriggerTempDurationOver, TempDurationLifeSpan, false);
+	}
 }
 
 void AarpgAIControlledCharacter::HighlightActor()
@@ -80,7 +87,7 @@ int32 AarpgAIControlledCharacter::GetPlayerLevel()
 
 void AarpgAIControlledCharacter::Die(const FVector& DeathImpulse)
 {
-	SetLifeSpan(LifeSpan);
+	SetLifeSpan(PostDeathLifeSpan);
 
 	if(ArpgAIController)
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
@@ -192,9 +199,18 @@ void AarpgAIControlledCharacter::StartBlackboard()
 
 void AarpgAIControlledCharacter::GiveAndActivateSpawnAbility()
 {
-	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(SpawnAbility, 1);
+	FGameplayAbilitySpec SpawnAbilitySpec = FGameplayAbilitySpec(SpawnAbility, 1);
 
-	AbilitySystemComponent->GiveAbilityAndActivateOnce(AbilitySpec);
+	AbilitySystemComponent->GiveAbilityAndActivateOnce(SpawnAbilitySpec);
+}
+
+void AarpgAIControlledCharacter::GiveDespawnAbility()
+{
+	if (IsValid(DeSpawnAbility))
+	{
+		FGameplayAbilitySpec DeSpawnAbilitySpec = FGameplayAbilitySpec(DeSpawnAbility, 1);
+		AbilitySystemComponent->GiveAbility((DeSpawnAbilitySpec));
+	}	
 }
 
 void AarpgAIControlledCharacter::SetBlackboardInAir(bool bInAir)
@@ -216,4 +232,9 @@ void AarpgAIControlledCharacter::SetBlackboardCustomObject(FName KeyName, UObjec
 	{
 		ArpgAIController->GetBlackboardComponent()->SetValueAsObject(KeyName, Obj);
 	}
+}
+
+void AarpgAIControlledCharacter::TriggerTempDurationOver()
+{
+	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("TempDurationOver"), true);
 }

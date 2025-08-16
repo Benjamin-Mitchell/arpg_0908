@@ -428,6 +428,8 @@ AarpgAIControlledCharacter* UArpgAbilitySystemLibrary::SpawnAIControlledActor(co
 
 		if (TriggerSpawnAbility)
 			SpawnedCharacter->GiveAndActivateSpawnAbility();
+		SpawnedCharacter->GiveDespawnAbility();
+
 
 		return SpawnedCharacter;
 	}

@@ -57,11 +57,7 @@ public:
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
-	bool bHitReacting = false;	
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
-	float LifeSpan = 5.f;
-
+	bool bHitReacting = false;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<AActor> CombatTarget;
@@ -72,11 +68,24 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GiveAndActivateSpawnAbility();
 
+	UFUNCTION(BlueprintCallable)
+	void GiveDespawnAbility();
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	UAnimMontage* SpawnAnimation;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
+	UAnimMontage* DeSpawnAnimation;
+	
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	float PostDeathLifeSpan = 5.f;
+
+	//A negative Temp Duration implies no lifespan 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float TempDurationLifeSpan = -1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int BaseHighlightVal = 0;
@@ -120,4 +129,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TSubclassOf<UGameplayAbility> SpawnAbility;
+
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TSubclassOf<UGameplayAbility> DeSpawnAbility;
+
+private:
+	FTimerHandle TempDurationTimerHandle;
+
+	void TriggerTempDurationOver();
 };
