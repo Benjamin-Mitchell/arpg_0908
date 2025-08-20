@@ -18,6 +18,9 @@ class AArpgAIController;
 //Must be defined multicast to allow blueprint assignable
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTargettedSignature, bool, NewValue);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTempDurationBeganSignature, float, Duration);
+
+
 /**
  * 
  */
@@ -76,6 +79,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Abilities")
 	UAnimMontage* DeSpawnAnimation;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnTempDurationBeganSignature OnTempDurationBegan;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -85,7 +91,7 @@ protected:
 
 	//A negative Temp Duration implies no lifespan 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	float TempDurationLifeSpan = -1.f;
+	float InitialTempDurationLifeSpan = -1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int BaseHighlightVal = 0;
@@ -105,6 +111,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent> DurationBar;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> TargettedIcon;

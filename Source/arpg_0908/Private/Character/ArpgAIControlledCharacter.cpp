@@ -36,6 +36,9 @@ AarpgAIControlledCharacter::AarpgAIControlledCharacter()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+
+	DurationBar = CreateDefaultSubobject<UWidgetComponent>("DurationBar");
+	DurationBar->SetupAttachment(GetRootComponent());
 	
 	TargettedIcon = CreateDefaultSubobject<UWidgetComponent>("TargettedIcon");
     TargettedIcon ->SetupAttachment(GetMesh(), FName("UpperChestSocket"));
@@ -57,11 +60,12 @@ void AarpgAIControlledCharacter::PossessedBy(AController* NewController)
 	
 	ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 
-	if (TempDurationLifeSpan > 0.0f)
+	if (InitialTempDurationLifeSpan > 0.0f)
 	{
 		ArpgAIController->GetBlackboardComponent()->SetValueAsBool(FName("TempDurationOver"), false);
 
-		GetWorld()->GetTimerManager().SetTimer(TempDurationTimerHandle, this, &AarpgAIControlledCharacter::TriggerTempDurationOver, TempDurationLifeSpan, false);
+		//TODO: handle being able to 'reset' the lifespan or a temporary character, to keep it alive for a while (Set function for replicated variable?)
+		GetWorld()->GetTimerManager().SetTimer(TempDurationTimerHandle, this, &AarpgAIControlledCharacter::TriggerTempDurationOver, InitialTempDurationLifeSpan, false);		
 	}
 }
 
@@ -126,6 +130,18 @@ void AarpgAIControlledCharacter::BeginPlay()
 	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(TargettedIcon->GetUserWidgetObject()))
 	{
 		ArpgUserWidget->SetWidgetController(this);
+	}
+	
+	if(UarpgUserWidget* ArpgUserWidget = Cast<UarpgUserWidget>(DurationBar->GetUserWidgetObject()))
+	{
+		ArpgUserWidget->SetWidgetController(this);
+	}
+
+	if (InitialTempDurationLifeSpan > 0.0f)
+	{
+		//Let the duration bar know temp duration has begun.
+		//Note: Actual timer is handled in PossessedBy, by the server.
+		OnTempDurationBegan.Broadcast(InitialTempDurationLifeSpan);
 	}
 
 	if(const UarpgAttributeSet* ArpgAS = CastChecked<UarpgAttributeSet>(AttributeSet))
