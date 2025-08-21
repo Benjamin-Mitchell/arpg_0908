@@ -1,4 +1,4 @@
-float2 offsetSize = TexCoordSize * FilterSize;
+
 
 float3 inColour = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_PostProcessInput0), PPI_PostProcessInput0, false).rgb;
 
@@ -7,7 +7,8 @@ float2 offsets[8] =
   {-1,  1}, //top left  
   {1,   1}, //top right
   {-1, -1}, //bottom left  
-  {-1, -1}, //bottom right
+  {1,  -1}, //bottom right
+  
   {0,   1}, //right  
   {0,  -1}, //left
   {1,   0}, //top
@@ -27,54 +28,53 @@ float4 outlineColours[4] =
 
 float maskBorder = false;
 
-int highestMask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[0]), PPI_CustomStencil), PPI_CustomStencil, false).r;
-int totalMask = highestMask;
-int numValidMasks = highestMask  > 0 ? 1 : 0;
+int totalMask = 0;
+int numValidMasks = 0;
 
 //float currPixelCustomDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_CustomDepth), PPI_CustomDepth, false).r;
 float currPixelDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_SceneDepth), PPI_SceneDepth, false).r;
+float linearDepth = ConvertFromDeviceZ(currPixelDepth);
+
+float scaledFilterSize = max((FilterSize * linearDepth), 2.0);
+float2 offsetSize = TexCoordSize * scaledFilterSize;
+
 int currPixelMask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV, PPI_CustomStencil), PPI_CustomStencil, false).r;
 
-float totalDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[0]), PPI_SceneDepth), PPI_SceneDepth, false).r;
 
 //we should outline if we detect change in mask OR change in depth
-float lowestDepth = totalDepth;
-float highestDepth = totalDepth; 
-for(int i = 1; i < 8; i++)
+float lowestDepth = 10000;
+float highestDepth = 0;
+for(int i = 0; i < 8; i++)
 {
     int mask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_CustomStencil), PPI_CustomStencil, false).r;
     totalMask += mask;
 
+    
     if(mask > 0)
+    {
         numValidMasks++;
+        float depth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_SceneDepth), PPI_SceneDepth, false).r;
+    
+        lowestDepth = min(lowestDepth, depth);
+        highestDepth = max(highestDepth, depth);
 
-    if(mask != highestMask)
-        maskBorder = true;
-
-    float depth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_SceneDepth), PPI_SceneDepth, false).r;
-    totalDepth += depth;
-
-    lowestDepth = min(lowestDepth, depth);
-    highestDepth = max(highestDepth, depth);
+        if(mask != currPixelMask)
+            maskBorder = true;
+    }
 }
 
-if(!maskBorder && numValidMasks > 0 && abs(lowestDepth - highestDepth) > 15.0)
-{
-    maskBorder = true;
-}
+float displayOutline = 0.0;
 
-//if we are closer to the higherDepth (so this is outside the model), don't mask
-//PS: using only this makes for a really cool effect.
-if(abs(currPixelDepth - lowestDepth) > abs(currPixelDepth - highestDepth))
-{
-    maskBorder = false;
-}
+// float sameMask = totalMask > 0 && currPixelMask > 0;
+// float depthVariation = abs(highestDepth - lowestDepth) > 15.0;
+// float closerToBack = abs(currPixelDepth - lowestDepth) > abs(currPixelDepth - highestDepth);
 
+maskBorder = maskBorder;// || (sameMask && depthVariation && closerToBack);
 
-//only border on inside of masked objects
-if(currPixelMask == 0)
+if(     totalMask > 0           //must have some nearby masks
+    &&  maskBorder)     //must be a different mask to ours OR depth difference is sufficient
 {
-    maskBorder = false;
+    displayOutline = 1.0;
 }
 
 
@@ -85,7 +85,7 @@ float closestWeight = 1.0;
 
 for(int i = 0; i < 4; i++)
 {
-    float diff = abs(currPixelMask - outlineColours[i].x);
+    float diff = abs(averageMask - outlineColours[i].x);
 
     if(diff < closestWeight)
     {
@@ -95,6 +95,6 @@ for(int i = 0; i < 4; i++)
 }
 outlineColour = outlineColours[closestColour].yzw;
 
-float3 outColour = lerp(inColour, outlineColour, maskBorder);
+float3 outColour = lerp(inColour, outlineColour, displayOutline);
 
 return outColour;
