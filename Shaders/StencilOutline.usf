@@ -19,10 +19,10 @@ float2 offsets[8] =
 //TODO: can we make this editable from the material graph? it doesn't support arrays...
 float4 outlineColours[4] = 
 {
-    {250.0, 0.6, 0.0, 0.0},
-    {251.0, 0.17, 0.52, 1.0},
-    {252.0, 0.28, 0.0, 0.098},
-    {253.0, 0.07, 0.28, 0.0},
+    {250.0, 0.6, 0.0, 0.0},                     //Red
+    {251.0, 0.17, 0.52, 1.0},                   //Tealy Blue
+    {252.0, 0.28, 0.0, 0.098},                  //purple
+    {253.0, 0.07, 0.28, 0.0},                   //green
 };
 
 
@@ -31,7 +31,6 @@ float maskBorder = false;
 int totalMask = 0;
 int numValidMasks = 0;
 
-//float currPixelCustomDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_CustomDepth), PPI_CustomDepth, false).r;
 float currPixelDepth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV,PPI_SceneDepth), PPI_SceneDepth, false).r;
 float linearDepth = ConvertFromDeviceZ(currPixelDepth);
 
@@ -46,20 +45,23 @@ float lowestDepth = 10000;
 float highestDepth = 0;
 for(int i = 0; i < 8; i++)
 {
-    int mask = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_CustomStencil), PPI_CustomStencil, false).r;
+    float2 UVsToSample = UV + (offsetSize * offsets[i]);
+    int mask = SceneTextureLookup(ViewportUVToSceneTextureUV(UVsToSample, PPI_CustomStencil), PPI_CustomStencil, false).r;
     totalMask += mask;
 
     
     if(mask > 0)
     {
         numValidMasks++;
-        float depth = SceneTextureLookup(ViewportUVToSceneTextureUV(UV + (offsetSize * offsets[i]), PPI_SceneDepth), PPI_SceneDepth, false).r;
+        float depth = SceneTextureLookup(ViewportUVToSceneTextureUV(UVsToSample, PPI_SceneDepth), PPI_SceneDepth, false).r;
     
         lowestDepth = min(lowestDepth, depth);
         highestDepth = max(highestDepth, depth);
 
         if(mask != currPixelMask)
+        {
             maskBorder = true;
+        }
     }
 }
 
@@ -69,12 +71,24 @@ float displayOutline = 0.0;
 // float depthVariation = abs(highestDepth - lowestDepth) > 15.0;
 // float closerToBack = abs(currPixelDepth - lowestDepth) > abs(currPixelDepth - highestDepth);
 
+
+
+
+
 maskBorder = maskBorder;// || (sameMask && depthVariation && closerToBack);
 
 if(     totalMask > 0           //must have some nearby masks
     &&  maskBorder)     //must be a different mask to ours OR depth difference is sufficient
 {
     displayOutline = 1.0;
+
+    //Attempt to use a fresnel to get a gradient-based outline.
+    //Result is ugly because of the UVs we sample at, they aren't smoothly along the edge of the surface.
+    //float3 N = normalize(SceneTextureLookup(ViewportUVToSceneTextureUV(maskUVs, PPI_WorldNormal), PPI_WorldNormal, false).rgb);       // pixel normal
+    // float3 V = normalize(CameraVector);      // direction from pixel to camera
+    // float fresnel = pow(1.0 - saturate(dot(N, V)), FresnelExponent);
+    // fresnel = fresnel + BaseReflectFraction;
+    // displayOutline = fresnel;
 }
 
 
@@ -96,5 +110,6 @@ for(int i = 0; i < 4; i++)
 outlineColour = outlineColours[closestColour].yzw;
 
 float3 outColour = lerp(inColour, outlineColour, displayOutline);
+
 
 return outColour;

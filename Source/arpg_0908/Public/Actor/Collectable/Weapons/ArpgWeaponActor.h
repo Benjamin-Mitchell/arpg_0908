@@ -35,6 +35,9 @@ public:
 	float GetCapsuleHalfHeight();
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Defaults")
+	int HighlightVal = 252;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Defaults")
 	int BaseHighlightVal = 0;
 
 	bool bCollectable = false;

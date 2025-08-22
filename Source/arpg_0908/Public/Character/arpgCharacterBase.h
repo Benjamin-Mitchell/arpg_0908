@@ -172,6 +172,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "InitTags")
 	FGameplayTagContainer OpponentObjectTypeTags;
+
+	UPROPERTY(EditAnywhere, Category = "Highlight")
+	bool bHighlightOnSpawn = false;
 	
 	bool bDead = false;
 	

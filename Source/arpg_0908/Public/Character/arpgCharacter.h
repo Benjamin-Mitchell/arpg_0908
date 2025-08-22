@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Actor/Collectable/Weapons/TemporaryWeaponComponent.h"
 #include "Character/arpgCharacterBase.h"
+#include "Interaction/HighlightInterface.h"
 #include "arpgCharacter.generated.h"
 
 struct FActiveGameplayEffectHandle;
@@ -17,7 +18,7 @@ class UHeadData;
  * 
  */
 UCLASS()
-class ARPG_0908_API AarpgCharacter : public AarpgCharacterBase
+class ARPG_0908_API AarpgCharacter : public AarpgCharacterBase, public IHighlightInterface
 {
 	GENERATED_BODY()
 	
@@ -27,7 +28,11 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 
-	
+	//Highlight Interface
+	virtual void HighlightActor() override;
+	virtual void UnHighlightActor() override;
+	virtual void Interact(AarpgPlayerController* InteractingPlayer) override;
+
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
 
@@ -45,22 +50,22 @@ protected:
 	//virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int LocalMeshBaseHighlightVal = 0;
+	int LocalMeshHighlightVal = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int LocalWeaponBaseHighlightVal = 0;
+	int LocalWeaponHighlightVal = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int LocalHeadBaseHighlightVal = 0;
+	int LocalHeadHighlightVal = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int RemoteMeshBaseHighlightVal = 0;
+	int RemoteMeshHighlightVal = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int RemoteWeaponBaseHighlightVal = 0;
+	int RemoteWeaponHighlightVal = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int RemoteHeadBaseHighlightVal = 0;
+	int RemoteHeadHighlightVal = 0;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastSetHeadMesh(int headIndex);
@@ -90,7 +95,7 @@ private:
 	void SetWeaponMesh(int WeaponIndex, int BackWeaponIndex);
 	void SetHeadMesh(int HeadIndex);
 
-	void HandlePlayerHighlight();
+	void HandlePlayerHighlight(bool EnableHighlight);
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "EquippableData")

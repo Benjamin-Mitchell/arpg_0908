@@ -31,7 +31,7 @@ void AarpgHeadActor::HighlightActor()
 	//Once collectable, we can show a UI for an input to press to activate
 	bCollectable = true;
 	
-	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(250);
+	ActorHeadSkeletalMesh->SetCustomDepthStencilValue(HighlightVal);
 }
 void AarpgHeadActor::UnHighlightActor()
 {

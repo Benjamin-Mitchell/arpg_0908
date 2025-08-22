@@ -94,7 +94,7 @@ protected:
 	float InitialTempDurationLifeSpan = -1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
-	int BaseHighlightVal = 0;
+	int MeshBaseHighlightVal = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int WeaponBaseHighlightVal = 0;

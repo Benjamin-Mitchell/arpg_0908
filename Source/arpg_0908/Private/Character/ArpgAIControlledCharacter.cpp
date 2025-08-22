@@ -51,7 +51,7 @@ void AarpgAIControlledCharacter::PossessedBy(AController* NewController)
 	if(!HasAuthority()) return;
 
 	//enemy uses flat values for highlight colours
-	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
+	GetMesh()->SetCustomDepthStencilValue(MeshBaseHighlightVal);
 	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
 	BaseHeadMesh->SetCustomDepthStencilValue(HeadBaseHighlightVal);
 
@@ -76,7 +76,7 @@ void AarpgAIControlledCharacter::HighlightActor()
 }
 void AarpgAIControlledCharacter::UnHighlightActor()
 {
-	GetMesh()->SetCustomDepthStencilValue(BaseHighlightVal);
+	GetMesh()->SetCustomDepthStencilValue(MeshBaseHighlightVal);
 	Weapon->SetCustomDepthStencilValue(WeaponBaseHighlightVal);
 }
 

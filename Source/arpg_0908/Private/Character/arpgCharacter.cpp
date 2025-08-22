@@ -46,8 +46,9 @@ void AarpgCharacter::PossessedBy(AController* NewController)
 	
 	//Init ability actor info for the server
 	InitAbilityActorInfo();
-	
-	HandlePlayerHighlight();
+
+	if (bHighlightOnSpawn)
+		HandlePlayerHighlight(true);
 
 	AddCharacterAbilities(StartupAbilities);
 	
@@ -60,7 +61,25 @@ void AarpgCharacter::OnRep_PlayerState()
 
 	//Init ability actor info for the client
 	InitAbilityActorInfo();
-	HandlePlayerHighlight();
+	
+	if (bHighlightOnSpawn)
+		HandlePlayerHighlight(true);
+}
+
+void AarpgCharacter::HighlightActor()
+{
+	HandlePlayerHighlight(true);
+}
+
+void AarpgCharacter::UnHighlightActor()
+{
+	HandlePlayerHighlight(false);
+}
+
+void AarpgCharacter::Interact(AarpgPlayerController* InteractingPlayer)
+{
+	//Currently does nothing.
+	//Triggered on 'E' press. Could be a revive or something later down the line.
 }
 
 //Must only be called on the server
@@ -493,22 +512,32 @@ void AarpgCharacter::InitAbilityActorInfo()
 }
 
 
-void AarpgCharacter::HandlePlayerHighlight()
+void AarpgCharacter::HandlePlayerHighlight(bool EnableHighlight)
 {
-	//This is only valid on the owning client AND HOST
-	if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))
+	if (EnableHighlight)
 	{
-		if (arpgPlayerController->IsLocalController())
+		//This is only valid on the owning client AND HOST
+		if(AarpgPlayerController* arpgPlayerController = Cast<AarpgPlayerController>(GetController()))
 		{
-			GetMesh()->SetCustomDepthStencilValue(LocalMeshBaseHighlightVal);
-			Weapon->SetCustomDepthStencilValue(LocalWeaponBaseHighlightVal);
-			BaseHeadMesh->SetCustomDepthStencilValue(LocalHeadBaseHighlightVal);
-			return;
+			if (arpgPlayerController->IsLocalController())
+			{
+				GetMesh()->SetCustomDepthStencilValue(LocalMeshHighlightVal);
+				Weapon->SetCustomDepthStencilValue(LocalWeaponHighlightVal);
+				BaseHeadMesh->SetCustomDepthStencilValue(LocalHeadHighlightVal);
+				return;
+			}
 		}
+	
+		GetMesh()->SetCustomDepthStencilValue(RemoteMeshHighlightVal);
+		Weapon->SetCustomDepthStencilValue(RemoteWeaponHighlightVal);
+		BaseHeadMesh->SetCustomDepthStencilValue(RemoteHeadHighlightVal);
+	}
+	else
+	{
+		GetMesh()->SetCustomDepthStencilValue(0);
+		Weapon->SetCustomDepthStencilValue(0);
+		BaseHeadMesh->SetCustomDepthStencilValue(0);
 	}
 	
-	GetMesh()->SetCustomDepthStencilValue(RemoteMeshBaseHighlightVal);
-	Weapon->SetCustomDepthStencilValue(RemoteWeaponBaseHighlightVal);
-	BaseHeadMesh->SetCustomDepthStencilValue(RemoteHeadBaseHighlightVal);
 	
 }

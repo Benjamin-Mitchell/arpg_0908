@@ -102,7 +102,7 @@ void AArpgWeaponActor::HighlightActor()
 	//Once collectable, we can show a UI for an input to press to activate
 	bCollectable = true;
 	
-	WeaponActorSkeletalMesh->SetCustomDepthStencilValue(250);
+	WeaponActorSkeletalMesh->SetCustomDepthStencilValue(HighlightVal);
 }
 
 void AArpgWeaponActor::UnHighlightActor()
