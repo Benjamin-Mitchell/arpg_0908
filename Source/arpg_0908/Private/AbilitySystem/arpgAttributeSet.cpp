@@ -177,11 +177,15 @@ void UarpgAttributeSet::HandleIncomingDamage(const FEffectProperties& EffectProp
 
 		if(bFatal)
 		{
-			ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProps.TargetAvatarActor);
-			if(CombatInterface)
+			//If Target is not currently immune to death
+			if (!EffectProps.TargetASC->HasMatchingGameplayTag(FArpgGameplayTags::Get().Immunity_Death))
 			{
-				FVector Impulse = UArpgAbilitySystemLibrary::GetDeathImpulse(EffectProps.EffectContextHandle);
-				CombatInterface->Die(Impulse);
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProps.TargetAvatarActor);
+				if(CombatInterface)
+				{
+					FVector Impulse = UArpgAbilitySystemLibrary::GetDeathImpulse(EffectProps.EffectContextHandle);
+					CombatInterface->Die(Impulse);
+				}
 			}
 		}
 		else

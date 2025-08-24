@@ -126,6 +126,8 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Immunity_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.Stun"));
 	GameplayTags.Immunity_Knockback = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.Knockback"));
 	GameplayTags.Immunity_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.HitReact"));
+
+	GameplayTags.Immunity_Death = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Immunity.Death"));
 	
 
 	

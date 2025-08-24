@@ -133,6 +133,7 @@ public:
 	FGameplayTag Immunity_Stun;
 	FGameplayTag Immunity_Knockback;
 	FGameplayTag Immunity_HitReact; //TODO: conditional hitreacts only on big hits?
+	FGameplayTag Immunity_Death;
 
 	FGameplayTag Player_Block_InputPressed;
 	FGameplayTag Player_Block_InputHeld;

@@ -40,6 +40,7 @@ AarpgCharacterBase::AarpgCharacterBase()
 	Weapon->SetIsReplicated(true);
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
