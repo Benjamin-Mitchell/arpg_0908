@@ -9,6 +9,7 @@
 #include "ArpgGameplayTags.h"
 #include "AbilitySystem/Abilities/ArpgDamageGameplayAbility.h"
 #include "arpg_0908/ArpgLogChannels.h"
+#include "arpg_0908/arpg_0908.h"
 #include "Character/ArpgAIControlledCharacter.h"
 #include "Character/arpgCharacterBase.h"
 #include "Game/ArpgGameModeBase.h"
@@ -357,7 +358,7 @@ FVector UArpgAbilitySystemLibrary::GetFloorPositionBelowLocation(const UObject* 
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
 		//This, by default, will not trigger overlaps on pawns.
-		ECollisionChannel CollisionChannel = ECollisionChannel::ECC_WorldStatic;
+		ECollisionChannel CollisionChannel = ECC_StaticGeometryTrace;
 		FHitResult Hit;
 		
 		FVector DownVector = FVector(0.0, 0.0, -1.0);
