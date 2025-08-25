@@ -113,6 +113,12 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastResetMeshRelativeTransformToDefault(float ResetDuration = -1.0f);
+
+	UPROPERTY(BlueprintReadWrite, Category = "Cosmetic")
+	TObjectPtr<AActor> SpeechActorRef;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Cosmetic")
+	int SpeechActorRefCount = 0;
 	
 protected:
 	// Called when the game starts or when spawned
