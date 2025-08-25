@@ -110,6 +110,11 @@ AActor* AarpgAIControlledCharacter::GetCombatTarget_Implementation() const
 }
 
 
+TArray<TSubclassOf<UGameplayEffect>> AarpgAIControlledCharacter::GetSpawnEffects()
+{
+	return SpawnEffects;
+}
+
 void AarpgAIControlledCharacter::BeginPlay()
 {
 	Super::BeginPlay();

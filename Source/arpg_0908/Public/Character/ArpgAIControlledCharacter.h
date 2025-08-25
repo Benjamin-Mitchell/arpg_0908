@@ -82,6 +82,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnTempDurationBeganSignature OnTempDurationBegan;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<TSubclassOf<UGameplayEffect>> GetSpawnEffects();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -141,6 +144,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TSubclassOf<UGameplayAbility> DeSpawnAbility;
+
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayEffect>> SpawnEffects;
 
 private:
 	FTimerHandle TempDurationTimerHandle;
