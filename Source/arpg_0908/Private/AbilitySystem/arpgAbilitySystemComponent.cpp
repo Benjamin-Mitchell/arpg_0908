@@ -34,7 +34,6 @@ void UarpgAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		FGameplayTag FirstTag = AbilitySpec.Ability.Get()->GetAssetTags().First();
 		
 		OwnedAbilities.Add(FirstTag, FOwnedAbilityHandle(AbilitySpec, Handle));
-		
 	}
 	
 	bStartupAbilitiesGiven = true;
