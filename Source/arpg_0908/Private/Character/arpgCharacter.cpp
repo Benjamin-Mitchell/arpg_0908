@@ -17,6 +17,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Materials/MaterialExpressionOperator.h"
+#include "Net/UnrealNetwork.h"
 #include "Player/arpgPlayerController.h"
 #include "UI/HUD/arpgHUD.h"
 
@@ -32,6 +33,13 @@ AarpgCharacter::AarpgCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+}
+
+void AarpgCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AarpgCharacter, LastRecordedMouseLocation);
 }
 
 void AarpgCharacter::PossessedBy(AController* NewController)
@@ -109,6 +117,16 @@ void AarpgCharacter::GrantEquippedAbilitiesOnSpawn()
 void AarpgCharacter::AddInputScroll(float InScroll)
 {
 	ReceiveScrollInput(InScroll);	
+}
+
+FVector AarpgCharacter::GetLastRecordedMouseLocation()
+{
+	return LastRecordedMouseLocation;
+}
+
+void AarpgCharacter::SetLastRecordedMouseLocation(FVector InLocation)
+{
+	LastRecordedMouseLocation = InLocation;
 }
 
 int32 AarpgCharacter::GetPlayerLevel()
@@ -204,7 +222,7 @@ void AarpgCharacter::SetWeapon(AArpgWeaponActor* NewWeaponActor, TemporaryWeapon
 			for (TSubclassOf<UGameplayAbility> CurrentAbility : OldWeaponActorRef->GrantedAbilities)
 			{
 				TArray<FGameplayAbilitySpec*> CurrentMatchingAbilitySpecs;
-				AbilitySystemComponent->GetActivatableGameplayAbilitySpecsByAllMatchingTags(CurrentAbility->GetDefaultObject<UGameplayAbility>()->AbilityTags, CurrentMatchingAbilitySpecs);
+				AbilitySystemComponent->GetActivatableGameplayAbilitySpecsByAllMatchingTags(CurrentAbility->GetDefaultObject<UGameplayAbility>()->GetAssetTags(), CurrentMatchingAbilitySpecs);
 
 				//This is really only designed to support cases where there is a single ability with matching tag.
 				FGameplayTag CurrentInputTag;
@@ -417,12 +435,12 @@ void AarpgCharacter::AbilitySuccessfullyCast(UGameplayAbility* ActivatedAbility)
 {
 	if (CurrentTempWeaponComponent != nullptr)
 	{
-		FGameplayTagQuery GameplayTagQuery = FGameplayTagQuery::MakeQuery_MatchAllTags(ActivatedAbility->AbilityTags);
+		FGameplayTagQuery GameplayTagQuery = FGameplayTagQuery::MakeQuery_MatchAllTags(ActivatedAbility->GetAssetTags());
 		
 		AArpgWeaponActor* TempWeaponActorRef = TempEquippedWeaponActorClass->GetDefaultObject<AArpgWeaponActor>();
 		for (TSubclassOf<UGameplayAbility> Ability : TempWeaponActorRef->GrantedAbilities)
 		{
-			FGameplayTagContainer AbilityTags = Ability->GetDefaultObject<UGameplayAbility>()->AbilityTags; 
+			FGameplayTagContainer AbilityTags = Ability->GetDefaultObject<UGameplayAbility>()->GetAssetTags(); 
 			if (AbilityTags.MatchesQuery(GameplayTagQuery))
 			{
 				//Passes if this is the _final_ use of this temporary weapon.

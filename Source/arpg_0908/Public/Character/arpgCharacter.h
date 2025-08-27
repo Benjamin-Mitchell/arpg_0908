@@ -24,6 +24,7 @@ class ARPG_0908_API AarpgCharacter : public AarpgCharacterBase, public IHighligh
 	
 public:
 	AarpgCharacter();
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
@@ -45,6 +46,12 @@ public:
 	void GrantEquippedAbilitiesOnSpawn();
 
 	void AddInputScroll(float InScroll);
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetLastRecordedMouseLocation();
+
+	UFUNCTION(BlueprintCallable)
+	void SetLastRecordedMouseLocation(FVector InLocation);
 protected:
 
 	//virtual void BeginPlay() override;
@@ -109,4 +116,8 @@ private:
 	TSubclassOf<AArpgWeaponActor> TempEquippedWeaponActorClass;
 	
 	TArray<TSubclassOf<UGameplayAbility>> TemporarilyRemovedAbilities;
+
+	//We replicate this position so that effects can be updated with the correct location on clients (like the electrocute beam)
+	UPROPERTY(Replicated)
+	FVector LastRecordedMouseLocation = FVector::ZeroVector;
 };
