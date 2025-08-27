@@ -4,6 +4,7 @@
 #include "AbilitySystem/AbilityTasks/TargetDataUnderMouse.h"
 #include "AbilitySystemComponent.h"
 #include "arpg_0908/arpg_0908.h"
+#include "Character/arpgCharacter.h"
 
 UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility)
 {
@@ -44,6 +45,12 @@ void UTargetDataUnderMouse::SendMouseCursorData()
 	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();
 	Data->HitResult = CursorHit;
 	DataHandle.Add(Data);
+
+	// if (AarpgCharacter* Char = Cast<AarpgCharacter>(PC->GetCharacter()))
+	// {
+	// 	Char->SetLastRecordedMouseLocation(CursorHit.Location);
+	// }
+	
 
 	AbilitySystemComponent->ServerSetReplicatedTargetData(
 		GetAbilitySpecHandle(),

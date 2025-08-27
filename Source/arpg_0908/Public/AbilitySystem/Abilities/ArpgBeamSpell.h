@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/ArpgDamageGameplayAbility.h"
+#include "Character/arpgCharacter.h"
 #include "ArpgBeamSpell.generated.h"
 
 /**
@@ -15,7 +16,7 @@ class ARPG_0908_API UArpgBeamSpell : public UArpgDamageGameplayAbility
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	void StoreMouseDataInfo(const FHitResult& hitResult);
+	void StoreMouseDataInfo(const FHitResult& hitResult, bool bSnapToCombatInterfaceChest, bool bFixZValue, float InZValue);
 
 	UFUNCTION(BlueprintCallable)
 	void StoreOwnerVariables();
@@ -37,5 +38,5 @@ protected:
 	TObjectPtr<APlayerController> OwnerPlayerController;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
-	TObjectPtr<ACharacter> OwnerCharacter;
+	TObjectPtr<AarpgCharacter> OwnerCharacter;
 };
