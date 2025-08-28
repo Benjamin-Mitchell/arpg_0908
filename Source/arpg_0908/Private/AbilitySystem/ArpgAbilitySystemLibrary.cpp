@@ -333,6 +333,8 @@ FGameplayEffectContextHandle UArpgAbilitySystemLibrary::ApplyDamageEffect(const 
 	const FGameplayEffectSpecHandle BaseDamageSpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(Params.DamageGameplayEffectClass, Params.AbilityLevel, EffectContextHandle);
 
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(BaseDamageSpecHandle, GameplayTags.Damage, Params.BaseDamage);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(BaseDamageSpecHandle, GameplayTags.AbilityBase_CritChance, Params.BaseCritChance);
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(BaseDamageSpecHandle, GameplayTags.AbilityBase_BlockChanceReduction, Params.BaseBlockChanceReduction);
 	Params.TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*BaseDamageSpecHandle.Data);
 
 

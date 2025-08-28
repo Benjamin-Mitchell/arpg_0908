@@ -102,17 +102,22 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const float DamageTypeValue = Spec.GetSetByCallerMagnitude(FArpgGameplayTags::Get().Damage);
 	Damage += DamageTypeValue;
 	
-	float CritChance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritChanceDef, EvaluationParameters, CritChance);
-	CritChance = FMath::Max<float>(0.f, CritChance);
+	float CasterCritChance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritChanceDef, EvaluationParameters, CasterCritChance);
+	CasterCritChance = FMath::Max<float>(0.f, CasterCritChance);
 
 	float CritDamageMultiplier = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CritDamageMultiplierDef, EvaluationParameters, CritDamageMultiplier);
 	//CritDamageMultiplier = FMath::Max<float>(0.f, CritDamageMultiplier); //Crit Damage Multiplier Could be negative and can be greater than 100.0f.
 
 	float CritRand = FMath::RandRange(0.0f, 100.f);
-	 
-	bool bCrit = CritRand < CritChance;
+
+	float AbilityBaseCritChance = Spec.GetSetByCallerMagnitude(FArpgGameplayTags::Get().AbilityBase_CritChance);
+
+	bool bCrit = false;
+	if (AbilityBaseCritChance >= 0.0f) //if ability has below 0% crit chance, it 0CANNOT CRIT
+		bCrit = CritRand < (CasterCritChance + AbilityBaseCritChance);
+		
 
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
 	UArpgAbilitySystemLibrary::SetIsCriticalHit(EffectContextHandle, bCrit);
@@ -127,9 +132,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	//Capture Block Chance On Target, and determine if there was a successful block
 	//If Block, Halve the damage.
-	float BlockChance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, BlockChance);
-	BlockChance = FMath::Max<float>(0.f, BlockChance);
+	//TODO: Rename this 'grazing hit' or perhaps remove it entirely.
+	float TargetBlockChance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
+	TargetBlockChance = FMath::Max<float>(0.f, TargetBlockChance);
 
 	//Capture Damage Reduction Percentage On Target, and reduce damage by that percentage
 	float DamageReduction = 0.f;
@@ -138,7 +144,15 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	float rand = FMath::RandRange(0.0f, 100.f);
 
-	bool bBlocked = (rand < BlockChance);
+	float AbilityBaseBlockChanceReduction = Spec.GetSetByCallerMagnitude(FArpgGameplayTags::Get().AbilityBase_BlockChanceReduction);
+	
+	bool bBlocked = false;
+
+	if (AbilityBaseBlockChanceReduction < 100.0f) //if Ability has a 100% block chance reduction, its UNBLOCKABLE.
+			bBlocked = true;
+
+	bBlocked = (rand < (TargetBlockChance - AbilityBaseBlockChanceReduction));
+	
 	UArpgAbilitySystemLibrary::SetIsBlockedHit(EffectContextHandle, bBlocked);
 	if(bBlocked)
 	{

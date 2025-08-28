@@ -28,6 +28,8 @@ FDamageEffectParams UArpgDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.SourceAbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
 	if (TargetActor) Params.TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	Params.BaseDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+	Params.BaseCritChance = BaseCritChanceMagnitude;
+	Params.BaseBlockChanceReduction = BaseBlockChanceReductionMagnitude;
 	Params.AbilityLevel = GetAbilityLevel();
 	Params.DebuffTags = DebuffTags;
 	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;

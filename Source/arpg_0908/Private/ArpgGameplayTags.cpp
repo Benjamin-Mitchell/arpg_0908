@@ -49,7 +49,13 @@ void FArpgGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_Dance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Dance"));
 	
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"),
-		FString("Tag for assigning magnitude of ability specs (amount of damage to do)"));
+		FString("Tag for assigning magnitude of damage in ability specs"));
+	
+	GameplayTags.AbilityBase_CritChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("AbilityBase.CritChance"),
+		FString("Tag for assigning magnitude of ability's base CritChance in ability spec (can be negative to make ability not-crittable)"));
+	
+	GameplayTags.AbilityBase_BlockChanceReduction = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("AbilityBase.BlockChanceReduction"),
+		FString("Tag for assigning magnitude ability's base BlockChanceReductio in ability spec (Ability can be more difficult to block (or impossible))"));
 
 	//Debuff Tags - used for passing debuffs across the network to notify clients when an ability has a debuff
 	GameplayTags.Debuff_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Burn"));

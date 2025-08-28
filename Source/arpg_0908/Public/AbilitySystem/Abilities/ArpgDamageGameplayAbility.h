@@ -49,6 +49,13 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	float BaseDamage = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float BaseCritChance = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite)
+	float BaseBlockChanceReduction = 0.0f;
+	
 	UPROPERTY(BlueprintReadWrite)
 	float AbilityLevel = 1.0f;
 
@@ -101,6 +108,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	FScalableFloat Damage;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float BaseCritChanceMagnitude = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage")
+	float BaseBlockChanceReductionMagnitude = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float DeathImpulseMagnitude = 6000.0f;

@@ -55,6 +55,9 @@ public:
 
 	FGameplayTag Damage;
 
+	FGameplayTag AbilityBase_CritChance;
+	FGameplayTag AbilityBase_BlockChanceReduction;
+
 	//Debuff types
 	FGameplayTag Debuff_Burn;
 	FGameplayTag Debuff_Stun;
